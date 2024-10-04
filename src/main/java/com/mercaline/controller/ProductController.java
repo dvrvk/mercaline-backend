@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
@@ -44,6 +42,20 @@ public class ProductController {
     public ResponseEntity<GetProductDTO> newProduct(@RequestBody ProductDTO newProduct, @AuthenticationPrincipal UserEntity user) {
         GetProductDTO result = productoDTOConverter.convertToGetProduct(this.productService.create(newProduct,user), user);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<GetProductDTO> updateProduct(@RequestBody ProductEntity updateProduct, @AuthenticationPrincipal UserEntity user) {
+        ProductEntity product = this.productService.edit(updateProduct,user);
+        return ResponseEntity.ok().body(productoDTOConverter.convertToGetProduct(product, user));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
+        ProductEntity productDelete =  this.productService.findById(id)
+                .orElseThrow(()-> new ProductoNotFoundException(id));
+        productService.delete(productDelete,user);
+        return ResponseEntity.noContent().build();
     }
 
 

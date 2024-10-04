@@ -3,7 +3,6 @@ package com.mercaline.users.services;
 import java.util.Optional;
 
 import com.mercaline.service.base.BaseService;
-import org.apache.catalina.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
     }
 
     public UserEntity newUser(UserEntity newUser) {
-        //PENDIENTE - recibir un dto y convertirlo a userEntity - try-catch
+        //PENDIENTE - try-catch
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         return this.userEntityRepository.save(newUser);
 	}

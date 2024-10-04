@@ -1,13 +1,11 @@
 package com.mercaline.users.controllers;
 
 import com.mercaline.dto.GetProductDTO;
-import com.mercaline.dto.ProductDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.service.ProductService;
 import com.mercaline.users.dto.GetUserDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -29,18 +27,13 @@ public class UserController {
     private final ProductoDTOConverter productoDTOConverter;
 
     @PostMapping("/registrar")
-    public UserEntity createUser(@RequestBody UserEntity user) {
-        return userEntityService.newUser(user);
+    public GetUserDto createUser(@RequestBody UserEntity user) {
+        return convertToGetUserDto(this.userEntityService.newUser(user));
     }
 
     @GetMapping("/me")
     public GetUserDto me(@AuthenticationPrincipal UserEntity user) {
-        GetUserDto userResp = new GetUserDto();
-        return GetUserDto.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .tel(user.getTel())
-                .build();
+        return convertToGetUserDto(user);
     }
 
     @GetMapping("/myproducts")
@@ -57,10 +50,13 @@ public class UserController {
         return ResponseEntity.ok().body(products);
     }
 
-//    @PutMapping("/product/{id}")
-//    public ResponseEntity<GetProductDTO> updateProduct(@RequestBody ProductDTO newProduct, @AuthenticationPrincipal UserEntity user) {
-//        return ResponseEntity.status(HttpStatus.).body(this.productService.create(newProduct,user));
-//    }
+    private GetUserDto convertToGetUserDto(UserEntity user) {
+        return GetUserDto.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .tel(user.getTel())
+                .build();
+    }
 
 
 }
