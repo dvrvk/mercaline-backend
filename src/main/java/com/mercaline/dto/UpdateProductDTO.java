@@ -1,17 +1,13 @@
 package com.mercaline.dto;
 
-import com.mercaline.users.dto.GetUserDto;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class ProductDTO {
-
+public class UpdateProductDTO {
     private Long id;
 
     private String nombre;
@@ -26,5 +22,4 @@ public class ProductDTO {
 
     private String categoria;
 
-    private GetUserDto vendedor;
 }
