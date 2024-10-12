@@ -1,6 +1,6 @@
 package com.mercaline.dto;
 
-import com.mercaline.users.dto.GetUserDto;
+import com.mercaline.users.dto.ResponseUserSummaryDTO;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -34,5 +34,5 @@ public class ProductResponseDTO {
     private String categoria;
 
     @NotNull(message = "El camppo vendedor es obligatorio")
-    private GetUserDto vendedor;
+    private ResponseUserSummaryDTO vendedor;
 }
