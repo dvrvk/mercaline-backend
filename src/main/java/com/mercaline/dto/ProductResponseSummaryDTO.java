@@ -1,6 +1,6 @@
 package com.mercaline.dto;
 
-import com.mercaline.users.dto.GetUserProductDto;
+import com.mercaline.users.dto.ResponseUserProductDTO;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -26,5 +26,5 @@ public class ProductResponseSummaryDTO {
 
     private String categoria;
 
-    private GetUserProductDto vendedor;
+    private ResponseUserProductDTO vendedor;
 }
