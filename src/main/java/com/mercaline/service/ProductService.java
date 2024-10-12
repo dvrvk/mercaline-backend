@@ -1,6 +1,6 @@
 package com.mercaline.service;
 
-import com.mercaline.dto.ProductDTO;
+import com.mercaline.dto.ProductRequestDTO;
 import com.mercaline.error.exceptions.ProductUnauthorizedAccessException;
 import com.mercaline.error.exceptions.ProductoNotFoundException;
 import com.mercaline.model.ProductEntity;
@@ -21,7 +21,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
     private final ProductRepository productRepository;
 
     // TODO - SUBIR FOTO
-    public ProductEntity create(ProductDTO newP, UserEntity user) {
+    public ProductEntity create(ProductRequestDTO newP, UserEntity user) {
         ProductEntity product = ProductEntity
                 .builder()
                 .nombre(newP.getNombre())
@@ -42,9 +42,10 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 
     }
 
-    public ProductEntity edit(ProductEntity product, UserEntity user) {
+    public ProductEntity edit(ProductRequestDTO product, UserEntity user, Long id) {
         // Comprobar que el producto pertenece al usuario
-        Optional<ProductEntity> myproduct = this.repositorio.findById(product.getId());
+
+        Optional<ProductEntity> myproduct = this.repositorio.findById(id);
 
         if(myproduct.isPresent()) {
             ProductEntity existProduct = myproduct.get();
@@ -59,10 +60,10 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 
                 return this.repositorio.save(existProduct);
             } else {
-                throw new ProductUnauthorizedAccessException(product.getId());
+                throw new ProductUnauthorizedAccessException(id);
             }
         } else {
-            throw new ProductoNotFoundException(product.getId());
+            throw new ProductoNotFoundException(id);
         }
 
     }

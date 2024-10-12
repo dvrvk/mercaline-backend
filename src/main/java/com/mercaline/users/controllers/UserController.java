@@ -1,6 +1,6 @@
 package com.mercaline.users.controllers;
 
-import com.mercaline.dto.GetProductDTO;
+import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.service.ProductService;
 import com.mercaline.users.dto.GetUserDto;
@@ -37,15 +37,15 @@ public class UserController {
     }
 
     @GetMapping("/myproducts")
-    public ResponseEntity<Page<GetProductDTO>> myProducts(@AuthenticationPrincipal UserEntity user, Pageable pageable) {
-        Page<GetProductDTO> myProducts = (this.productService.findByUser(user, pageable))
+    public ResponseEntity<Page<ProductResponseSummaryDTO>> myProducts(@AuthenticationPrincipal UserEntity user, Pageable pageable) {
+        Page<ProductResponseSummaryDTO> myProducts = (this.productService.findByUser(user, pageable))
                 .map(product -> productoDTOConverter.convertToGetProduct(product, user));
         return ResponseEntity.ok().body(myProducts);
     }
 
     @GetMapping("/products")
-    public ResponseEntity<Page<GetProductDTO>> otherProducts(@AuthenticationPrincipal UserEntity user, Pageable pageable) {
-        Page<GetProductDTO> products = (this.productService.findOthers(user, pageable))
+    public ResponseEntity<Page<ProductResponseSummaryDTO>> otherProducts(@AuthenticationPrincipal UserEntity user, Pageable pageable) {
+        Page<ProductResponseSummaryDTO> products = (this.productService.findOthers(user, pageable))
                 .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUsuario()));
         return ResponseEntity.ok().body(products);
     }
