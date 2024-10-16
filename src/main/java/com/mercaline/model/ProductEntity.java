@@ -9,6 +9,9 @@ import org.hibernate.validator.constraints.URL;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+/**
+ * Entidad que representa un producto de un usuario
+ */
 @Entity
 @Table(name="productos")
 @Getter

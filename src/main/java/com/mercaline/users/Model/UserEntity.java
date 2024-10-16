@@ -22,6 +22,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Entidad que representa a un usuario de la aplicacion
+ */
 @Entity
 @Table(name = "usuarios")
 @Setter
@@ -43,11 +46,11 @@ public class UserEntity implements UserDetails {
     private String username;
 
     @Size(max = 50, message = "El nombre no puede tener más de 50 caracteres")
-    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$", message = "El nombre solo puede contener letras")
+    @Pattern(regexp = "^$|^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$", message = "El nombre solo puede contener letras")
     private String name;
 
     @Size(max = 50, message = "Los apellidos no pueden tener más de 50 caracteres")
-    @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$", message = "Los apellidos solo pueden contener letras y espacios opcionales, pero no al principio ni al final")
+    @Pattern(regexp = "^$|^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$", message = "Los apellidos solo pueden contener letras y espacios opcionales, pero no al principio ni al final")
     private String lastname;
 
     @NonNull
@@ -61,7 +64,7 @@ public class UserEntity implements UserDetails {
     @Column(unique = true)
     private String email;
 
-    @Pattern(regexp = "^((\\+34)?[ -]?[0-9]{9})?$", message = "Introduce un número de teléfono válido en España")
+    @Pattern(regexp = "^$|^((\\+34)?[ -]?[0-9]{9})?$", message = "Introduce un número de teléfono válido en España")
     private String tel;
 
     @Override
