@@ -1,6 +1,6 @@
 package com.mercaline.dto;
 
-import com.mercaline.users.dto.GetUserDto;
+import com.mercaline.users.dto.ResponseUserProductDTO;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductDTO {
+public class ProductResponseSummaryDTO {
 
     private Long id;
 
@@ -18,13 +18,13 @@ public class ProductDTO {
 
     private String descripcion;
 
-    private BigDecimal precio;
-
     private String estado;
 
     private String imagenUrl;
 
+    private BigDecimal precio;
+
     private String categoria;
 
-    private GetUserDto vendedor;
+    private ResponseUserProductDTO vendedor;
 }
