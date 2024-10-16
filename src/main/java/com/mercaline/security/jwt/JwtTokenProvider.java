@@ -1,5 +1,6 @@
 package com.mercaline.security.jwt;
 
+import com.mercaline.error.exceptions.InvalidTokenException;
 import com.mercaline.users.Model.UserEntity;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -57,16 +58,20 @@ public class JwtTokenProvider {
             return true;
         } catch (SignatureException ex) {
             log.info("Error en la firma del token JWT: " + ex.getMessage());
+            throw new InvalidTokenException("Error en la firma del token de sesión, vuelve a iniciar sesión.");
         } catch (MalformedJwtException ex) {
             log.info("Token malformado: " + ex.getMessage());
+            throw new InvalidTokenException("Token malformado, vuelve a iniciar sesión.");
         } catch (ExpiredJwtException ex) {
             log.info("El token ha expirado: " + ex.getMessage());
+            throw new InvalidTokenException("El token a expirado, vuelve a iniciar sesión.");
         } catch (UnsupportedJwtException ex) {
             log.info("Token JWT no soportado: " + ex.getMessage());
+            throw new InvalidTokenException("Token de sesión no soportado, vuelve a iniciar sesión.");
         } catch (IllegalArgumentException ex) {
             log.info("JWT claims vacío");
+            throw new InvalidTokenException("JWT claims vacío, vuelve a iniciar sesión.");
         }
-        return false;
     }
 
 

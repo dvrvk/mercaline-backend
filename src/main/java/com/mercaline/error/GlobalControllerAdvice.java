@@ -1,5 +1,7 @@
 package com.mercaline.error;
 
+import com.mercaline.error.exceptions.DatabaseConnectionException;
+import com.mercaline.error.exceptions.InvalidTokenException;
 import com.mercaline.error.exceptions.ProductUnauthorizedAccessException;
 import com.mercaline.error.exceptions.ProductoNotFoundException;
 import jakarta.validation.ConstraintViolation;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,7 +20,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.SQLTransientConnectionException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,4 +98,17 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         ApiErrorJSON apiError = new ApiErrorJSON(status, message);
         return ResponseEntity.status(status).body(apiError);
     }
+
+    @ExceptionHandler(DatabaseConnectionException.class)
+    public ResponseEntity<ApiError> handleDatabaseConnectionException(DatabaseConnectionException ex) {
+        ApiError apiError = new ApiError(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(apiError);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ApiError> handleInvalidTokenException(Exception ex) {
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
+    }
+
 }
