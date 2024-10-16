@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
+    // Excepciones de producto
     @ExceptionHandler({ProductoNotFoundException.class})
     public ResponseEntity<ApiError> handleNotFound(Exception ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
@@ -36,6 +39,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 
+    // Excepciones de validacion
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<ApiError> handleConstraintViolationException(ConstraintViolationException ex) {
         String errorMessage = ex.getConstraintViolations().stream()
@@ -69,5 +73,24 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
                         error -> ((FieldError) error).getField(),
                         ObjectError::getDefaultMessage
                 ));
+    }
+
+    // Excepciones de base de datos
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ApiErrorJSON> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
+        System.out.println(ex.getErrorCode());
+        Map<String, String> message = new HashMap<>();
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        if(ex.getErrorCode() == 1062 && ex.getMessage().contains("unique_email")) {
+            message.put("email_duplicate", "El email ya está registrado, introduce otro distinto.");
+            status = HttpStatus.CONFLICT;
+        } else if(ex.getErrorCode() == 1062) {
+            message.put("username_duplicate", "El nombre de usuario ya existe, prueba con otro distinto.");
+            status = HttpStatus.CONFLICT;
+        } else {
+            message.put("internal_server_error","Error del servidor, intentelo más tarde.");
+        }
+        ApiErrorJSON apiError = new ApiErrorJSON(status, message);
+        return ResponseEntity.status(status).body(apiError);
     }
 }

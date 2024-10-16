@@ -60,13 +60,4 @@ public class UserController {
         return ResponseEntity.ok().body(products);
     }
 
-    private ResponseUserSummaryDTO convertToGetUserDto(UserEntity user) {
-        return ResponseUserSummaryDTO.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .tel(user.getTel())
-                .build();
-    }
-
-
 }
