@@ -1,9 +1,6 @@
 package com.mercaline.error;
 
-import com.mercaline.error.exceptions.DatabaseConnectionException;
-import com.mercaline.error.exceptions.InvalidTokenException;
-import com.mercaline.error.exceptions.ProductUnauthorizedAccessException;
-import com.mercaline.error.exceptions.ProductoNotFoundException;
+import com.mercaline.error.exceptions.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
@@ -32,11 +29,12 @@ import java.util.stream.Collectors;
 public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     // Excepciones de producto
-    @ExceptionHandler({ProductoNotFoundException.class})
+    @ExceptionHandler({ProductoNotFoundException.class, CategoryNotFoundException.class, StatusNotFoundException.class})
     public ResponseEntity<ApiError> handleNotFound(Exception ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
+
 
     @ExceptionHandler({ProductUnauthorizedAccessException.class})
     public ResponseEntity<ApiError> handleNotAccess(Exception ex) {
@@ -110,5 +108,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
+
+
 
 }

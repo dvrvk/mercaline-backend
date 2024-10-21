@@ -56,7 +56,7 @@ public class UserController {
     @GetMapping("/products")
     public ResponseEntity<Page<ProductResponseSummaryDTO>> otherProducts(@AuthenticationPrincipal UserEntity user, Pageable pageable) {
         Page<ProductResponseSummaryDTO> products = (this.productService.findOthers(user, pageable))
-                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUsuario()));
+                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
         return ResponseEntity.ok().body(products);
     }
 

@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
-    Page<ProductEntity> findByUsuario(UserEntity user, Pageable pageable);
+    Page<ProductEntity> findByUser(UserEntity user, Pageable pageable);
 
-    Page<ProductEntity> findByUsuarioNot(UserEntity user, Pageable pageable);
+    Page<ProductEntity> findByUserNot(UserEntity user, Pageable pageable);
 }
