@@ -31,7 +31,7 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductResponseSummaryDTO>> findAll(Pageable pageable) {
         Page<ProductResponseSummaryDTO> products = (this.productService.findAll(pageable))
-                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUsuario()));
+                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
         return ResponseEntity.ok().body(products);
     }
 
