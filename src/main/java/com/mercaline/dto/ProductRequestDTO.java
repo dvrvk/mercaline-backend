@@ -33,6 +33,8 @@ public class ProductRequestDTO {
     private String urlImage;
 
     @NotNull(message = "La categoría es obligatoria")
+    @Digits(integer=3, fraction=0)
+    @DecimalMin(value = "0.0", inclusive = false)
     private Long category;
 
 }

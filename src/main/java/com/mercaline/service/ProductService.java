@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,12 +30,14 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
     // TODO - SUBIR FOTO
     public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) {
 
+        // Buscar si existe status y category
         CategoryEntity category = categoryService.findById(newProduct.getCategory())
                 .orElseThrow(CategoryNotFoundException::new);
 
         StatusEntity status = statusService.findById(newProduct.getStatus())
                 .orElseThrow(StatusNotFoundException::new);
 
+        // Construir productEntity
         ProductEntity product = ProductEntity
                 .builder()
                 .name(newProduct.getName())
@@ -87,12 +90,40 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 
     }
 
+    public Page<ProductEntity> findByCategoryNotUser(Long categoryId, UserEntity user, Pageable pageable) {
+        CategoryEntity category = categoryService.findById(categoryId)
+                .orElseThrow(CategoryNotFoundException::new);
+
+        return this.repositorio.findByUserNotAndCategory(user, category, pageable);
+    }
+
     public Page<ProductEntity> findByUser(UserEntity user, Pageable pageable) {
         return this.repositorio.findByUser(user, pageable);
     }
 
     public Page<ProductEntity> findOthers(UserEntity user, Pageable pageable) {
         return this.repositorio.findByUserNot(user, pageable);
+    }
+
+    public Page<ProductEntity> filterProducts(Long category_id, List<Long> statusList, UserEntity user, Pageable pageable) {
+        // Buscar la categoria
+        if(category_id != null && category_id != 0) {
+            CategoryEntity category = categoryService.findById(category_id)
+                    .orElseThrow(CategoryNotFoundException::new);
+        }
+
+        if(statusList != null && !statusList.isEmpty()) {
+            statusList.forEach(status -> {
+                statusService.findById(status)
+                        .orElseThrow(StatusNotFoundException::new);
+            });
+        }
+        if(statusList == null || statusList.isEmpty()) {
+            return this.repositorio.findProductsByFilterNotStatus(category_id, user.getId(), pageable);
+        } else {
+            return this.repositorio.findProductsByFilterStatus(category_id, statusList, user.getId(), pageable);
+        }
+
     }
 
 
