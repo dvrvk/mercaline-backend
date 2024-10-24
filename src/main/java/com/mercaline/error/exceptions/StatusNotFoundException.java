@@ -6,6 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class StatusNotFoundException extends RuntimeException {
     public StatusNotFoundException() {
-        super("No se puede encontrar la categoría seleccionada.");;
+        super("No se puede encontrar el estado seleccionado.");;
     }
 }

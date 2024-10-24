@@ -14,17 +14,17 @@ public class ProductResponseSummaryDTO {
 
     private Long id;
 
-    private String nombre;
+    private String name;
 
-    private String descripcion;
+    private String description;
 
-    private String estado;
+    private String status;
 
-    private String imagenUrl;
+    private String imageUrl;
 
-    private BigDecimal precio;
+    private BigDecimal price;
 
-    private String categoria;
+    private String category;
 
-    private ResponseUserProductDTO vendedor;
+    private ResponseUserProductDTO seller;
 }
