@@ -13,6 +13,7 @@ import com.mercaline.service.ProductService;
 import com.mercaline.service.StatusService;
 import com.mercaline.users.Model.UserEntity;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -78,6 +80,21 @@ public class ProductController {
          Page<ProductResponseSummaryDTO> products = this.productService.filterProducts(categoryId, status, user, pageable)
                  .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
          return ResponseEntity.ok().body(products);
+    }
+
+    // PRUEBA CON PRECIO
+    @GetMapping("/filter2")
+    public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts2(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) List<Long> status,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            @AuthenticationPrincipal UserEntity user,
+            Pageable pageable) {
+
+        Page<ProductResponseSummaryDTO> products = this.productService.filterProducts2(categoryId, status, user, minPrice, maxPrice, pageable)
+                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
+        return ResponseEntity.ok().body(products);
     }
 
     @GetMapping("/status")
