@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * Entidad que representa un producto de un usuario
  */
 @Entity
-@Table(name="productos")
+@Table(name="products")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,44 +24,46 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "name")
     @NotBlank(message = "El nombre es obligatorio")
     @Size(min = 2, max = 100, message = "El tamaño debe estar entre 2 y  100 caracteres")
-    private String nombre;
+    private String name;
 
-    @Column(length = 1000, nullable = false)
+    @Column(length = 1000, nullable = false, name = "description")
     @NotBlank(message = "La descripción es obligatoria")
     @Size(min = 3, max = 1000, message = "El tamaño debe estar entre 3 y  1000 caracteres")
-    private String descripcion;
+    private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "price")
     @NotNull(message = "El precio es obligatorio")
     @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor que 0")
-    private BigDecimal precio;
+    private BigDecimal price;
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="category", nullable = false)
     @NotNull(message = "La categoría es obligatoria")
-    private String categoria;
+    private CategoryEntity category;
 
-    @Column(name= "fecha_creacion", nullable = false, updatable = false)
+    @Column(name= "create_date", nullable = false, updatable = false)
     @NotNull(message = "La fecha es obligatoria")
-    private LocalDateTime fechaCreacion;
+    private LocalDateTime createDate;
 
-    @ManyToOne
-    @JoinColumn(name="vendedor_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id", nullable = false)
     @NotNull(message = "El vendedor es obligatorio")
-    private UserEntity usuario;
+    private UserEntity user;
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="status", nullable = false)
     @NotNull(message = "El estado es obligatorio")
-    private String estado;
+    private StatusEntity status;
 
-    @Column(name = "imagen_url")
+    @Column(name = "url_image")
     @URL(message = "La URL de la imagen debe ser válida")
-    private String imagenUrl;
+    private String urlImage;
 
     @PrePersist
     protected void onCreate() {
-        this.fechaCreacion = LocalDateTime.now();
+        this.createDate = LocalDateTime.now();
     }
 }

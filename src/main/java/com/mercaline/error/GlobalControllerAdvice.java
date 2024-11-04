@@ -1,9 +1,6 @@
 package com.mercaline.error;
 
-import com.mercaline.error.exceptions.DatabaseConnectionException;
-import com.mercaline.error.exceptions.InvalidTokenException;
-import com.mercaline.error.exceptions.ProductUnauthorizedAccessException;
-import com.mercaline.error.exceptions.ProductoNotFoundException;
+import com.mercaline.error.exceptions.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
@@ -11,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,9 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLTransientConnectionException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +26,12 @@ import java.util.stream.Collectors;
 public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     // Excepciones de producto
-    @ExceptionHandler({ProductoNotFoundException.class})
+    @ExceptionHandler({ProductoNotFoundException.class, CategoryNotFoundException.class, StatusNotFoundException.class})
     public ResponseEntity<ApiError> handleNotFound(Exception ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
+
 
     @ExceptionHandler({ProductUnauthorizedAccessException.class})
     public ResponseEntity<ApiError> handleNotAccess(Exception ex) {
@@ -60,7 +55,6 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
         Map<String, String> errors = getErrorMessagesAsMap(ex.getBindingResult().getAllErrors());
 
-
         ApiErrorJSON apiError = new ApiErrorJSON(HttpStatus.BAD_REQUEST, errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
@@ -83,13 +77,13 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     // Excepciones de base de datos
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ApiErrorJSON> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
-        System.out.println(ex.getErrorCode());
+        System.out.println(ex);
         Map<String, String> message = new HashMap<>();
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        if(ex.getErrorCode() == 1062 && ex.getMessage().contains("unique_email")) {
+        if(ex.getErrorCode() == 1062 && ex.getMessage().contains("email")) {
             message.put("email_duplicate", "El email ya está registrado, introduce otro distinto.");
             status = HttpStatus.CONFLICT;
-        } else if(ex.getErrorCode() == 1062) {
+        } else if(ex.getErrorCode() == 1062 && ex.getMessage().contains("username")) {
             message.put("username_duplicate", "El nombre de usuario ya existe, prueba con otro distinto.");
             status = HttpStatus.CONFLICT;
         } else {
@@ -110,5 +104,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
+
+
 
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.mercaline.users.Model.UserEntity;
@@ -30,7 +31,7 @@ public class UserController {
     private final UserDTOConverter userDTOConverter;
 
     @PostMapping("/registrar")
-    public ResponseEntity<ResponseUserSummaryDTO> createUser(@RequestBody UserEntity user) {
+    public ResponseEntity<ResponseUserSummaryDTO> createUser(@Validated @RequestBody UserEntity user) {
         return ResponseEntity.ok(userDTOConverter
                 .convertToResponseUserSummaryDTO(this.userEntityService.newUser(user)));
     }
@@ -56,7 +57,7 @@ public class UserController {
     @GetMapping("/products")
     public ResponseEntity<Page<ProductResponseSummaryDTO>> otherProducts(@AuthenticationPrincipal UserEntity user, Pageable pageable) {
         Page<ProductResponseSummaryDTO> products = (this.productService.findOthers(user, pageable))
-                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUsuario()));
+                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
         return ResponseEntity.ok().body(products);
     }
 

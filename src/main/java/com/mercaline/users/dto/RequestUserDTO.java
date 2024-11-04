@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import static com.mercaline.config.utils.AppConstants.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -12,12 +14,13 @@ import lombok.*;
 @Builder
 public class RequestUserDTO {
 
-    @NotBlank(message = "El nombre de usuario es obligatorio.")
-    @Size(min = 3, max=30, message = "El nombre de usuario debe tener al menos 3 caracteres y máximo 30")
-    @Pattern(regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+$", message = "El nombre de usuario solo puede contener letras y números")
+    @NotBlank(message = USERNAME_NOTBLANK_MSG)
+    @Size(min = USERNAME_MIN_SIZE, max=USERNAME_MAX_SIZE, message = USERNAME_ERRORSIZE_MSG)
+    @Pattern(regexp = USERNAME_REGEXP, message = USERNAME_REGEXP_MSG)
     private String username;
 
-    @NotBlank(message = "La contraseña es obligatoria")
+    @NotBlank(message = PASSWORD_NOTBLANK_MSG)
+    @Size(min = PASSWORD_MIN_SIZE, message = PASSWORD_MIN_SIZE_MSG)
     private String password;
 
 }

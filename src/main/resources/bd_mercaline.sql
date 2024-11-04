@@ -1,9 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 5.2.1
--- https://www.phpmyadmin.net/
---
--- Servidor: 127.0.0.1
--- Tiempo de generación: 01-10-2024 a las 16:18:20
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -18,84 +12,180 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `daw_prueba`
+-- Base de datos: `mercaline_bd`
 --
 
 -- --------------------------------------------------------
+--
+-- BORRAR BASE DE DATOS ANTERIOR
+--
+-- DROP DATABASE IF EXISTS mercaline_bd;
+--
+-- CREAR DE NUEVO LA BASE DE DATOS
+--
+CREATE DATABASE IF NOT EXISTS mercaline_bd;
+USE mercaline_bd;
 
 --
--- Estructura de tabla para la tabla `productos`
+-- BORRAR LAS TABLAS
 --
-
-CREATE TABLE `productos` (
-  `id` bigint(20) NOT NULL,
-  `nombre` varchar(255) NOT NULL,
-  `descripcion` varchar(1000) DEFAULT NULL,
-  `precio` decimal(38,2) NOT NULL,
-  `categoria` varchar(255) DEFAULT NULL,
-  `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
-  `estado` varchar(255) NOT NULL,
-  `vendedor_id` bigint(20) DEFAULT NULL,
-  `imagen_url` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
+-- Eliminar tablas si existen
+DROP TABLE IF EXISTS favourites;
+DROP TABLE IF EXISTS list_fav;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS status;
+DROP TABLE IF EXISTS users;
 --
--- Estructura de tabla para la tabla `usuarios`
+-- Estructura de tabla para la tabla `users`
 --
-
-CREATE TABLE `usuarios` (
-  `id` bigint(20) NOT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `tel` varchar(255) DEFAULT NULL,
-  `password` varchar(255) DEFAULT NULL,
-  `username` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE users (
+    id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(250) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    lastname VARCHAR(250) NOT NULL,
+    email VARCHAR(250) UNIQUE NOT NULL,
+    tel VARCHAR(15)
+);
 
 --
--- Índices para tablas volcadas
+-- Estructura de tabla para la tabla `products`
 --
+CREATE TABLE categories (
+    id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100)
+);
 
 --
--- Indices de la tabla `productos`
+-- Estructura de tabla para la tabla `status`
 --
-ALTER TABLE `productos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `vendedor_id` (`vendedor_id`);
+CREATE TABLE status (
+    id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL
+);
 
 --
--- Indices de la tabla `usuarios`
+-- Estructura de tabla para la tabla `products`
 --
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `UKm2dvbwfge291euvmk6vkkocao` (`username`);
+CREATE TABLE products (
+    id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(1000) NOT NULL,
+    price DECIMAL(36,2) NOT NULL,
+    category BIGINT(20) NOT NULL,
+    create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status BIGINT(20) NOT NULL,
+    url_image VARCHAR(1000),
+    user_id BIGINT(20) NOT NULL,
+    FOREIGN KEY (category) REFERENCES categories(id),
+    FOREIGN KEY (status) REFERENCES status(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE
+);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- Estructura de tabla para la tabla `list_fav`
 --
+CREATE TABLE list_fav (
+    id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    user_id BIGINT(20) NOT NULL,
+    UNIQUE (name, user_id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE
+);
 
 --
--- AUTO_INCREMENT de la tabla `productos`
+-- Estructura de tabla para la tabla `favourites`
 --
-ALTER TABLE `productos`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+CREATE TABLE favourites (
+    id BIGINT(20) AUTO_INCREMENT PRIMARY KEY,
+    list_fav_id BIGINT(20) NOT NULL,
+    product_id BIGINT(20) NOT NULL,
+    FOREIGN KEY (list_fav_id) REFERENCES list_fav(id)
+    ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+    ON DELETE CASCADE
+);
 
 --
--- AUTO_INCREMENT de la tabla `usuarios`
+-- Datos de tabla para la tabla `categories`
 --
-ALTER TABLE `usuarios`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+INSERT INTO categories (name) VALUES
+('coches'),
+('motos'),
+('motos y accesorios'),
+('moda y accesorios'),
+('tecnología y electrónica'),
+('deporte y ocio'),
+('bicicletas'),
+('hogar y jardín'),
+('electrodomésticos'),
+('cine, libros y música'),
+('niños y bebés'),
+('coleccionismo'),
+('construcción y reformas'),
+('industria y agricultura'),
+('otros');
 
 --
--- Restricciones para tablas volcadas
+-- Datos de tabla para la tabla `status`
 --
+INSERT INTO status (name) VALUES
+('sin abrir'),
+('en su caja'),
+('nuevo'),
+('como nuevo'),
+('en buen estado'),
+('en condiciones aceptables'),
+('lo ha dado todo');
 
 --
--- Filtros para la tabla `productos`
+-- Borrar datos de la tabla 'users'
 --
-ALTER TABLE `productos`
-  ADD CONSTRAINT `productos_ibfk_1` FOREIGN KEY (`vendedor_id`) REFERENCES `usuarios` (`id`);
+-- TRUNCATE TABLE users;
+--
+--
+-- Datos de prueba para la tabla 'users'
+-- El password es 'password123'
+--
+INSERT INTO users (username, password, name, lastname, email, tel) VALUES
+('jdoe', '$2a$12$VW1WfM65jy6k5EQ2CAJcZ.EUOcMUQAbTmYi59.5Nfru1mkoZnYWDq', 'John', 'Doe', 'johndoe@example.com', '123456789'),
+('asmith', '$2a$12$VW1WfM65jy6k5EQ2CAJcZ.EUOcMUQAbTmYi59.5Nfru1mkoZnYWDq', 'Alice', 'Smith', 'alicesmith@example.com', '987654321'),
+('bwhite', '$2a$12$VW1WfM65jy6k5EQ2CAJcZ.EUOcMUQAbTmYi59.5Nfru1mkoZnYWDq', 'Bob', 'White', 'bobwhite@example.com', '555123456'),
+('cjohnson', '$2a$12$VW1WfM65jy6k5EQ2CAJcZ.EUOcMUQAbTmYi59.5Nfru1mkoZnYWDq', 'Charlie', 'Johnson', 'charliejohnson@example.com', '444123456');
+
+--
+-- Borrar datos de la tabla 'products'
+--
+-- TRUNCATE TABLE 'products';
+--
+-- Datos de prueba para la tabla 'products'
+--
+INSERT INTO products (name, description, price, category, status, url_image, user_id) VALUES
+('Laptop', 'Laptop de última generación con 16GB de RAM y 512GB SSD', 1200.00, 5, 3, 'https://picsum.photos/id/1/200/300', 1),
+('Smartphone', 'Smartphone con pantalla de 6.5 pulgadas y cámara de 48MP', 800.00, 5, 3, 'https://picsum.photos/id/2/200/300', 2),
+('Bicicleta', 'Bicicleta de montaña con suspensión delantera y trasera', 400.00, 7, 4, 'https://picsum.photos/id/3/200/300', 3),
+('TV 4K', 'Televisor 4K de 55 pulgadas con HDR y Smart TV', 900.00, 5, 3, 'https://picsum.photos/id/4/200/300', 4),
+('Camiseta', 'Camiseta de algodón 100% con diseño gráfico', 20.00, 4, 6, 'https://picsum.photos/id/5/200/300', 1),
+('Sofá', 'Sofá de 3 plazas con tapizado en tela', 700.00, 8, 4, 'https://picsum.photos/id/6/200/300', 2),
+('Libro', 'Novela de ciencia ficción', 15.00, 10, 7, 'https://picsum.photos/id/7/200/300', 3),
+('Reproductor de música', 'Reproductor de música portátil con capacidad de 32GB', 100.00, 5, 3, 'https://picsum.photos/id/8/200/300', 4),
+('Cámara DSLR', 'Cámara réflex digital con lente de 18-55mm', 550.00, 5, 3, 'https://picsum.photos/id/9/200/300', 1),
+('Tablet', 'Tablet con pantalla de 10 pulgadas y 64GB de almacenamiento', 300.00, 5, 3, 'https://picsum.photos/id/10/200/300', 2),
+('Zapatillas deportivas', 'Zapatillas deportivas para correr de alta calidad', 120.00, 4, 4, 'https://picsum.photos/id/11/200/300', 3),
+('Lavadora', 'Lavadora con capacidad de 8kg y funciones avanzadas', 650.00, 8, 3, 'https://picsum.photos/id/12/200/300', 4),
+('Auriculares', 'Auriculares inalámbricos con cancelación de ruido', 200.00, 5, 3, 'https://picsum.photos/id/13/200/300', 1),
+('Reloj inteligente', 'Reloj inteligente con monitor de ritmo cardíaco y GPS', 250.00, 5, 3, 'https://picsum.photos/id/14/200/300', 2),
+('Mesa de comedor', 'Mesa de comedor para 6 personas, fabricada en madera de roble', 450.00, 8, 4, 'https://picsum.photos/id/15/200/300', 3),
+('Patinete eléctrico', 'Patinete eléctrico plegable con autonomía de 25km', 350.00, 7, 4, 'https://picsum.photos/id/16/200/300', 4),
+('Cámara de seguridad', 'Cámara de seguridad para el hogar con visión nocturna', 150.00, 5, 3, 'https://picsum.photos/id/17/200/300', 1),
+('Lámpara de pie', 'Lámpara de pie moderna con control táctil', 80.00, 8, 4, 'https://picsum.photos/id/18/200/300', 2),
+('Monitor', 'Monitor de 27 pulgadas con resolución 4K', 400.00, 5, 3, 'https://picsum.photos/id/19/200/300', 3),
+('Cafetera', 'Cafetera de espresso con molinillo integrado', 300.00, 8, 3, 'https://picsum.photos/id/20/200/300', 4);
+
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

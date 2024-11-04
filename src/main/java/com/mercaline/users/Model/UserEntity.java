@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,11 +21,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+import static com.mercaline.config.utils.AppConstants.*;
+import static com.mercaline.config.utils.AppConstants.USERNAME_REGEXP_MSG;
+
 /**
  * Entidad que representa a un usuario de la aplicacion
  */
 @Entity
-@Table(name = "usuarios")
+@Table(name = "users")
 @Setter
 @Getter
 @AllArgsConstructor
@@ -36,35 +38,38 @@ public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NonNull
     private Long id;
 
-    @Column(unique = true)
-    @NotBlank(message = "El nombre de usuario es obligatorio.")
-    @Size(min = 3, max=30, message = "El nombre de usuario debe tener al menos 3 caracteres y máximo 30")
-    @Pattern(regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+$", message = "El nombre de usuario solo puede contener letras y números")
+    @Column(unique = true, nullable = false, name = "username")
+    @NotBlank(message = USERNAME_NOTBLANK_MSG)
+    @Size(min = USERNAME_MIN_SIZE, max=USERNAME_MAX_SIZE, message = USERNAME_ERRORSIZE_MSG)
+    @Pattern(regexp = USERNAME_REGEXP, message = USERNAME_REGEXP_MSG)
     private String username;
 
-    @Size(max = 50, message = "El nombre no puede tener más de 50 caracteres")
-    @Pattern(regexp = "^$|^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$", message = "El nombre solo puede contener letras")
+    @Column(nullable = false, name = "name")
+    @Size(max = NAME_MAX_SIZE, message = NAME_MAX_SIZE_MSG)
+    @NotBlank
+    @Pattern(regexp = NAME_REGEXP, message = NAME_REGEXP_MSG)
     private String name;
 
-    @Size(max = 50, message = "Los apellidos no pueden tener más de 50 caracteres")
-    @Pattern(regexp = "^$|^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+( [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$", message = "Los apellidos solo pueden contener letras y espacios opcionales, pero no al principio ni al final")
+    @Column(nullable = false, name = "lastname")
+    @NotBlank
+    @Size(max = LASTNAME_MAX_SIZE, message = LASTNAME_MAX_SIZE_MSG)
+    @Pattern(regexp = LASTNAME_REGEXP, message = LASTNAME_REGEXP_MSG)
     private String lastname;
 
-    @NonNull
-    @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @Column(nullable = false, name = "password")
+    @NotBlank(message = PASSWORD_NOTBLANK_MSG)
+    @Size(min = PASSWORD_MIN_SIZE, message = PASSWORD_MIN_SIZE_MSG)
     private String password;
 
-    @NonNull
-    @NotBlank(message = "El correo electrónico es obligatorio")
-    @Email(message = "Introduce un correo electrónico válido")
-    @Column(unique = true)
+    @Column(nullable = false, unique = true, name = "email")
+    @NotBlank(message = EMAIL_NOBLANK_MSG)
+    @Email(message = EMAIL_VALID_MSG)
     private String email;
 
-    @Pattern(regexp = "^$|^((\\+34)?[ -]?[0-9]{9})?$", message = "Introduce un número de teléfono válido en España")
+    @Column(name = "tel")
+    @Pattern(regexp = TEL_REGEXP, message = TEL_REGEXP_MSG)
     private String tel;
 
     @Override
