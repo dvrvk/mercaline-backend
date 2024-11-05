@@ -3,6 +3,7 @@ package com.mercaline.dto;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -29,8 +30,9 @@ public class ProductRequestDTO {
     @NotNull(message = "El estado es obligatorio")
     private Long status;
 
-    @URL(message = "La URL de la imagen debe ser válida")
-    private String urlImage;
+
+    @NotNull(message = "Es obligatorio subir una imagen")
+    private MultipartFile urlImage;
 
     @NotNull(message = "La categoría es obligatoria")
     @Digits(integer=3, fraction=0)

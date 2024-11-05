@@ -59,7 +59,7 @@ public class ProductEntity {
     private StatusEntity status;
 
     @Column(name = "url_image")
-    @URL(message = "La URL de la imagen debe ser válida")
+    @NotNull(message = "Es obligatorio subir al menos una imagen")
     private String urlImage;
 
     @PrePersist

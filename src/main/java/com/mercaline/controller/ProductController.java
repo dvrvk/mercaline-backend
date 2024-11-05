@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -68,7 +69,7 @@ public class ProductController {
         return ResponseEntity.ok().body(products);
     }
 
-    // Filtrar productos de otros usuarios por category, List<status>
+    // Filtrar productos de otros usuarios por category, List<status>  - BORRAR
     @GetMapping("/filter")
     public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts(
             @RequestParam(required = false) Long categoryId,
@@ -101,18 +102,39 @@ public class ProductController {
         return ResponseEntity.ok().body(this.statusService.findAll());
     }
 
+//    @PostMapping("/create")
+//    public ResponseEntity<ProductResponseSummaryDTO> newProduct(@Valid @RequestBody ProductRequestDTO newProduct, @AuthenticationPrincipal UserEntity user) {
+//        ProductResponseSummaryDTO result = productoDTOConverter.convertToGetProduct(this.productService.create(newProduct, user), user);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+//    }
+
     @PostMapping("/create")
-    public ResponseEntity<ProductResponseSummaryDTO> newProduct(@Valid @RequestBody ProductRequestDTO newProduct, @AuthenticationPrincipal UserEntity user) {
-        ProductResponseSummaryDTO result = productoDTOConverter.convertToGetProduct(this.productService.create(newProduct, user), user);
+    public ResponseEntity<ProductResponseSummaryDTO> newProduct(@RequestParam("name") String name,
+                                                                @RequestParam("description") String description,
+                                                                @RequestParam("price") BigDecimal price,
+                                                                @RequestParam("status") Long status,
+                                                                @RequestParam("category") Long category,
+                                                                @RequestParam("urlImage") MultipartFile urlImage,
+                                                                @AuthenticationPrincipal UserEntity user) {
+        ProductRequestDTO newProduct = ProductRequestDTO.builder()
+                .name(name)
+                .description(description)
+                .price(price)
+                .status(status)
+                .category(category)
+                .urlImage(urlImage)
+                .build();
+
+        ProductResponseSummaryDTO result = productoDTOConverter.convertToGetProduct(this.productService.create2(newProduct, user), user);
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ProductResponseSummaryDTO> updateProduct(@Valid @RequestBody ProductRequestDTO updateProduct,
-                                                                   @AuthenticationPrincipal UserEntity user, @PathVariable Long id) {
-        ProductEntity product = this.productService.edit(updateProduct, user, id);
-        return ResponseEntity.ok().body(productoDTOConverter.convertToGetProduct(product, user));
-    }
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<ProductResponseSummaryDTO> updateProduct(@Valid @RequestBody ProductRequestDTO updateProduct,
+//                                                                   @AuthenticationPrincipal UserEntity user, @PathVariable Long id) {
+//        ProductEntity product = this.productService.edit(updateProduct, user, id);
+//        return ResponseEntity.ok().body(productoDTOConverter.convertToGetProduct(product, user));
+//    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {

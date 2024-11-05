@@ -15,10 +15,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+
+import static com.mercaline.config.utils.AppConstants.PATH_IMG;
 
 @Service
 @RequiredArgsConstructor
@@ -29,28 +36,72 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
     private final StatusService statusService;
 
     // TODO - SUBIR FOTO
-    public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) {
+//    public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) {
+//
+//        // Buscar si existe status y category
+//        CategoryEntity category = categoryService.findById(newProduct.getCategory())
+//                .orElseThrow(CategoryNotFoundException::new);
+//
+//        StatusEntity status = statusService.findById(newProduct.getStatus())
+//                .orElseThrow(StatusNotFoundException::new);
+//
+//        // Construir productEntity
+//        ProductEntity product = ProductEntity
+//                .builder()
+//                .name(newProduct.getName())
+//                .description(newProduct.getDescription())
+//                .price(newProduct.getPrice())
+//                .urlImage(newProduct.getUrlImage())
+//                .status(status)
+//                .category(category)
+//                .user(user)
+//                .build();
+//
+//        return this.repositorio.save(product);
+//    }
 
-        // Buscar si existe status y category
+    public ProductEntity create2(ProductRequestDTO newProduct, UserEntity user) {
+
+        // Buscar si existe category
         CategoryEntity category = categoryService.findById(newProduct.getCategory())
                 .orElseThrow(CategoryNotFoundException::new);
-
+        // Buscar si existe status
         StatusEntity status = statusService.findById(newProduct.getStatus())
                 .orElseThrow(StatusNotFoundException::new);
 
-        // Construir productEntity
-        ProductEntity product = ProductEntity
-                .builder()
-                .name(newProduct.getName())
-                .description(newProduct.getDescription())
-                .price(newProduct.getPrice())
-                .urlImage(newProduct.getUrlImage())
-                .status(status)
-                .category(category)
-                .user(user)
-                .build();
+        // Guardar imagen en el servidor
+        try {
+            // Crear carpeta de fotografias
+            Path imagePath = Paths.get(PATH_IMG.concat(user.getId().toString()));
+            if(!Files.exists(imagePath)) {
+                Files.createDirectories(imagePath);
+            }
 
-        return this.repositorio.save(product);
+            String newFileName = "image_" + user.getUsername() + "_" + System.currentTimeMillis() + ".jpg";
+            Path copyLocation = imagePath.resolve(newFileName);
+
+            Files.copy(newProduct.getUrlImage().getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            // Construir productEntity
+            ProductEntity product = ProductEntity
+                    .builder()
+                    .name(newProduct.getName())
+                    .description(newProduct.getDescription())
+                    .price(newProduct.getPrice())
+                    .urlImage(imagePath.toString().concat(newFileName))
+                    .status(status)
+                    .category(category)
+                    .user(user)
+                    .build();
+
+            return this.repositorio.save(product);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+
     }
 
     public void delete(ProductEntity product, UserEntity user){
@@ -59,37 +110,37 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 
     }
 
-    public ProductEntity edit(ProductRequestDTO editProduct, UserEntity user, Long id) {
-        // Comprobar que el producto pertenece al usuario
-
-        Optional<ProductEntity> myproduct = this.repositorio.findById(id);
-
-        CategoryEntity category = categoryService.findById(editProduct.getCategory())
-                .orElseThrow(CategoryNotFoundException::new);
-
-        StatusEntity status = statusService.findById(editProduct.getStatus())
-                .orElseThrow(StatusNotFoundException::new);
-
-        if(myproduct.isPresent()) {
-            ProductEntity existProduct = myproduct.get();
-
-            if(existProduct.getUser().getId().equals(user.getId())) {
-                existProduct.setName(editProduct.getName());
-                existProduct.setDescription(editProduct.getDescription());
-                existProduct.setPrice(editProduct.getPrice());
-                existProduct.setStatus(status);
-                existProduct.setCategory(category);
-                existProduct.setUrlImage(editProduct.getUrlImage());
-
-                return this.repositorio.save(existProduct);
-            } else {
-                throw new ProductUnauthorizedAccessException(id);
-            }
-        } else {
-            throw new ProductoNotFoundException(id);
-        }
-
-    }
+//    public ProductEntity edit(ProductRequestDTO editProduct, UserEntity user, Long id) {
+//        // Comprobar que el producto pertenece al usuario
+//
+//        Optional<ProductEntity> myproduct = this.repositorio.findById(id);
+//
+//        CategoryEntity category = categoryService.findById(editProduct.getCategory())
+//                .orElseThrow(CategoryNotFoundException::new);
+//
+//        StatusEntity status = statusService.findById(editProduct.getStatus())
+//                .orElseThrow(StatusNotFoundException::new);
+//
+//        if(myproduct.isPresent()) {
+//            ProductEntity existProduct = myproduct.get();
+//
+//            if(existProduct.getUser().getId().equals(user.getId())) {
+//                existProduct.setName(editProduct.getName());
+//                existProduct.setDescription(editProduct.getDescription());
+//                existProduct.setPrice(editProduct.getPrice());
+//                existProduct.setStatus(status);
+//                existProduct.setCategory(category);
+//                existProduct.setUrlImage(editProduct.getUrlImage());
+//
+//                return this.repositorio.save(existProduct);
+//            } else {
+//                throw new ProductUnauthorizedAccessException(id);
+//            }
+//        } else {
+//            throw new ProductoNotFoundException(id);
+//        }
+//
+//    }
 
     public Page<ProductEntity> findByCategoryNotUser(Long categoryId, UserEntity user, Pageable pageable) {
         CategoryEntity category = categoryService.findById(categoryId)

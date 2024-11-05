@@ -28,4 +28,6 @@ public class AppConstants {
 
     public static final String TEL_REGEXP = "^$|^((\\+34)?[ -]?[0-9]{9})?$";
     public static final String TEL_REGEXP_MSG = "Introduce un número de teléfono válido en España";
+
+    public static final String PATH_IMG = "images/";
 }
