@@ -2,6 +2,8 @@ package com.mercaline.users.services;
 
 import java.util.Optional;
 
+import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +76,8 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 		try {
 			newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 			return this.userEntityRepository.save(newUser);
+		} catch (DataIntegrityViolationException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new DatabaseConnectionException();
 		}

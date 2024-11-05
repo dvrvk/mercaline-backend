@@ -75,7 +75,8 @@ public class UserController {
 	 * @return the response entity
 	 */
 	@PutMapping("/update")
-	public ResponseEntity<ResponseUserCompleteDTO> updateUser(@Validated @RequestBody RequestUserUpdateDataDTO user) {
+	public ResponseEntity<ResponseUserCompleteDTO> updateUser(@Validated @RequestBody RequestUserUpdateDataDTO user, @AuthenticationPrincipal UserEntity userAuth) {
+		user.setId(userAuth.getId());
 		return ResponseEntity
 				.ok(userDTOConverter.convertToResponseUserCompleteDTO(this.userEntityService.updateUser(user)));
 	}
