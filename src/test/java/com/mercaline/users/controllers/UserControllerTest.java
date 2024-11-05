@@ -1,6 +1,6 @@
 package com.mercaline.users.controllers;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -82,9 +82,10 @@ class UserControllerTest {
 	 */
 	@Test
 	void testUpdateUser() throws Exception {
-		RequestUserUpdateDataDTO user = RequestUserUpdateDataDTO.builder().id(1L).username("UsuarioTest").name("Test")
+		RequestUserUpdateDataDTO user = RequestUserUpdateDataDTO.builder().username("UsuarioTest").name("Test")
 				.lastname("Test Test").email("test@domain.com").build();
-		assertNotNull(userController.updateUser(user));
+		UserEntity userAuth = UserEntity.builder().id(1L).build();
+		assertNotNull(userController.updateUser(user, userAuth));
 		Mockito.verify(this.userEntityService, Mockito.times(1)).updateUser(user);
 	}
 
