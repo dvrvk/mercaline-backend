@@ -72,7 +72,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
         // Guardar imagen en el servidor
         try {
             // Crear carpeta de fotografias
-            Path imagePath = Paths.get(PATH_IMG.concat(user.getId().toString()));
+            Path imagePath = Paths.get(PATH_IMG.concat("/" + user.getId().toString()));
             if(!Files.exists(imagePath)) {
                 Files.createDirectories(imagePath);
             }
@@ -88,7 +88,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
                     .name(newProduct.getName())
                     .description(newProduct.getDescription())
                     .price(newProduct.getPrice())
-                    .urlImage(imagePath.toString().concat(newFileName))
+                    .urlImage(copyLocation.toString())
                     .status(status)
                     .category(category)
                     .user(user)
@@ -97,6 +97,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
             return this.repositorio.save(product);
 
         } catch (Exception e) {
+            // TODO - REVISAR LOS ERRORES QUE DEVUELVE - TIRARLOS AL CONTROLADOR
             System.out.println(e.getMessage());
         }
 
