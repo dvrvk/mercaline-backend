@@ -15,13 +15,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,32 +38,8 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
     private final CategoryService categoryService;
     private final StatusService statusService;
 
-    // TODO - SUBIR FOTO
-//    public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) {
-//
-//        // Buscar si existe status y category
-//        CategoryEntity category = categoryService.findById(newProduct.getCategory())
-//                .orElseThrow(CategoryNotFoundException::new);
-//
-//        StatusEntity status = statusService.findById(newProduct.getStatus())
-//                .orElseThrow(StatusNotFoundException::new);
-//
-//        // Construir productEntity
-//        ProductEntity product = ProductEntity
-//                .builder()
-//                .name(newProduct.getName())
-//                .description(newProduct.getDescription())
-//                .price(newProduct.getPrice())
-//                .urlImage(newProduct.getUrlImage())
-//                .status(status)
-//                .category(category)
-//                .user(user)
-//                .build();
-//
-//        return this.repositorio.save(product);
-//    }
-
-    public ProductEntity create2(ProductRequestDTO newProduct, UserEntity user) {
+    @Transactional(rollbackFor = {IOException.class, RuntimeException.class})
+    public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) throws IOException {
 
         // Buscar si existe category
         CategoryEntity category = categoryService.findById(newProduct.getCategory())
@@ -70,38 +49,21 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
                 .orElseThrow(StatusNotFoundException::new);
 
         // Guardar imagen en el servidor
-        try {
-            // Crear carpeta de fotografias
-            Path imagePath = Paths.get(PATH_IMG.concat("/" + user.getId().toString()));
-            if(!Files.exists(imagePath)) {
-                Files.createDirectories(imagePath);
-            }
+        String imagesPath = saveImages(newProduct.getUrlImage(), user);
 
-            String newFileName = "image_" + user.getUsername() + "_" + System.currentTimeMillis() + ".jpg";
-            Path copyLocation = imagePath.resolve(newFileName);
-
-            Files.copy(newProduct.getUrlImage().getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            // Construir productEntity
-            ProductEntity product = ProductEntity
-                    .builder()
-                    .name(newProduct.getName())
-                    .description(newProduct.getDescription())
-                    .price(newProduct.getPrice())
-                    .urlImage(copyLocation.toString())
-                    .status(status)
-                    .category(category)
-                    .user(user)
-                    .build();
+        // Construir productEntity
+        ProductEntity product = ProductEntity
+                .builder()
+                .name(newProduct.getName())
+                .description(newProduct.getDescription())
+                .price(newProduct.getPrice())
+                .urlImage(imagesPath)
+                .status(status)
+                .category(category)
+                .user(user)
+                .build();
 
             return this.repositorio.save(product);
-
-        } catch (Exception e) {
-            // TODO - REVISAR LOS ERRORES QUE DEVUELVE - TIRARLOS AL CONTROLADOR
-            System.out.println(e.getMessage());
-        }
-
-        return null;
 
     }
 
@@ -219,6 +181,52 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
         } else {
             throw new ProductoNotFoundException(product.getId());
         }
+    }
+
+    /**
+     * Helper method to save images on the server.
+     *
+     * @param images List of image files to save.
+     * @param user User to whom the images belong.
+     * @return String with paths of saved images, separated by ';'.
+     */
+    private String saveImages(MultipartFile[] images, UserEntity user) throws IOException {
+
+        // Create the directory for the user's images
+        Path userImageDir = Paths.get(PATH_IMG.concat("/" + user.getId().toString()));
+        if (!Files.exists(userImageDir)) {
+            Files.createDirectories(userImageDir);
+        }
+
+        // StringBuilder to concatenate image paths
+        StringBuilder imagePaths = new StringBuilder();
+        // Temporal images save
+        List<Path> savedImages = new ArrayList<>();
+        try {
+
+            for (MultipartFile image : images) {
+                // Generate unique name for each image
+                String newFileName = "image_" + user.getUsername() + "_" + System.currentTimeMillis() + ".jpg";
+                Path imagePath = userImageDir.resolve(newFileName);
+
+                // Save the image at the specified path
+                Files.copy(image.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
+
+                // Append the path to the StringBuilder and Temporal Array
+                savedImages.add(imagePath);
+                imagePaths.append(imagePath.toString()).append(";");
+            }
+
+        } catch (IOException e) {
+            // En caso de error, eliminar imágenes ya guardadas
+            for (Path imagePath : savedImages) {
+                Files.deleteIfExists(imagePath);
+            }
+            throw new IOException("Error al guardar las imágenes. Se ha revertido la operación.", e);
+        }
+
+        // Remove the last ";" and return concatenated paths
+        return imagePaths.length() > 0 ? imagePaths.substring(0, imagePaths.length() - 1) : "";
     }
 
 }

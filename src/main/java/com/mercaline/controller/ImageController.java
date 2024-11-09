@@ -1,6 +1,7 @@
 package com.mercaline.controller;
 
 import com.mercaline.dto.ProductResponseSummaryDTO;
+import com.mercaline.error.exceptions.ImageNotFound;
 import com.mercaline.error.exceptions.ProductoNotFoundException;
 import com.mercaline.model.ProductEntity;
 import com.mercaline.service.ProductService;
@@ -35,11 +36,11 @@ public class ImageController {
     public ResponseEntity<?> findMain(@PathVariable Long id) {
 
         ProductEntity product = this.productService.findById(id).orElseThrow(ProductoNotFoundException::new);
-
+        String[] imagesUrls = product.getUrlImage().split(";");
         // Para evitar que la imagenes de prueba fallen
-        if(!isUrl(product.getUrlImage())) {
+        if(!isUrl(imagesUrls[0])) {
             try {
-                Path path = Paths.get(product.getUrlImage());
+                Path path = Paths.get(imagesUrls[0]);
                 byte[] imageBytes = Files.readAllBytes(path);
 
                 // Convertir los bytes en un recurso
@@ -53,10 +54,11 @@ public class ImageController {
                 return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                String imageName = Paths.get(imagesUrls[0]).getFileName().toString();
+                throw new ImageNotFound(imageName);
             }
         } else {
-            return ResponseEntity.ok(product.getUrlImage());
+            return ResponseEntity.ok(imagesUrls[0]);
         }
 
     }

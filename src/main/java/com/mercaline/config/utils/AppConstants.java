@@ -30,4 +30,40 @@ public class AppConstants {
     public static final String TEL_REGEXP_MSG = "Introduce un número de teléfono válido en España";
 
     public static final String PATH_IMG = "images/";
+
+    // Constantes validación producto
+    public static final String NAMEP_NOTBLANK_MSG = "El nombre es obligatorio";
+    public static final int NAMEP_MIN_SIZE = 2;
+    public static final int NAMEP_MAX_SIZE = 100;
+    public static final String NAMEP_SIZE_MSG = "El tamaño debe estar entre 2 y 100 caracteres";
+
+    public static final String DESCRIPTIONP_NOTBLANK_MSG = "La descripción es obligatoria";
+    public static final int DESCRIPTIONP_MIN_SIZE = 3;
+    public static final int DESCRIPTIONP_MAX_SIZE = 1000;
+    public static final String DESCRIPTIONP_SIZE_MSG = "El tamaño debe estar entre 2 y 100 caracteres";
+
+    public static final String PRICE_NOT_NULL_MSG = "El precio es obligatorio";
+    public static final String PRICE_DIGITS_MSG = "El precio debe ser un número válido con hasta 10 dígitos enteros y 2 decimales";
+    public static final String PRICE_MIN_MSG = "El precio debe ser mayor que 0";
+    public static final int PRICE_DIGITS_INTEGER = 20;
+    public static final int PRICE_DIGITS_FRACTION = 2;
+    public static final String PRICE_DECIMAL_MIN = "0.0";
+    public static final boolean PRICE_DECIMAL_MIN_INCLUSIVE = false;
+
+    public static final String STATUSP_MSG = "El estado del producto es obligatorio";
+    public static final int STATUSP_MIN = 1;
+    public static final String STATUSP_MIN_MSG = "El estado debe ser un número mayor que 0";
+    public static final int STATUSP_DIGITS_INTEGER = 19;
+    public static final int STATUSP_DIGITS_FRACTION = 0;
+    public static final String STATUS_DIGITS_MSG = "El estado debe ser un número entero sin decimales";
+
+    public static final String CATEGORY_NOT_NULL = "La categoría es obligatoria";
+    public static final int CATEGORY_DIGITS_INTEGER = 3;
+    public static final int CATEGORY_DIGITS_FRACTION = 0;
+    public static final String CATEGORY_DECIMAL_MIN = "0.0";
+    public static final boolean CATEGORY_DECIMAL_MIN_INCLUSIVE = false;
+
+    public static final int PROD_IMG_SIZE_MIN = 1;
+    public static final int PROD_IMG_SIZE_MAX = 5;
+    public static final String PROD_IMG_SIZE_MSG = "Debes subir entre 1 y 5 imágenes";
 }

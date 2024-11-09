@@ -2,10 +2,11 @@ package com.mercaline.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
-import org.hibernate.validator.constraints.URL;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+
+import static com.mercaline.config.utils.AppConstants.*;
 
 @Getter
 @Setter
@@ -14,29 +15,31 @@ import java.math.BigDecimal;
 @Builder
 public class ProductRequestDTO {
 
-    @NotBlank(message = "El nombre es obligatorio")
-    @Size(min = 2, max = 100, message = "El tamaño debe estar entre 2 y 100 caracteres")
+    @NotBlank(message = NAMEP_NOTBLANK_MSG)
+    @Size(min = NAMEP_MIN_SIZE, max = NAMEP_MAX_SIZE, message = NAMEP_SIZE_MSG)
     private String name;
 
-    @NotBlank(message = "La descripción es obligatoria")
-    @Size(min = 3, max = 1000, message = "El tamaño debe estar entre 3 y 1000 caracteres")
+    @NotBlank(message = DESCRIPTIONP_NOTBLANK_MSG)
+    @Size(min = DESCRIPTIONP_MIN_SIZE, max = DESCRIPTIONP_MAX_SIZE, message = DESCRIPTIONP_SIZE_MSG)
     private String description;
 
-    @NotNull(message = "El precio es obligatorio")
-    @Digits(integer = 20, fraction = 2, message = "El precio debe ser un número válido con hasta 10 dígitos enteros y 2 decimales")
-    @DecimalMin(value = "0.0", inclusive = false, message = "El precio debe ser mayor que 0")
+    @NotNull(message = PRICE_NOT_NULL_MSG)
+    @Digits(integer = PRICE_DIGITS_INTEGER, fraction = PRICE_DIGITS_FRACTION, message = PRICE_DIGITS_MSG)
+    @DecimalMin(value = PRICE_DECIMAL_MIN, inclusive = PRICE_DECIMAL_MIN_INCLUSIVE, message = PRICE_MIN_MSG)
     private BigDecimal price;
 
-    @NotNull(message = "El estado es obligatorio")
+    @NotNull(message = STATUSP_MSG)
+    @Min(value= STATUSP_MIN, message = STATUSP_MIN_MSG)
+    @Digits(integer = STATUSP_DIGITS_INTEGER, fraction = STATUSP_DIGITS_FRACTION, message = STATUS_DIGITS_MSG)
     private Long status;
 
 
-    @NotNull(message = "Es obligatorio subir una imagen")
-    private MultipartFile urlImage;
+    @Size(min = PROD_IMG_SIZE_MIN, max = PROD_IMG_SIZE_MAX, message = PROD_IMG_SIZE_MSG)
+    private MultipartFile[] urlImage;
 
-    @NotNull(message = "La categoría es obligatoria")
-    @Digits(integer=3, fraction=0)
-    @DecimalMin(value = "0.0", inclusive = false)
+    @NotNull(message = CATEGORY_NOT_NULL)
+    @Digits(integer = CATEGORY_DIGITS_INTEGER, fraction = CATEGORY_DIGITS_FRACTION)
+    @DecimalMin(value = CATEGORY_DECIMAL_MIN, inclusive = CATEGORY_DECIMAL_MIN_INCLUSIVE)
     private Long category;
 
 }

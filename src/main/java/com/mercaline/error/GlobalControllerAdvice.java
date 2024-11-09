@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     // Excepciones de producto
-    @ExceptionHandler({ProductoNotFoundException.class, CategoryNotFoundException.class, StatusNotFoundException.class})
+    @ExceptionHandler({ProductoNotFoundException.class, CategoryNotFoundException.class, StatusNotFoundException.class, ImageNotFound.class})
     public ResponseEntity<ApiError> handleNotFound(Exception ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
@@ -105,6 +105,11 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 
+    @ExceptionHandler(ImageStorageException.class)
+    public ResponseEntity<ApiError> handleImageStorageException(ImageStorageException ex) {
+        ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
+    }
 
 
 }
