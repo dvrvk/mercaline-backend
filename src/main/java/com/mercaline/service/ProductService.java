@@ -12,6 +12,7 @@ import com.mercaline.repository.ProductRepository;
 import com.mercaline.service.base.BaseService;
 import com.mercaline.users.Model.UserEntity;
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,6 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -209,9 +209,13 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
                 String newFileName = "image_" + user.getUsername() + "_" + System.currentTimeMillis() + ".jpg";
                 Path imagePath = userImageDir.resolve(newFileName);
 
-                // Save the image at the specified path
-                Files.copy(image.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-
+                // Transform and save the image at the specified path
+                Thumbnails.of(image.getInputStream())
+                        .size(800, 800)
+                        .outputFormat("jpg")
+                        .outputQuality(0.75)
+                        .toFile(imagePath.toFile());
+                
                 // Append the path to the StringBuilder and Temporal Array
                 savedImages.add(imagePath);
                 imagePaths.append(imagePath.toString()).append(";");
@@ -228,5 +232,6 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
         // Remove the last ";" and return concatenated paths
         return imagePaths.length() > 0 ? imagePaths.substring(0, imagePaths.length() - 1) : "";
     }
+
 
 }

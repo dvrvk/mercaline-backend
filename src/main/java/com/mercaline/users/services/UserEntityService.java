@@ -1,7 +1,13 @@
 package com.mercaline.users.services;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
+import com.mercaline.error.exceptions.DirectoryDeletionException;
+import com.mercaline.error.exceptions.FileDeletionException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +21,9 @@ import com.mercaline.users.dto.RequestUserUpdateDataDTO;
 import com.mercaline.users.repository.UserEntityRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.mercaline.config.utils.AppConstants.PATH_IMG;
 
 /**
  * The Class UserEntityService.
@@ -107,6 +116,33 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 			return this.userEntityRepository.save(existingUser);
 		} else {
 			throw new UserNotFoundException();
+		}
+	}
+
+	@Transactional
+	public void deleteUser(UserEntity user) {
+		this.delete(user);
+
+		// Delete user directory
+		Path userImageDir = Paths.get(PATH_IMG, user.getId().toString());
+		deleteDirectory(userImageDir);
+	}
+
+	private void deleteDirectory(Path dirPath) {
+		try {
+			if (Files.exists(dirPath)) {
+				Files.walk(dirPath)
+						.sorted((path1, path2) -> path2.compareTo(path1)) // Ordena en orden inverso para borrar archivos primero
+						.forEach(path -> {
+							try {
+								Files.delete(path);
+							} catch (IOException e) {
+								throw new FileDeletionException();
+							}
+						});
+			}
+		} catch (IOException e) {
+			throw new DirectoryDeletionException();
 		}
 	}
 }

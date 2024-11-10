@@ -100,7 +100,7 @@ public class UserController {
 	 */
 	@DeleteMapping("/delete")
 	public ResponseEntity<?> deleteUser(@AuthenticationPrincipal UserEntity user) {
-		this.userEntityService.delete(user);
+		this.userEntityService.deleteUser(user);
 		return ResponseEntity.ok().build();
 	}
 
