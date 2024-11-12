@@ -85,7 +85,9 @@ public class JwtAuthFilter extends OncePerRequestFilter{
         response.setStatus(status.value());
         response.setContentType("application/json");
         String fechaString = (LocalDateTime.now()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss"));
-        response.getWriter().write("{\"status\": \"" + status.value() + "\" , \"fecha\": \"" + fechaString + "\", \"message\": \"" + ex.getMessage() + "\"}");
+        //response.getWriter().write("{\"status\": \"" + status.value() + "\" , \"fecha\": \"" + fechaString + "\", \"message\": \"" + ex.getMessage() + "\"}");
+        response.getWriter().write("{\"status\": \"" + status.value() + "\" , \"fecha\": \"" + fechaString + "\", \"mensaje\": \"" + ex.getMessage() + "\"}");
+
     }
 
 

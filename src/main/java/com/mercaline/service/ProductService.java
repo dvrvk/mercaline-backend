@@ -12,13 +12,23 @@ import com.mercaline.repository.ProductRepository;
 import com.mercaline.service.base.BaseService;
 import com.mercaline.users.Model.UserEntity;
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.mercaline.config.utils.AppConstants.PATH_IMG;
 
 @Service
 @RequiredArgsConstructor
@@ -28,15 +38,18 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
     private final CategoryService categoryService;
     private final StatusService statusService;
 
-    // TODO - SUBIR FOTO
-    public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) {
+    @Transactional(rollbackFor = {IOException.class, RuntimeException.class})
+    public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) throws IOException {
 
-        // Buscar si existe status y category
+        // Buscar si existe category
         CategoryEntity category = categoryService.findById(newProduct.getCategory())
                 .orElseThrow(CategoryNotFoundException::new);
-
+        // Buscar si existe status
         StatusEntity status = statusService.findById(newProduct.getStatus())
                 .orElseThrow(StatusNotFoundException::new);
+
+        // Guardar imagen en el servidor
+        String imagesPath = saveImages(newProduct.getUrlImage(), user);
 
         // Construir productEntity
         ProductEntity product = ProductEntity
@@ -44,13 +57,14 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
                 .name(newProduct.getName())
                 .description(newProduct.getDescription())
                 .price(newProduct.getPrice())
-                .urlImage(newProduct.getUrlImage())
+                .urlImage(imagesPath)
                 .status(status)
                 .category(category)
                 .user(user)
                 .build();
 
-        return this.repositorio.save(product);
+            return this.repositorio.save(product);
+
     }
 
     public void delete(ProductEntity product, UserEntity user){
@@ -59,37 +73,37 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 
     }
 
-    public ProductEntity edit(ProductRequestDTO editProduct, UserEntity user, Long id) {
-        // Comprobar que el producto pertenece al usuario
-
-        Optional<ProductEntity> myproduct = this.repositorio.findById(id);
-
-        CategoryEntity category = categoryService.findById(editProduct.getCategory())
-                .orElseThrow(CategoryNotFoundException::new);
-
-        StatusEntity status = statusService.findById(editProduct.getStatus())
-                .orElseThrow(StatusNotFoundException::new);
-
-        if(myproduct.isPresent()) {
-            ProductEntity existProduct = myproduct.get();
-
-            if(existProduct.getUser().getId().equals(user.getId())) {
-                existProduct.setName(editProduct.getName());
-                existProduct.setDescription(editProduct.getDescription());
-                existProduct.setPrice(editProduct.getPrice());
-                existProduct.setStatus(status);
-                existProduct.setCategory(category);
-                existProduct.setUrlImage(editProduct.getUrlImage());
-
-                return this.repositorio.save(existProduct);
-            } else {
-                throw new ProductUnauthorizedAccessException(id);
-            }
-        } else {
-            throw new ProductoNotFoundException(id);
-        }
-
-    }
+//    public ProductEntity edit(ProductRequestDTO editProduct, UserEntity user, Long id) {
+//        // Comprobar que el producto pertenece al usuario
+//
+//        Optional<ProductEntity> myproduct = this.repositorio.findById(id);
+//
+//        CategoryEntity category = categoryService.findById(editProduct.getCategory())
+//                .orElseThrow(CategoryNotFoundException::new);
+//
+//        StatusEntity status = statusService.findById(editProduct.getStatus())
+//                .orElseThrow(StatusNotFoundException::new);
+//
+//        if(myproduct.isPresent()) {
+//            ProductEntity existProduct = myproduct.get();
+//
+//            if(existProduct.getUser().getId().equals(user.getId())) {
+//                existProduct.setName(editProduct.getName());
+//                existProduct.setDescription(editProduct.getDescription());
+//                existProduct.setPrice(editProduct.getPrice());
+//                existProduct.setStatus(status);
+//                existProduct.setCategory(category);
+//                existProduct.setUrlImage(editProduct.getUrlImage());
+//
+//                return this.repositorio.save(existProduct);
+//            } else {
+//                throw new ProductUnauthorizedAccessException(id);
+//            }
+//        } else {
+//            throw new ProductoNotFoundException(id);
+//        }
+//
+//    }
 
     public Page<ProductEntity> findByCategoryNotUser(Long categoryId, UserEntity user, Pageable pageable) {
         CategoryEntity category = categoryService.findById(categoryId)
@@ -168,5 +182,56 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
             throw new ProductoNotFoundException(product.getId());
         }
     }
+
+    /**
+     * Helper method to save images on the server.
+     *
+     * @param images List of image files to save.
+     * @param user User to whom the images belong.
+     * @return String with paths of saved images, separated by ';'.
+     */
+    private String saveImages(MultipartFile[] images, UserEntity user) throws IOException {
+
+        // Create the directory for the user's images
+        Path userImageDir = Paths.get(PATH_IMG.concat("/" + user.getId().toString()));
+        if (!Files.exists(userImageDir)) {
+            Files.createDirectories(userImageDir);
+        }
+
+        // StringBuilder to concatenate image paths
+        StringBuilder imagePaths = new StringBuilder();
+        // Temporal images save
+        List<Path> savedImages = new ArrayList<>();
+        try {
+
+            for (MultipartFile image : images) {
+                // Generate unique name for each image
+                String newFileName = "image_" + user.getUsername() + "_" + System.currentTimeMillis() + ".jpg";
+                Path imagePath = userImageDir.resolve(newFileName);
+
+                // Transform and save the image at the specified path
+                Thumbnails.of(image.getInputStream())
+                        .size(800, 800)
+                        .outputFormat("jpg")
+                        .outputQuality(0.75)
+                        .toFile(imagePath.toFile());
+                
+                // Append the path to the StringBuilder and Temporal Array
+                savedImages.add(imagePath);
+                imagePaths.append(imagePath.toString()).append(";");
+            }
+
+        } catch (IOException e) {
+            // En caso de error, eliminar imágenes ya guardadas
+            for (Path imagePath : savedImages) {
+                Files.deleteIfExists(imagePath);
+            }
+            throw new IOException("Error al guardar las imágenes. Se ha revertido la operación.", e);
+        }
+
+        // Remove the last ";" and return concatenated paths
+        return imagePaths.length() > 0 ? imagePaths.substring(0, imagePaths.length() - 1) : "";
+    }
+
 
 }
