@@ -1,18 +1,17 @@
 package com.mercaline.users.controllers;
 
+import com.mercaline.dto.ApiResponse;
+import com.mercaline.error.ApiError;
+import com.mercaline.users.dto.RequestChangePassword;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
@@ -25,6 +24,8 @@ import com.mercaline.users.dto.ResponseUserSummaryDTO;
 import com.mercaline.users.services.UserEntityService;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.mercaline.config.utils.AppConstants.*;
 
 /**
  * The Class UserController.
@@ -82,6 +83,27 @@ public class UserController {
 	}
 
 	/**
+	 * Update password.
+	 *
+	 * @param requestChangePassword the current and new password
+	 * @return the response entity
+	 */
+	@PutMapping("/change-password")
+	public ResponseEntity<?> updatePassword(
+			@RequestBody RequestChangePassword requestChangePassword,
+			@AuthenticationPrincipal UserEntity user) {
+
+		if(this.userEntityService.changePassword(requestChangePassword.getPassword(), requestChangePassword.getNewPassword(), user)) {
+			ApiResponse response = new ApiResponse(HttpStatus.OK, "Contraseña modificada correctamente.");
+			return ResponseEntity.ok(response);
+		} else {
+			ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "El servidor no pudo cambiar la contraseña, intenteló más tarde.");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
+		}
+
+	}
+
+	/**
 	 * Me.
 	 *
 	 * @param user the user
@@ -92,14 +114,20 @@ public class UserController {
 		return ResponseEntity.ok(userDTOConverter.convertToResponseUserCompleteDTO(user));
 	}
 
+
 	/**
 	 * Delete user.
 	 *
+	 * @param password the user password
 	 * @param user the user
 	 * @return the response entity
 	 */
-	@DeleteMapping("/delete")
-	public ResponseEntity<?> deleteUser(@AuthenticationPrincipal UserEntity user) {
+	@PostMapping("/delete")
+	public ResponseEntity<?> deleteUser(@RequestParam("password") String password,
+										  @AuthenticationPrincipal UserEntity user) {
+
+		this.userEntityService.passwordMatch(password, user.getPassword());
+
 		this.userEntityService.deleteUser(user);
 		return ResponseEntity.ok().build();
 	}
