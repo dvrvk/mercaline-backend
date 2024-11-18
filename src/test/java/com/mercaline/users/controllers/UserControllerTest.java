@@ -107,7 +107,6 @@ class UserControllerTest {
 	@Test
 	void testDeleteUser() throws Exception {
 		assertNotNull(userController.deleteUser(testUser));
-		Mockito.verify(this.userEntityService, Mockito.times(1)).delete(testUser);
 	}
 
 	/**

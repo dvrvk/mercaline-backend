@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercaline.dto.FavoriteListsResponseDTO;
 import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.dto.converter.UserDTOConverter;
+import com.mercaline.service.ListFavoriteService;
 import com.mercaline.service.ProductService;
 import com.mercaline.users.Model.UserEntity;
 import com.mercaline.users.dto.RequestUserUpdateDataDTO;
@@ -35,10 +37,10 @@ import lombok.RequiredArgsConstructor;
 /**
  * Instantiates a new user controller.
  *
- * @param userEntityService the user entity service
- * @param productService the product service
+ * @param userEntityService    the user entity service
+ * @param productService       the product service
  * @param productoDTOConverter the producto DTO converter
- * @param userDTOConverter the user DTO converter
+ * @param userDTOConverter     the user DTO converter
  */
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:4200")
@@ -46,16 +48,19 @@ public class UserController {
 
 	/** The user entity service. */
 	private final UserEntityService userEntityService;
-	
+
 	/** The product service. */
 	private final ProductService productService;
-	
+
+	/** The list favorite service. */
+	private final ListFavoriteService listFavoriteService;
+
 	/** The producto DTO converter. */
 	private final ProductoDTOConverter productoDTOConverter;
-	
+
 	/** The user DTO converter. */
 	private final UserDTOConverter userDTOConverter;
-
+	
 	/**
 	 * Creates the user.
 	 *
@@ -75,7 +80,8 @@ public class UserController {
 	 * @return the response entity
 	 */
 	@PutMapping("/update")
-	public ResponseEntity<ResponseUserCompleteDTO> updateUser(@Validated @RequestBody RequestUserUpdateDataDTO user, @AuthenticationPrincipal UserEntity userAuth) {
+	public ResponseEntity<ResponseUserCompleteDTO> updateUser(@Validated @RequestBody RequestUserUpdateDataDTO user,
+			@AuthenticationPrincipal UserEntity userAuth) {
 		user.setId(userAuth.getId());
 		return ResponseEntity
 				.ok(userDTOConverter.convertToResponseUserCompleteDTO(this.userEntityService.updateUser(user)));
@@ -107,7 +113,7 @@ public class UserController {
 	/**
 	 * My products.
 	 *
-	 * @param user the user
+	 * @param user     the user
 	 * @param pageable the pageable
 	 * @return the response entity
 	 */
@@ -122,7 +128,7 @@ public class UserController {
 	/**
 	 * Other products.
 	 *
-	 * @param user the user
+	 * @param user     the user
 	 * @param pageable the pageable
 	 * @return the response entity
 	 */
@@ -133,5 +139,17 @@ public class UserController {
 				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
 		return ResponseEntity.ok().body(products);
 	}
-
+	
+	/**
+	 * Favorites lists products.
+	 *
+	 * @param user     the user
+	 * @param pageable the pageable
+	 * @return the response entity
+	 */
+	@GetMapping("/favorite-product-lists")
+	public ResponseEntity<Page<FavoriteListsResponseDTO>> favoritesProducts(@AuthenticationPrincipal UserEntity user,
+			Pageable pageable) {
+		return ResponseEntity.ok().body(this.listFavoriteService.findByUser(user, pageable));
+	}
 }

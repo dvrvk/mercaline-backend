@@ -8,8 +8,18 @@ import com.mercaline.users.dto.ResponseUserSummaryDTO;
 import com.mercaline.users.dto.ResponseUserProductDTO;
 import org.springframework.stereotype.Component;
 
+/**
+ * The Class ProductoDTOConverter.
+ */
 @Component
 public class ProductoDTOConverter {
+	
+    /**
+     * Convert to product DTO.
+     *
+     * @param product the product
+     * @return the product response DTO
+     */
     public ProductResponseDTO convertToProductDTO(ProductEntity product) {
         return ProductResponseDTO.builder()
                 .id(product.getId())
@@ -30,6 +40,13 @@ public class ProductoDTOConverter {
                 .build();
     }
 
+    /**
+     * Convert to get product.
+     *
+     * @param product the product
+     * @param user the user
+     * @return the product response summary DTO
+     */
     public ProductResponseSummaryDTO convertToGetProduct(ProductEntity product, UserEntity user) {
         ResponseUserProductDTO userDTO = ResponseUserProductDTO.builder()
                 .id(user.getId())

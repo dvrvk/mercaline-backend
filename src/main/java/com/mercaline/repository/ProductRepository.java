@@ -15,11 +15,12 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
+	
     Page<ProductEntity> findByUser(UserEntity user, Pageable pageable);
 
     Page<ProductEntity> findByUserNot(UserEntity user, Pageable pageable);
 
-    Page<ProductEntity> findByUserNotAndCategory(UserEntity user , CategoryEntity category, Pageable pageable);
+    Page<ProductEntity> findByUserNotAndCategory(UserEntity user, CategoryEntity category, Pageable pageable);
 
     @Query("SELECT p FROM ProductEntity p WHERE " +
             "(:category IS NULL OR p.category.id = :category) AND " +

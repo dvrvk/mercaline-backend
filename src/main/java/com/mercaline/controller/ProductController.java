@@ -37,79 +37,73 @@ import static com.mercaline.config.utils.AppConstants.*;
 @Validated
 public class ProductController {
 
-    private final ProductService productService;
-    private final ProductoDTOConverter productoDTOConverter;
-    private final CategoryService categoryService;
-    private final StatusService statusService;
+	private final ProductService productService;
+	private final ProductoDTOConverter productoDTOConverter;
+	private final CategoryService categoryService;
+	private final StatusService statusService;
 
-    // Todos los productos
-    @GetMapping
-    public ResponseEntity<Page<ProductResponseSummaryDTO>> findAll(Pageable pageable) {
-        Page<ProductResponseSummaryDTO> products = (this.productService.findAll(pageable))
-                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
-        return ResponseEntity.ok().body(products);
-    }
+	// Todos los productos
+	@GetMapping
+	public ResponseEntity<Page<ProductResponseSummaryDTO>> findAll(Pageable pageable) {
+		Page<ProductResponseSummaryDTO> products = (this.productService.findAll(pageable))
+				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
+		return ResponseEntity.ok().body(products);
+	}
 
-    // Un poducto determinado por id
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
-        return ResponseEntity.ok().body((this.productService.findById(id))
-                .map(this.productoDTOConverter::convertToProductDTO)
-                .orElseThrow(() -> new ProductoNotFoundException(id)));
-    }
+	// Un poducto determinado por id
+	@GetMapping("/{id}")
+	public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
+		return ResponseEntity.ok()
+				.body((this.productService.findById(id)).map(this.productoDTOConverter::convertToProductDTO)
+						.orElseThrow(() -> new ProductoNotFoundException(id)));
+	}
 
-    // Todas las categorias
-    @GetMapping("/categories")
-    public ResponseEntity<Page<CategoryEntity>> findAllCategoriesPageable(Pageable pageable) {
-        return ResponseEntity.ok().body(this.categoryService.findAll(pageable));
-    }
+	// Todas las categorias
+	@GetMapping("/categories")
+	public ResponseEntity<Page<CategoryEntity>> findAllCategoriesPageable(Pageable pageable) {
+		return ResponseEntity.ok().body(this.categoryService.findAll(pageable));
+	}
 
-    @GetMapping("/category/{id}")
-    public ResponseEntity<Page<ProductResponseSummaryDTO>> findAllCategoriesPageable(
-            @PathVariable Long id,
-            @AuthenticationPrincipal UserEntity user,
-            Pageable pageable) {
-        Page<ProductResponseSummaryDTO> products = (this.productService.findByCategoryNotUser(id, user, pageable))
-                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
-        return ResponseEntity.ok().body(products);
-    }
+	@GetMapping("/category/{id}")
+	public ResponseEntity<Page<ProductResponseSummaryDTO>> findAllCategoriesPageable(@PathVariable Long id,
+			@AuthenticationPrincipal UserEntity user, Pageable pageable) {
+		Page<ProductResponseSummaryDTO> products = (this.productService.findByCategoryNotUser(id, user, pageable))
+				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
+		return ResponseEntity.ok().body(products);
+	}
 
-    // Filtrar productos de otros usuarios por category, List<status>  - BORRAR
-    @GetMapping("/filter")
-    public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts(
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) List<Long> status,
-            @AuthenticationPrincipal UserEntity user,
-            Pageable pageable) {
+	// Filtrar productos de otros usuarios por category, List<status> - BORRAR
+	@GetMapping("/filter")
+	public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts(
+			@RequestParam(required = false) Long categoryId, @RequestParam(required = false) List<Long> status,
+			@AuthenticationPrincipal UserEntity user, Pageable pageable) {
 
-         Page<ProductResponseSummaryDTO> products = this.productService.filterProducts(categoryId, status, user, pageable)
-                 .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
-         return ResponseEntity.ok().body(products);
-    }
+		Page<ProductResponseSummaryDTO> products = this.productService
+				.filterProducts(categoryId, status, user, pageable)
+				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
+		return ResponseEntity.ok().body(products);
+	}
 
-    // Filtrar productos
-    @GetMapping("/filter2")
-    public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts2(
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) List<Long> status,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice,
-            @AuthenticationPrincipal UserEntity user,
-            Pageable pageable) {
+	// Filtrar productos
+	@GetMapping("/filter2")
+	public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts2(
+			@RequestParam(required = false) Long categoryId, @RequestParam(required = false) List<Long> status,
+			@RequestParam(required = false) BigDecimal minPrice, @RequestParam(required = false) BigDecimal maxPrice,
+			@AuthenticationPrincipal UserEntity user, Pageable pageable) {
 
-        Page<ProductResponseSummaryDTO> products = this.productService.filterProducts2(categoryId, status, user, minPrice, maxPrice, pageable)
-                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
-        return ResponseEntity.ok().body(products);
-    }
+		Page<ProductResponseSummaryDTO> products = this.productService
+				.filterProducts2(categoryId, status, user, minPrice, maxPrice, pageable)
+				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
+		return ResponseEntity.ok().body(products);
+	}
 
-    @GetMapping("/status")
-    public ResponseEntity<List<StatusEntity>> findAllStatus() {
-        return ResponseEntity.ok().body(this.statusService.findAll());
-    }
+	@GetMapping("/status")
+	public ResponseEntity<List<StatusEntity>> findAllStatus() {
+		return ResponseEntity.ok().body(this.statusService.findAll());
+	}
 
-
-    @PostMapping("/create")
-    public ResponseEntity<ProductResponseSummaryDTO> newProduct(
+	@PostMapping("/create")
+	public ResponseEntity<ProductResponseSummaryDTO> newProduct(
             @NotBlank(message = NAMEP_NOTBLANK_MSG)
             @Size(min = NAMEP_MIN_SIZE, max = NAMEP_MAX_SIZE, message = NAMEP_SIZE_MSG)
             @RequestParam("name") String name,
@@ -131,22 +125,17 @@ public class ProductController {
             @Size(min = PROD_IMG_SIZE_MIN, max = PROD_IMG_SIZE_MAX, message = PROD_IMG_SIZE_MSG)
             @RequestParam("images") MultipartFile[] images,
             @AuthenticationPrincipal UserEntity user) {
-        ProductRequestDTO newProduct = ProductRequestDTO.builder()
-                .name(name)
-                .description(description)
-                .price(price)
-                .status(status)
-                .category(category)
-                .urlImage(images)
-                .build();
-        try {
-            ProductResponseSummaryDTO result = productoDTOConverter.convertToGetProduct(this.productService.create(newProduct, user), user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(result);
-        } catch (IOException e) {
-            throw new ImageStorageException();
-        }
+		ProductRequestDTO newProduct = ProductRequestDTO.builder().name(name).description(description).price(price)
+				.status(status).category(category).urlImage(images).build();
+		try {
+			ProductResponseSummaryDTO result = productoDTOConverter
+					.convertToGetProduct(this.productService.create(newProduct, user), user);
+			return ResponseEntity.status(HttpStatus.CREATED).body(result);
+		} catch (IOException e) {
+			throw new ImageStorageException();
+		}
 
-    }
+	}
 
 //    @PutMapping("/update/{id}")
 //    public ResponseEntity<ProductResponseSummaryDTO> updateProduct(@Valid @RequestBody ProductRequestDTO updateProduct,
@@ -155,13 +144,12 @@ public class ProductController {
 //        return ResponseEntity.ok().body(productoDTOConverter.convertToGetProduct(product, user));
 //    }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
-        ProductEntity productDelete = this.productService.findById(id)
-                .orElseThrow(() -> new ProductoNotFoundException(id));
-        productService.delete(productDelete, user);
-        return ResponseEntity.noContent().build();
-    }
-
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
+		ProductEntity productDelete = this.productService.findById(id)
+				.orElseThrow(() -> new ProductoNotFoundException(id));
+		productService.delete(productDelete, user);
+		return ResponseEntity.noContent().build();
+	}
 
 }
