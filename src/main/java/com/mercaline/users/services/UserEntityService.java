@@ -31,14 +31,14 @@ import static com.mercaline.config.utils.AppConstants.PATH_IMG;
  * Instantiates a new user entity service.
  *
  * @param userEntityRepository the user entity repository
- * @param passwordEncoder the password encoder
+ * @param passwordEncoder      the password encoder
  */
 @RequiredArgsConstructor
 public class UserEntityService extends BaseService<UserEntity, Long, UserEntityRepository> {
 
 	/** The user entity repository. */
 	private final UserEntityRepository userEntityRepository;
-	
+
 	/** The password encoder. */
 	private final PasswordEncoder passwordEncoder;
 
@@ -48,17 +48,11 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 	 * @param id the id
 	 * @return the user
 	 */
-	public Optional<UserEntity> getUser(Long id) {
-		Optional<UserEntity> optionalUser = null;
+	public UserEntity getUser(Long id) {
 		try {
-			optionalUser = this.userEntityRepository.findById(id);
+			return this.userEntityRepository.findById(id).orElseThrow(UserNotFoundException::new);
 		} catch (Exception e) {
 			throw new DatabaseConnectionException();
-		}
-		if (optionalUser.isPresent()) {
-			return this.userEntityRepository.findById(id);
-		} else {
-			throw new UserNotFoundException();
 		}
 	}
 
@@ -146,8 +140,8 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 	private void deleteDirectory(Path dirPath) {
 		try {
 			if (Files.exists(dirPath)) {
-				Files.walk(dirPath)
-						.sorted((path1, path2) -> path2.compareTo(path1)) // Ordena en orden inverso para borrar archivos primero
+				Files.walk(dirPath).sorted((path1, path2) -> path2.compareTo(path1)) // Ordena en orden inverso para
+																						// borrar archivos primero
 						.forEach(path -> {
 							try {
 								Files.delete(path);

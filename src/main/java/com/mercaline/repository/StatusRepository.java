@@ -1,6 +1,5 @@
 package com.mercaline.repository;
 
-
 import com.mercaline.model.StatusEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

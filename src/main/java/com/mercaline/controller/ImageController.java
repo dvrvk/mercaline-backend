@@ -28,38 +28,39 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class ImageController {
 
-    private final ProductService productService;
+	private final ProductService productService;
 
-    @GetMapping("/main/{id}")
-    public ResponseEntity<?> findMain(@PathVariable Long id) {
+	@GetMapping("/main/{id}")
+	public ResponseEntity<?> findMain(@PathVariable Long id) {
 
-        ProductEntity product = this.productService.findById(id).orElseThrow(ProductoNotFoundException::new);
-        String[] imagesUrls = product.getUrlImage().split(";");
-        // Para evitar que la imagenes de prueba fallen
-        if(!isURL(imagesUrls[0])) {
-            try {
-                Path path = Paths.get(imagesUrls[0]);
-                byte[] imageBytes = Files.readAllBytes(path);
+		ProductEntity product = this.productService.findById(id).orElseThrow(ProductoNotFoundException::new);
+		String[] imagesUrls = product.getUrlImage().split(";");
+		// Para evitar que la imagenes de prueba fallen
+		if (!isUrl(imagesUrls[0])) {
+			try {
+				Path path = Paths.get(imagesUrls[0]);
+				byte[] imageBytes = Files.readAllBytes(path);
 
-                // Convertir los bytes en un recurso
-                ByteArrayResource resource = new ByteArrayResource(imageBytes);
+				// Convertir los bytes en un recurso
+				ByteArrayResource resource = new ByteArrayResource(imageBytes);
 
-                // Configurar los encabezados de la respuesta
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_JPEG);
-                headers.setContentLength(imageBytes.length);
+				// Configurar los encabezados de la respuesta
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.IMAGE_JPEG);
+				headers.setContentLength(imageBytes.length);
 
-                return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+				return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 
-            } catch (IOException e) {
-                String imageName = Paths.get(imagesUrls[0]).getFileName().toString();
-                throw new ImageNotFound(imageName);
-            }
-        } else {
-            return ResponseEntity.ok(imagesUrls[0]);
-        }
+			} catch (IOException e) {
+				String imageName = Paths.get(imagesUrls[0]).getFileName().toString();
+				throw new ImageNotFound(imageName);
+			}
+		} else {
+			return ResponseEntity.ok(imagesUrls[0]);
+		}
 
-    }
+	}
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findAll(@PathVariable Long id) {
@@ -93,7 +94,6 @@ public class ImageController {
         ApiResponse response = new ApiResponse(HttpStatus.OK, imageResources[0]);
         return ResponseEntity.ok(response);
 
-
     }
 
 
@@ -101,4 +101,5 @@ public class ImageController {
         String urlPattern = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$";
         return Pattern.matches(urlPattern, path);
     }
+
 }
