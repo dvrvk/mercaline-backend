@@ -1,28 +1,26 @@
 package com.mercaline.controller;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.regex.Pattern;
-
+import com.mercaline.dto.ApiResponse;
+import com.mercaline.error.exceptions.ImageNotFound;
+import com.mercaline.error.exceptions.ProductoNotFoundException;
+import com.mercaline.model.ProductEntity;
+import com.mercaline.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.mercaline.error.exceptions.ImageNotFound;
-import com.mercaline.error.exceptions.ProductoNotFoundException;
-import com.mercaline.model.ProductEntity;
-import com.mercaline.service.ProductService;
-
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -63,8 +61,45 @@ public class ImageController {
 
 	}
 
-	private boolean isUrl(String path) {
-		String urlPattern = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$";
-		return Pattern.matches(urlPattern, path);
-	}
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findAll(@PathVariable Long id) {
+
+        ProductEntity product = this.productService.findById(id)
+                .orElseThrow(ProductoNotFoundException::new);
+
+        String[] imageResources = product.getUrlImage().split(";");
+
+        // Evita que las imagenes de prueba fallen
+        if(!isURL(imageResources[0])) {
+            List<String> base64Images = new ArrayList<>();
+
+            for(String imageResource : imageResources) {
+                try {
+                    Path path = Paths.get(imageResource);
+                    byte[] imageBytes = Files.readAllBytes(path);
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                    base64Images.add(base64Image);
+                } catch (IOException e) {
+                    String imageName = Paths.get(imageResources[0]).getFileName().toString();
+                    throw new ImageNotFound(imageName);
+                }
+            }
+            // Convierte la lista de imágenes Base64 en una cadena separada por comas
+            String imagesString = String.join(",", base64Images);
+            ApiResponse response = new ApiResponse(HttpStatus.OK, imagesString);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
+        ApiResponse response = new ApiResponse(HttpStatus.OK, imageResources[0]);
+        return ResponseEntity.ok(response);
+
+    }
+
+
+    private boolean isURL(String path) {
+        String urlPattern = "^(https?|ftp)://[^\\s/$.?#].[^\\s]*$";
+        return Pattern.matches(urlPattern, path);
+    }
+
 }
