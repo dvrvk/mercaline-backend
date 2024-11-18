@@ -1,5 +1,8 @@
 package com.mercaline.users.controllers;
 
+import com.mercaline.dto.ApiResponse;
+import com.mercaline.error.ApiError;
+import com.mercaline.users.dto.RequestChangePassword;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

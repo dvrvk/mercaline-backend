@@ -1,14 +1,12 @@
 package com.mercaline.dto;
 
+
+import com.mercaline.users.dto.ResponseUserCompleteDTO;
+import com.mercaline.users.dto.ResponseUserSummaryDTO;
+import lombok.*;
+
 import java.math.BigDecimal;
 
-import com.mercaline.users.dto.ResponseUserSummaryDTO;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * Gets the vendedor.
@@ -33,15 +31,15 @@ import lombok.Setter;
  * Instantiates a new product response DTO.
  *
  * @param id the id
- * @param nombre the nombre
- * @param descripcion the descripcion
- * @param precio the precio
- * @param estado the estado
- * @param id_status the id status
- * @param imagenUrl the imagen url
- * @param categoria the categoria
+ * @param name the name
+ * @param description the description
+ * @param price the price
+ * @param status the status
+ * @param statusId the id status
+ * @param imageURL the image url
+ * @param caetgory the category
  * @param id_category the id category
- * @param vendedor the vendedor
+ * @param seller the seller
  */
 @AllArgsConstructor
 
@@ -56,30 +54,31 @@ public class ProductResponseDTO {
     /** The id. */
     private Long id;
 
-    /** The nombre. */
-    private String nombre;
-
-    /** The descripcion. */
-    private String descripcion;
-
-    /** The precio. */
-    private BigDecimal precio;
-
-    /** The estado. */
-    private String estado;
-
+     /** The name. */
+    private String name;
+  
+    /** The description. */
+    private String description;
+    
+    /** The price. */
+    private BigDecimal price;
+    
     /** The id status. */
-    private Long id_status;
-
+    private Long statusId;
+    
+    /** The status. */
+    private String status;
+    
     /** The imagen url. */
-    private String imagenUrl;
-
-    /** The categoria. */
-    private String categoria;
+    private String imageURL;
+    
+    /** The category. */
+    private String category;
 
     /** The id category. */
     private Long id_category;
 
-    /** The vendedor. */
-    private ResponseUserSummaryDTO vendedor;
+   /** The seller. */
+    private ResponseUserCompleteDTO seller;
+
 }
