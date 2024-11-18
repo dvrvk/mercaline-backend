@@ -85,13 +85,13 @@ public class UserEntity implements UserDetails {
     /** The name. */
     @Column(nullable = false, name = "name")
     @Size(max = NAME_MAX_SIZE, message = NAME_MAX_SIZE_MSG)
-    @NotBlank
+    @NotBlank(message = "El nombre es un campo obligatorio")
     @Pattern(regexp = NAME_REGEXP, message = NAME_REGEXP_MSG)
     private String name;
 
     /** The lastname. */
     @Column(nullable = false, name = "lastname")
-    @NotBlank
+    @NotBlank(message = "El apellido es un campo obligatorio")
     @Size(max = LASTNAME_MAX_SIZE, message = LASTNAME_MAX_SIZE_MSG)
     @Pattern(regexp = LASTNAME_REGEXP, message = LASTNAME_REGEXP_MSG)
     private String lastname;

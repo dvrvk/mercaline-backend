@@ -6,15 +6,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import com.mercaline.error.exceptions.DirectoryDeletionException;
-import com.mercaline.error.exceptions.FileDeletionException;
+import com.mercaline.error.exceptions.*;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mercaline.error.exceptions.DatabaseConnectionException;
-import com.mercaline.error.exceptions.UserNotFoundException;
 import com.mercaline.service.base.BaseService;
 import com.mercaline.users.Model.UserEntity;
 import com.mercaline.users.dto.RequestUserUpdateDataDTO;
@@ -113,6 +110,24 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 		}
 	}
 
+	public boolean changePassword(String password, String newPassword, UserEntity user) {
+
+	passwordMatch(password, user.getPassword());
+
+	UserEntity userUpdate = UserEntity.builder()
+			.id(user.getId())
+			.username(user.getUsername())
+			.name(user.getName())
+			.lastname(user.getLastname())
+			.password(passwordEncoder.encode(newPassword))
+			.email(user.getEmail())
+			.tel(user.getTel())
+			.build();
+
+		UserEntity savedUser = this.userEntityRepository.save(userUpdate);
+		return savedUser.getId().equals(userUpdate.getId());
+	}
+
 	@Transactional
 	public void deleteUser(UserEntity user) {
 		this.delete(user);
@@ -137,6 +152,12 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 			}
 		} catch (IOException e) {
 			throw new DirectoryDeletionException();
+		}
+	}
+
+	public void passwordMatch(String password, String encodePassword) {
+		if(!passwordEncoder.matches(password, encodePassword)) {
+			throw new PasswordMismatchException();
 		}
 	}
 }
