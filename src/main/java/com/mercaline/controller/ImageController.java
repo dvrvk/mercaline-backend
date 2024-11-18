@@ -90,7 +90,8 @@ public class ImageController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
-        return ResponseEntity.ok(imageResources[0]);
+        ApiResponse response = new ApiResponse(HttpStatus.OK, imageResources[0]);
+        return ResponseEntity.ok(response);
 
 
     }
