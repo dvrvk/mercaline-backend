@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.dto.converter.UserDTOConverter;
 import com.mercaline.model.ProductEntity;
+import com.mercaline.service.ListFavoriteService;
 import com.mercaline.service.ProductService;
 import com.mercaline.users.Model.UserEntity;
 import com.mercaline.users.dto.RequestUserUpdateDataDTO;
@@ -43,6 +44,10 @@ class UserControllerTest {
 	/** The product service. */
 	@Mock
 	private ProductService productService;
+	
+	/** The list favorite service. */
+	@Mock
+	private ListFavoriteService listFavoriteService;
 
 	/** The producto DTO converter. */
 	@Mock
@@ -140,5 +145,17 @@ class UserControllerTest {
 		Pageable pageable = PageRequest.of(0, 10);
 		assertNotNull(userController.otherProducts(testUser, pageable));
 		Mockito.verify(this.productService, Mockito.times(1)).findOthers(testUser, pageable);
+	}
+	
+	/**
+	 * Test favorites products.
+	 *
+	 * @throws Exception the exception
+	 */
+	@Test
+	void testFavoritesProducts() throws Exception {
+		Pageable pageable = PageRequest.of(0, 10);
+		assertNotNull(userController.favoritesProducts(testUser, pageable));
+		Mockito.verify(this.listFavoriteService, Mockito.times(1)).findByUser(testUser, pageable);
 	}
 }

@@ -1,33 +1,36 @@
 package com.mercaline.users.controllers;
 
-import com.mercaline.dto.ApiResponse;
-import com.mercaline.error.ApiError;
-import com.mercaline.users.dto.RequestChangePassword;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.mercaline.dto.ApiResponse;
 import com.mercaline.dto.FavoriteListsResponseDTO;
 import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.dto.converter.UserDTOConverter;
+import com.mercaline.error.ApiError;
 import com.mercaline.service.ListFavoriteService;
 import com.mercaline.service.ProductService;
 import com.mercaline.users.Model.UserEntity;
+import com.mercaline.users.dto.RequestChangePassword;
 import com.mercaline.users.dto.RequestUserUpdateDataDTO;
 import com.mercaline.users.dto.ResponseUserCompleteDTO;
 import com.mercaline.users.dto.ResponseUserSummaryDTO;
 import com.mercaline.users.services.UserEntityService;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.mercaline.config.utils.AppConstants.*;
 
 /**
  * The Class UserController.
@@ -61,7 +64,7 @@ public class UserController {
 
 	/** The user DTO converter. */
 	private final UserDTOConverter userDTOConverter;
-	
+
 	/**
 	 * Creates the user.
 	 *
@@ -95,15 +98,16 @@ public class UserController {
 	 * @return the response entity
 	 */
 	@PutMapping("/change-password")
-	public ResponseEntity<?> updatePassword(
-			@RequestBody RequestChangePassword requestChangePassword,
+	public ResponseEntity<?> updatePassword(@RequestBody RequestChangePassword requestChangePassword,
 			@AuthenticationPrincipal UserEntity user) {
 
-		if(this.userEntityService.changePassword(requestChangePassword.getPassword(), requestChangePassword.getNewPassword(), user)) {
+		if (this.userEntityService.changePassword(requestChangePassword.getPassword(),
+				requestChangePassword.getNewPassword(), user)) {
 			ApiResponse response = new ApiResponse(HttpStatus.OK, "Contraseña modificada correctamente.");
 			return ResponseEntity.ok(response);
 		} else {
-			ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, "El servidor no pudo cambiar la contraseña, intenteló más tarde.");
+			ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR,
+					"El servidor no pudo cambiar la contraseña, intenteló más tarde.");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
 		}
 
@@ -120,17 +124,16 @@ public class UserController {
 		return ResponseEntity.ok(userDTOConverter.convertToResponseUserCompleteDTO(user));
 	}
 
-
 	/**
 	 * Delete user.
 	 *
 	 * @param password the user password
-	 * @param user the user
+	 * @param user     the user
 	 * @return the response entity
 	 */
 	@PostMapping("/delete")
 	public ResponseEntity<?> deleteUser(@RequestParam("password") String password,
-										  @AuthenticationPrincipal UserEntity user) {
+			@AuthenticationPrincipal UserEntity user) {
 
 		this.userEntityService.passwordMatch(password, user.getPassword());
 
@@ -167,7 +170,7 @@ public class UserController {
 				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
 		return ResponseEntity.ok().body(products);
 	}
-	
+
 	/**
 	 * Favorites lists products.
 	 *
