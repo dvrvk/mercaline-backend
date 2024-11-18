@@ -18,16 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mercaline.dto.ApiResponse;
+
 import com.mercaline.dto.FavoriteListsResponseDTO;
 import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.dto.converter.UserDTOConverter;
-import com.mercaline.error.ApiError;
 import com.mercaline.service.ListFavoriteService;
 import com.mercaline.service.ProductService;
 import com.mercaline.users.Model.UserEntity;
-import com.mercaline.users.dto.RequestChangePassword;
 import com.mercaline.users.dto.RequestUserUpdateDataDTO;
 import com.mercaline.users.dto.ResponseUserCompleteDTO;
 import com.mercaline.users.dto.ResponseUserSummaryDTO;
@@ -67,7 +65,7 @@ public class UserController {
 
 	/** The user DTO converter. */
 	private final UserDTOConverter userDTOConverter;
-
+	
 	/**
 	 * Creates the user.
 	 *
@@ -173,7 +171,7 @@ public class UserController {
 				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
 		return ResponseEntity.ok().body(products);
 	}
-
+	
 	/**
 	 * Favorites lists products.
 	 *
