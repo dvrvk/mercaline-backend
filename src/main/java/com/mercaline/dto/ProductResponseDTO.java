@@ -1,9 +1,7 @@
 package com.mercaline.dto;
 
-import com.mercaline.model.CategoryEntity;
-import com.mercaline.model.StatusEntity;
+import com.mercaline.users.dto.ResponseUserCompleteDTO;
 import com.mercaline.users.dto.ResponseUserSummaryDTO;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -17,21 +15,21 @@ public class ProductResponseDTO {
 
     private Long id;
 
-    private String nombre;
+    private String name;
 
-    private String descripcion;
+    private String description;
 
-    private BigDecimal precio;
+    private BigDecimal price;
 
-    private String estado;
+    private Long statusId;
 
-    private Long id_status;
+    private String status;
 
-    private String imagenUrl;
+    private String imageURL;
 
-    private String categoria;
+    private String category;
 
     private Long id_category;
 
-    private ResponseUserSummaryDTO vendedor;
+    private ResponseUserCompleteDTO seller;
 }

@@ -3,8 +3,6 @@ package com.mercaline.users.controllers;
 import com.mercaline.dto.ApiResponse;
 import com.mercaline.error.ApiError;
 import com.mercaline.users.dto.RequestChangePassword;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,8 +22,6 @@ import com.mercaline.users.dto.ResponseUserSummaryDTO;
 import com.mercaline.users.services.UserEntityService;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.mercaline.config.utils.AppConstants.*;
 
 /**
  * The Class UserController.
