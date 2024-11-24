@@ -1,5 +1,7 @@
 package com.mercaline.config.utils;
 
+import java.util.List;
+
 public class AppConstants {
     // Constantes de validacion de usuario
     public static final String USERNAME_NOTBLANK_MSG = "El nombre de usuario es obligatorio.";
@@ -32,6 +34,10 @@ public class AppConstants {
     public static final String PATH_IMG = "images/";
 
     // Constantes validación producto
+    public static final String ID_NOTNULL_MSG = "El id es obligatorio";
+    public static final int ID_MIN = 0;
+    public static final String ID_MIN_MSG = "El id tiene que ser mayor que 0";
+
     public static final String NAMEP_NOTBLANK_MSG = "El nombre es obligatorio";
     public static final int NAMEP_MIN_SIZE = 2;
     public static final int NAMEP_MAX_SIZE = 100;
@@ -66,4 +72,7 @@ public class AppConstants {
     public static final int PROD_IMG_SIZE_MIN = 1;
     public static final int PROD_IMG_SIZE_MAX = 5;
     public static final String PROD_IMG_SIZE_MSG = "Debes subir entre 1 y 5 imágenes";
+
+    // Options images update
+    public static final List<String> UPDATE_IMAGES_OPTIONS = List.of("no-modificar", "sustituir", "agregar");
 }
