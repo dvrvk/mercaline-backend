@@ -50,13 +50,22 @@ public class ProductController {
 		return ResponseEntity.ok().body(products);
 	}
 
-	// Un poducto determinado por id
+	// Producto por id
 	@GetMapping("/{id}")
 	public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
 		return ResponseEntity.ok()
 				.body((this.productService.findById(id)).map(this.productoDTOConverter::convertToProductDTO)
 						.orElseThrow(() -> new ProductoNotFoundException(id)));
 	}
+	// Productos del usuario (mis-productos)
+	@GetMapping("/user/{userId}") 
+    public ResponseEntity<List<ProductResponseSummaryDTO>> getUserProducts(@PathVariable Long userId) {
+        List<ProductResponseSummaryDTO> products = productService.getProductsByUserId(userId); 
+        if (products.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } 
+        return ResponseEntity.ok(products);
+    }
 
 	// Todas las categorias
 	@GetMapping("/categories")

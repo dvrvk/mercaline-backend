@@ -36,7 +36,7 @@ public class ImageController {
 		ProductEntity product = this.productService.findById(id).orElseThrow(ProductoNotFoundException::new);
 		String[] imagesUrls = product.getUrlImage().split(";");
 		// Para evitar que la imagenes de prueba fallen
-		if (!isUrl(imagesUrls[0])) {
+		if (!isURL(imagesUrls[0])) {
 			try {
 				Path path = Paths.get(imagesUrls[0]);
 				byte[] imageBytes = Files.readAllBytes(path);

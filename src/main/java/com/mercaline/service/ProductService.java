@@ -1,6 +1,8 @@
 package com.mercaline.service;
 
 import com.mercaline.dto.ProductRequestDTO;
+import com.mercaline.dto.ProductResponseSummaryDTO;
+import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.error.exceptions.CategoryNotFoundException;
 import com.mercaline.error.exceptions.ProductUnauthorizedAccessException;
 import com.mercaline.error.exceptions.ProductoNotFoundException;
@@ -27,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.mercaline.config.utils.AppConstants.PATH_IMG;
 
@@ -37,6 +40,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
     private final StatusService statusService;
+    private final ProductoDTOConverter productoDTOConverter;
 
     @Transactional(rollbackFor = {IOException.class, RuntimeException.class})
     public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) throws IOException {
@@ -233,5 +237,11 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
         return imagePaths.length() > 0 ? imagePaths.substring(0, imagePaths.length() - 1) : "";
     }
 
+    public List<ProductResponseSummaryDTO> getProductsByUserId(Long userId) {
+        List<ProductEntity> products = productRepository.findByUserId(userId);
+        return products.stream()
+        .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()))
+        .collect(Collectors.toList());
+    }
 
 }
