@@ -57,7 +57,7 @@ public class ProductController {
 				.body((this.productService.findById(id)).map(this.productoDTOConverter::convertToProductDTO)
 						.orElseThrow(() -> new ProductoNotFoundException(id)));
 	}
-	// Productos del usuario (mis-productos)
+	// Productos del usuario (mis productos)
 	@GetMapping("/user/{userId}") 
     public ResponseEntity<List<ProductResponseSummaryDTO>> getUserProducts(@PathVariable Long userId) {
         List<ProductResponseSummaryDTO> products = productService.getProductsByUserId(userId); 
@@ -153,12 +153,9 @@ public class ProductController {
 //        return ResponseEntity.ok().body(productoDTOConverter.convertToGetProduct(product, user));
 //    }
 
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
-		ProductEntity productDelete = this.productService.findById(id)
-				.orElseThrow(() -> new ProductoNotFoundException(id));
-		productService.delete(productDelete, user);
-		return ResponseEntity.noContent().build();
+	@DeleteMapping("/delete/{id}") public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) { 
+		productService.deleteProduct(id, user.getId()); 
+		return ResponseEntity.noContent().build(); 
 	}
 
 }

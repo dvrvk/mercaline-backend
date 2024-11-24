@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
@@ -23,6 +24,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
         Page<ProductEntity> findByUserNot(UserEntity user, Pageable pageable);
 
         Page<ProductEntity> findByUserNotAndCategory(UserEntity user, CategoryEntity category, Pageable pageable);
+
+        Optional<ProductEntity> findByIdAndUserId(Long productId, Long userId);
 
         @Query("SELECT p FROM ProductEntity p WHERE " +
                         "(:category IS NULL OR p.category.id = :category) AND " +

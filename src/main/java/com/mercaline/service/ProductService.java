@@ -42,7 +42,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
     private final StatusService statusService;
     private final ProductoDTOConverter productoDTOConverter;
 
-    @Transactional(rollbackFor = {IOException.class, RuntimeException.class})
+    @Transactional(rollbackFor = { IOException.class, RuntimeException.class })
     public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) throws IOException {
 
         // Buscar si existe category
@@ -67,47 +67,48 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
                 .user(user)
                 .build();
 
-            return this.repositorio.save(product);
+        return this.repositorio.save(product);
 
     }
 
-    public void delete(ProductEntity product, UserEntity user){
+    public void delete(ProductEntity product, UserEntity user) {
         ProductEntity existProduct = comprobarPermisosProduct(product, user);
         this.repositorio.deleteById(existProduct.getId());
 
     }
 
-//    public ProductEntity edit(ProductRequestDTO editProduct, UserEntity user, Long id) {
-//        // Comprobar que el producto pertenece al usuario
-//
-//        Optional<ProductEntity> myproduct = this.repositorio.findById(id);
-//
-//        CategoryEntity category = categoryService.findById(editProduct.getCategory())
-//                .orElseThrow(CategoryNotFoundException::new);
-//
-//        StatusEntity status = statusService.findById(editProduct.getStatus())
-//                .orElseThrow(StatusNotFoundException::new);
-//
-//        if(myproduct.isPresent()) {
-//            ProductEntity existProduct = myproduct.get();
-//
-//            if(existProduct.getUser().getId().equals(user.getId())) {
-//                existProduct.setName(editProduct.getName());
-//                existProduct.setDescription(editProduct.getDescription());
-//                existProduct.setPrice(editProduct.getPrice());
-//                existProduct.setStatus(status);
-//                existProduct.setCategory(category);
-//                existProduct.setUrlImage(editProduct.getUrlImage());
-//
-//                return this.repositorio.save(existProduct);
-//            } else {
-//                throw new ProductUnauthorizedAccessException(id);
-//            }
-//        } else {
-//            throw new ProductoNotFoundException(id);
-//        }
-//
-//    }
+    // public ProductEntity edit(ProductRequestDTO editProduct, UserEntity user,
+    // Long id) {
+    // // Comprobar que el producto pertenece al usuario
+    //
+    // Optional<ProductEntity> myproduct = this.repositorio.findById(id);
+    //
+    // CategoryEntity category = categoryService.findById(editProduct.getCategory())
+    // .orElseThrow(CategoryNotFoundException::new);
+    //
+    // StatusEntity status = statusService.findById(editProduct.getStatus())
+    // .orElseThrow(StatusNotFoundException::new);
+    //
+    // if(myproduct.isPresent()) {
+    // ProductEntity existProduct = myproduct.get();
+    //
+    // if(existProduct.getUser().getId().equals(user.getId())) {
+    // existProduct.setName(editProduct.getName());
+    // existProduct.setDescription(editProduct.getDescription());
+    // existProduct.setPrice(editProduct.getPrice());
+    // existProduct.setStatus(status);
+    // existProduct.setCategory(category);
+    // existProduct.setUrlImage(editProduct.getUrlImage());
+    //
+    // return this.repositorio.save(existProduct);
+    // } else {
+    // throw new ProductUnauthorizedAccessException(id);
+    // }
+    // } else {
+    // throw new ProductoNotFoundException(id);
+    // }
+    //
+    // }
 
     public Page<ProductEntity> findByCategoryNotUser(Long categoryId, UserEntity user, Pageable pageable) {
         CategoryEntity category = categoryService.findById(categoryId)
@@ -124,20 +125,21 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
         return this.repositorio.findByUserNot(user, pageable);
     }
 
-    public Page<ProductEntity> filterProducts(Long category_id, List<Long> statusList, UserEntity user, Pageable pageable) {
+    public Page<ProductEntity> filterProducts(Long category_id, List<Long> statusList, UserEntity user,
+            Pageable pageable) {
         // Buscar la categoria
-        if(category_id != null && category_id != 0) {
+        if (category_id != null && category_id != 0) {
             CategoryEntity category = categoryService.findById(category_id)
                     .orElseThrow(CategoryNotFoundException::new);
         }
 
-        if(statusList != null && !statusList.isEmpty()) {
+        if (statusList != null && !statusList.isEmpty()) {
             statusList.forEach(status -> {
                 statusService.findById(status)
                         .orElseThrow(StatusNotFoundException::new);
             });
         }
-        if(statusList == null || statusList.isEmpty()) {
+        if (statusList == null || statusList.isEmpty()) {
             return this.repositorio.findProductsByFilterNotStatus(category_id, user.getId(), pageable);
         } else {
             return this.repositorio.findProductsByFilterStatus(category_id, statusList, user.getId(), pageable);
@@ -147,37 +149,38 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 
     // PRUEBA CON PRECIO
     public Page<ProductEntity> filterProducts2(Long category_id, List<Long> statusList, UserEntity user,
-                                               BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
+            BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
         // Buscar la categoria
-        if(category_id != null && category_id != 0) {
+        if (category_id != null && category_id != 0) {
             CategoryEntity category = categoryService.findById(category_id)
                     .orElseThrow(CategoryNotFoundException::new);
         }
 
-        if(statusList != null && !statusList.isEmpty()) {
+        if (statusList != null && !statusList.isEmpty()) {
             statusList.forEach(status -> {
                 statusService.findById(status)
                         .orElseThrow(StatusNotFoundException::new);
             });
         }
 
-        if(statusList == null || statusList.isEmpty()) {
-            return this.repositorio.findProductsByFilterNotStatus2(category_id, user.getId(), minPrice, maxPrice, pageable);
+        if (statusList == null || statusList.isEmpty()) {
+            return this.repositorio.findProductsByFilterNotStatus2(category_id, user.getId(), minPrice, maxPrice,
+                    pageable);
         } else {
-            return this.repositorio.findProductsByFilterStatus2(category_id, statusList, user.getId(), minPrice, maxPrice, pageable);
+            return this.repositorio.findProductsByFilterStatus2(category_id, statusList, user.getId(), minPrice,
+                    maxPrice, pageable);
         }
 
     }
 
-
     private ProductEntity comprobarPermisosProduct(ProductEntity product, UserEntity user) {
         Optional<ProductEntity> myproduct = this.repositorio.findById(product.getId());
 
-        if(myproduct.isPresent()) {
+        if (myproduct.isPresent()) {
 
             ProductEntity existProduct = myproduct.get();
 
-            if(existProduct.getUser().getId().equals(user.getId())) {
+            if (existProduct.getUser().getId().equals(user.getId())) {
                 return existProduct;
             } else {
                 throw new ProductUnauthorizedAccessException(product.getId());
@@ -191,7 +194,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
      * Helper method to save images on the server.
      *
      * @param images List of image files to save.
-     * @param user User to whom the images belong.
+     * @param user   User to whom the images belong.
      * @return String with paths of saved images, separated by ';'.
      */
     private String saveImages(MultipartFile[] images, UserEntity user) throws IOException {
@@ -219,7 +222,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
                         .outputFormat("jpg")
                         .outputQuality(0.75)
                         .toFile(imagePath.toFile());
-                
+
                 // Append the path to the StringBuilder and Temporal Array
                 savedImages.add(imagePath);
                 imagePaths.append(imagePath.toString()).append(";");
@@ -240,8 +243,20 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
     public List<ProductResponseSummaryDTO> getProductsByUserId(Long userId) {
         List<ProductEntity> products = productRepository.findByUserId(userId);
         return products.stream()
-        .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()))
-        .collect(Collectors.toList());
+                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()))
+                .collect(Collectors.toList());
     }
+
+    // Eliminar el producto por ID 
+    public void deleteProduct(Long id, Long userId) { // Comprobar si el producto pertenece al usuario antes de eliminar 
+        ProductEntity product = productRepository.findByIdAndUserId(id, userId) 
+        .orElseThrow(() -> new ProductoNotFoundException(id)); 
+        productRepository.delete(product); 
+    } 
+    
+    public Optional<ProductEntity> findById(Long id) { 
+        return productRepository.findById(id); 
+    }
+
 
 }
