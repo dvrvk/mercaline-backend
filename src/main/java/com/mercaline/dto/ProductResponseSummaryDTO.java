@@ -4,6 +4,7 @@ import com.mercaline.users.dto.ResponseUserProductDTO;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -25,6 +26,8 @@ public class ProductResponseSummaryDTO {
     private BigDecimal price;
 
     private String category;
+
+    private LocalDateTime createDate;
 
     private ResponseUserProductDTO seller;
 }

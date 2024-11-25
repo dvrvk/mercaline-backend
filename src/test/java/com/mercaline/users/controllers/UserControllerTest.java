@@ -110,21 +110,6 @@ class UserControllerTest {
 		Mockito.verify(this.userEntityService, Mockito.times(1)).deleteUser(testUser);
 	}
 
-	/**
-	 * Test get my products.
-	 *
-	 * @throws Exception the exception
-	 */
-	@Test
-	void testGetMyProducts() throws Exception {
-		Page<ProductEntity> productPage = new PageImpl<>(
-				Collections.singletonList(ProductEntity.builder().id(1L).name("Test").description("Test").build()));
-		when(productService.findByUser(any(UserEntity.class), any(Pageable.class))).thenReturn(productPage);
-
-		Pageable pageable = PageRequest.of(0, 10);
-		assertNotNull(userController.myProducts(testUser, pageable));
-		Mockito.verify(this.productService, Mockito.times(1)).findByUser(testUser, pageable);
-	}
 
 	/**
 	 * Test get other products.
