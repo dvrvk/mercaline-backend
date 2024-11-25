@@ -72,6 +72,7 @@ public class ProductController {
         return ResponseEntity.ok().body(myProducts);
     }
 
+
     // Todas las categorias
     @GetMapping("/categories")
     public ResponseEntity<Page<CategoryEntity>> findAllCategoriesPageable(Pageable pageable) {
