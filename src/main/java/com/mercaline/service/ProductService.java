@@ -74,7 +74,6 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
     public void delete(ProductEntity product, UserEntity user){
         ProductEntity existProduct = comprobarPermisosProduct(product, user);
         this.repositorio.deleteById(existProduct.getId());
-
     }
 
     public ProductEntity edit(ProductRequestUpdateDTO productUpdate) {
@@ -180,20 +179,14 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 
 
     private ProductEntity comprobarPermisosProduct(ProductEntity product, UserEntity user) {
-        Optional<ProductEntity> myproduct = this.repositorio.findById(product.getId());
+        ProductEntity myproduct = this.repositorio.findById(product.getId())
+                .orElseThrow(()-> new ProductoNotFoundException(product.getId()));
 
-        if(myproduct.isPresent()) {
-
-            ProductEntity existProduct = myproduct.get();
-
-            if(existProduct.getUser().getId().equals(user.getId())) {
-                return existProduct;
+            if(myproduct.getUser().getId().equals(user.getId())) {
+                return myproduct;
             } else {
                 throw new ProductUnauthorizedAccessException(product.getId());
             }
-        } else {
-            throw new ProductoNotFoundException(product.getId());
-        }
     }
 
     /**

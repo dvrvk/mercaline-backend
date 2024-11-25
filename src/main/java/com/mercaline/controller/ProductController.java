@@ -58,6 +58,21 @@ public class ProductController {
                         .orElseThrow(() -> new ProductoNotFoundException(id)));
     }
 
+    /**
+     * My products.
+     *
+     * @param user     the user
+     * @param pageable the pageable
+     * @return the response entity
+     */
+    @GetMapping("/myproducts")
+    public ResponseEntity<Page<ProductResponseSummaryDTO>> myProducts(@AuthenticationPrincipal UserEntity user, Pageable pageable) {
+        Page<ProductResponseSummaryDTO> myProducts = (this.productService.findByUser(user, pageable))
+            .map(product -> productoDTOConverter.convertToGetProduct(product, user));
+        return ResponseEntity.ok().body(myProducts);
+    }
+
+
     // Todas las categorias
     @GetMapping("/categories")
     public ResponseEntity<Page<CategoryEntity>> findAllCategoriesPageable(Pageable pageable) {
@@ -195,6 +210,7 @@ public class ProductController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
         ProductEntity productDelete = this.productService.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
+
         productService.delete(productDelete, user);
         return ResponseEntity.noContent().build();
     }

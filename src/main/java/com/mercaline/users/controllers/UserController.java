@@ -134,20 +134,6 @@ public class UserController {
 		return ResponseEntity.ok().build();
 	}
 
-	/**
-	 * My products.
-	 *
-	 * @param user     the user
-	 * @param pageable the pageable
-	 * @return the response entity
-	 */
-	@GetMapping("/myproducts")
-	public ResponseEntity<Page<ProductResponseSummaryDTO>> myProducts(@AuthenticationPrincipal UserEntity user,
-			Pageable pageable) {
-		Page<ProductResponseSummaryDTO> myProducts = (this.productService.findByUser(user, pageable))
-				.map(product -> productoDTOConverter.convertToGetProduct(product, user));
-		return ResponseEntity.ok().body(myProducts);
-	}
 
 	/**
 	 * Other products.
