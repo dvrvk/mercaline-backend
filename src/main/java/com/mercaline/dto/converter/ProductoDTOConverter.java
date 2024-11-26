@@ -64,6 +64,7 @@ public class ProductoDTOConverter {
                 .price(product.getPrice())
                 .category(product.getCategory().getName())
                 .imageUrl(product.getUrlImage())
+                .createDate(product.getCreateDate())
                 .seller(userDTO)
                 .build();
     }

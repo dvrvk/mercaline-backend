@@ -39,6 +39,18 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
     }
 
+    @ExceptionHandler({ProductOwnershipException.class})
+    public ResponseEntity<ApiError> handleForbiden( Exception ex) {
+        ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
+    }
+
+    @ExceptionHandler({PasswordMismatchException.class, IllegalOptionException.class})
+    public ResponseEntity<ApiError> handleBadRequest(Exception ex) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+    }
+
     // Excepciones de validacion
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<ApiError> handleConstraintViolationException(ConstraintViolationException ex) {
@@ -117,9 +129,5 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 
-    @ExceptionHandler({PasswordMismatchException.class})
-    public ResponseEntity<ApiError> handleBadRequest(Exception ex) {
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
-    }
+
 }
