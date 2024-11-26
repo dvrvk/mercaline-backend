@@ -73,6 +73,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 
     public void delete(ProductEntity product, UserEntity user){
         ProductEntity existProduct = comprobarPermisosProduct(product, user);
+        deleteImages(existProduct.getUrlImage());
         this.repositorio.deleteById(existProduct.getId());
     }
 
