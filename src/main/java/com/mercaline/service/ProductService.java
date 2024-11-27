@@ -39,16 +39,41 @@ import com.mercaline.users.Model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 
+/**
+ * The Class ProductService.
+ */
 @Service
+
+/**
+ * Instantiates a new product service.
+ *
+ * @param productRepository the product repository
+ * @param categoryService the category service
+ * @param statusService the status service
+ */
 @RequiredArgsConstructor
 public class ProductService extends BaseService<ProductEntity, Long, ProductRepository> {
 
-	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
-	
+	/** The product repository. */
 	private final ProductRepository productRepository;
+	
+	/** The category service. */
 	private final CategoryService categoryService;
+	
+	/** The status service. */
 	private final StatusService statusService;
+	
+	/** The Constant logger. */
+	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
+	/**
+	 * Creates the.
+	 *
+	 * @param newProduct the new product
+	 * @param user the user
+	 * @return the product entity
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	@Transactional(rollbackFor = { IOException.class, RuntimeException.class })
 	public ProductEntity create(ProductRequestDTO newProduct, UserEntity user) throws IOException {
 		// Buscar si existe category
@@ -68,11 +93,24 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		return this.repositorio.save(product);
 	}
 
+	/**
+	 * Delete.
+	 *
+	 * @param product the product
+	 * @param user the user
+	 */
 	public void delete(ProductEntity product, UserEntity user) {
 		ProductEntity existProduct = comprobarPermisosProduct(product, user);
+		deleteImages(existProduct.getUrlImage());
 		this.repositorio.deleteById(existProduct.getId());
 	}
 
+	/**
+	 * Edits the.
+	 *
+	 * @param productUpdate the product update
+	 * @return the product entity
+	 */
 	public ProductEntity edit(ProductRequestUpdateDTO productUpdate) {
 		checkIsMine(productUpdate.getId(), productUpdate.getUser());
 
@@ -94,13 +132,20 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		try {
 			myproduct.setUrlImage(updateImages(productUpdate, myproduct));
 			return this.repositorio.save(myproduct);
+
 		} catch (IOException ex) {
 			throw new ImageStorageException();
 		}
 	}
 
+	/**
+	 * Check is mine.
+	 *
+	 * @param id the id
+	 * @param user the user
+	 * @return true, if successful
+	 */
 	public boolean checkIsMine(Long id, UserEntity user) {
-
 		ProductEntity product = this.productRepository.findById(id).orElseThrow(ProductoNotFoundException::new);
 
 		if (Objects.equals(product.getUser().getId(), user.getId())) {
@@ -111,19 +156,51 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 
 	}
 
+	/**
+	 * Find by category not user.
+	 *
+	 * @param categoryId the category id
+	 * @param user the user
+	 * @param pageable the pageable
+	 * @return the page
+	 */
 	public Page<ProductEntity> findByCategoryNotUser(Long categoryId, UserEntity user, Pageable pageable) {
 		CategoryEntity category = categoryService.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
+
 		return this.repositorio.findByUserNotAndCategory(user, category, pageable);
 	}
 
+	/**
+	 * Find by user.
+	 *
+	 * @param user the user
+	 * @param pageable the pageable
+	 * @return the page
+	 */
 	public Page<ProductEntity> findByUser(UserEntity user, Pageable pageable) {
 		return this.repositorio.findByUser(user, pageable);
 	}
 
+	/**
+	 * Find others.
+	 *
+	 * @param user the user
+	 * @param pageable the pageable
+	 * @return the page
+	 */
 	public Page<ProductEntity> findOthers(UserEntity user, Pageable pageable) {
 		return this.repositorio.findByUserNot(user, pageable);
 	}
 
+	/**
+	 * Filter products.
+	 *
+	 * @param category_id the category id
+	 * @param statusList the status list
+	 * @param user the user
+	 * @param pageable the pageable
+	 * @return the page
+	 */
 	public Page<ProductEntity> filterProducts(Long category_id, List<Long> statusList, UserEntity user,
 			Pageable pageable) {
 		// Buscar la categoria
@@ -141,9 +218,19 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		} else {
 			return this.repositorio.findProductsByFilterStatus(category_id, statusList, user.getId(), pageable);
 		}
-
 	}
 
+	/**
+	 * Filter products 2.
+	 *
+	 * @param category_id the category id
+	 * @param statusList the status list
+	 * @param user the user
+	 * @param minPrice the min price
+	 * @param maxPrice the max price
+	 * @param pageable the pageable
+	 * @return the page
+	 */
 	public Page<ProductEntity> filterProducts2(Long category_id, List<Long> statusList, UserEntity user,
 			BigDecimal minPrice, BigDecimal maxPrice, Pageable pageable) {
 		// Buscar la categoria
@@ -164,9 +251,15 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 			return this.repositorio.findProductsByFilterStatus2(category_id, statusList, user.getId(), minPrice,
 					maxPrice, pageable);
 		}
-
 	}
 
+	/**
+	 * Comprobar permisos product.
+	 *
+	 * @param product the product
+	 * @param user the user
+	 * @return the product entity
+	 */
 	private ProductEntity comprobarPermisosProduct(ProductEntity product, UserEntity user) {
 		ProductEntity myproduct = this.repositorio.findById(product.getId())
 				.orElseThrow(() -> new ProductoNotFoundException(product.getId()));
@@ -184,6 +277,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	 * @param images List of image files to save.
 	 * @param user   User to whom the images belong.
 	 * @return String with paths of saved images, separated by ';'.
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private String saveImages(MultipartFile[] images, UserEntity user) throws IOException {
 		// Create the directory for the user's images
@@ -211,6 +305,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 				savedImages.add(imagePath);
 				imagePaths.append(imagePath.toString()).append(";");
 			}
+
 		} catch (IOException e) {
 			// En caso de error, eliminar imágenes ya guardadas
 			for (Path imagePath : savedImages) {
@@ -218,10 +313,19 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 			}
 			throw new IOException("Error al guardar las imágenes. Se ha revertido la operación.", e);
 		}
+
 		// Remove the last ";" and return concatenated paths
 		return imagePaths.length() > 0 ? imagePaths.substring(0, imagePaths.length() - 1) : "";
 	}
 
+	/**
+	 * Update images.
+	 *
+	 * @param updateProduct the update product
+	 * @param myProduct the my product
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private String updateImages(ProductRequestUpdateDTO updateProduct, ProductEntity myProduct) throws IOException {
 		String option = updateProduct.getImageOption();
 
@@ -247,6 +351,12 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		return null;
 	}
 
+	/**
+	 * Delete images.
+	 *
+	 * @param rutas the rutas
+	 * @return true, if successful
+	 */
 	private boolean deleteImages(String rutas) {
 		String[] rutasArray = rutas.split(";");
 		boolean atLeastOneDeleted = false;
