@@ -1,8 +1,5 @@
 package com.mercaline.users.controllers;
 
-import com.mercaline.dto.ApiResponse;
-import com.mercaline.error.ApiError;
-import com.mercaline.users.dto.RequestChangePassword;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -10,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,14 +17,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.mercaline.dto.ApiResponse;
 import com.mercaline.dto.FavoriteListsResponseDTO;
+import com.mercaline.dto.FavoriteProductsInAListResponseDTO;
 import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.dto.converter.UserDTOConverter;
+import com.mercaline.error.ApiError;
 import com.mercaline.service.ListFavoriteService;
 import com.mercaline.service.ProductService;
 import com.mercaline.users.Model.UserEntity;
+import com.mercaline.users.dto.RequestChangePassword;
 import com.mercaline.users.dto.RequestUserUpdateDataDTO;
 import com.mercaline.users.dto.ResponseUserCompleteDTO;
 import com.mercaline.users.dto.ResponseUserSummaryDTO;
@@ -101,7 +103,6 @@ public class UserController {
 	@PutMapping("/change-password")
 	public ResponseEntity<?> updatePassword(@RequestBody RequestChangePassword requestChangePassword,
 			@AuthenticationPrincipal UserEntity user) {
-
 		if (this.userEntityService.changePassword(requestChangePassword.getPassword(),
 				requestChangePassword.getNewPassword(), user)) {
 			ApiResponse response = new ApiResponse(HttpStatus.OK, "Contraseña modificada correctamente.");
@@ -111,7 +112,6 @@ public class UserController {
 					"El servidor no pudo cambiar la contraseña, intenteló más tarde.");
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
 		}
-
 	}
 
 	/**
@@ -169,5 +169,38 @@ public class UserController {
 	public ResponseEntity<Page<FavoriteListsResponseDTO>> favoritesProducts(@AuthenticationPrincipal UserEntity user,
 			Pageable pageable) {
 		return ResponseEntity.ok().body(this.listFavoriteService.findByUser(user, pageable));
+	}
+	
+	/**
+	 * Favorites products in A list.
+	 *
+	 * @param user the user
+	 * @param idList the id list
+	 * @param pageable the pageable
+	 * @return the response entity
+	 */
+	@GetMapping("/favorite-products-in-list/{idList}")
+	public ResponseEntity<Page<FavoriteProductsInAListResponseDTO>> favoritesProductsInAList(
+			@AuthenticationPrincipal UserEntity user,
+			@PathVariable Long idList,
+			Pageable pageable) {
+		return ResponseEntity.ok().body(this.listFavoriteService.findProductsByFavoriteList(user, idList, pageable));
+	}
+
+	/**
+	 * Delete by product from A list.
+	 *
+	 * @param user the user
+	 * @param idProduct the id product
+	 * @param idList the id list
+	 * @return the response entity
+	 */
+	@DeleteMapping("/delete-product/{idProduct}/favorite-list/{idList}")
+	public ResponseEntity<Void> deleteByProductFromAList(
+			@AuthenticationPrincipal UserEntity user,
+			@PathVariable Long idProduct,
+			@PathVariable Long idList) {
+		this.listFavoriteService.deleteByProductAndFavoriteList(user, idProduct, idList);
+		return ResponseEntity.noContent().build();
 	}
 }

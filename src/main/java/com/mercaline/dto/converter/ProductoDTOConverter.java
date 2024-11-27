@@ -1,13 +1,13 @@
 package com.mercaline.dto.converter;
 
-import com.mercaline.dto.ProductResponseSummaryDTO;
+import org.springframework.stereotype.Component;
+
 import com.mercaline.dto.ProductResponseDTO;
+import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.model.ProductEntity;
 import com.mercaline.users.Model.UserEntity;
 import com.mercaline.users.dto.ResponseUserCompleteDTO;
-import com.mercaline.users.dto.ResponseUserSummaryDTO;
 import com.mercaline.users.dto.ResponseUserProductDTO;
-import org.springframework.stereotype.Component;
 
 /**
  * The Class ProductoDTOConverter.
@@ -31,7 +31,7 @@ public class ProductoDTOConverter {
                 .price(product.getPrice())
                 .category(product.getCategory().getName())
                 .id_category(product.getCategory().getId())
-                .imageURL(product.getUrlImage())
+                .imageUrl(product.getUrlImage())
                 .seller(ResponseUserCompleteDTO.builder()
                         .id(product.getUser().getId())
                         .username(product.getUser().getUsername())

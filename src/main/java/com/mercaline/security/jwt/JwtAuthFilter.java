@@ -4,15 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import ch.qos.logback.core.util.StringUtil;
-import com.mercaline.error.ApiError;
-import com.mercaline.error.GlobalControllerAdvice;
-import com.mercaline.error.exceptions.DatabaseConnectionException;
-import com.mercaline.error.exceptions.InvalidTokenException;
-import com.mercaline.users.Model.UserEntity;
-import com.mercaline.users.services.CustomUserDetailsService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -20,6 +12,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.mercaline.error.exceptions.DatabaseConnectionException;
+import com.mercaline.error.exceptions.InvalidTokenException;
+import com.mercaline.users.Model.UserEntity;
+import com.mercaline.users.services.CustomUserDetailsService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

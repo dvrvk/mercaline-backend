@@ -1,12 +1,14 @@
 package com.mercaline.dto;
 
-
-import com.mercaline.users.dto.ResponseUserCompleteDTO;
-import com.mercaline.users.dto.ResponseUserSummaryDTO;
-import lombok.*;
-
 import java.math.BigDecimal;
 
+import com.mercaline.users.dto.ResponseUserCompleteDTO;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Gets the vendedor.
@@ -70,7 +72,7 @@ public class ProductResponseDTO {
     private String status;
     
     /** The imagen url. */
-    private String imageURL;
+    private String imageUrl;
     
     /** The category. */
     private String category;

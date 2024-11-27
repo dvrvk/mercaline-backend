@@ -1,6 +1,63 @@
 package com.mercaline.controller;
 
-import com.mercaline.dto.*;
+import static com.mercaline.config.utils.AppConstants.CATEGORY_DECIMAL_MIN;
+import static com.mercaline.config.utils.AppConstants.CATEGORY_DECIMAL_MIN_INCLUSIVE;
+import static com.mercaline.config.utils.AppConstants.CATEGORY_DIGITS_FRACTION;
+import static com.mercaline.config.utils.AppConstants.CATEGORY_DIGITS_INTEGER;
+import static com.mercaline.config.utils.AppConstants.CATEGORY_NOT_NULL;
+import static com.mercaline.config.utils.AppConstants.DESCRIPTIONP_MAX_SIZE;
+import static com.mercaline.config.utils.AppConstants.DESCRIPTIONP_MIN_SIZE;
+import static com.mercaline.config.utils.AppConstants.DESCRIPTIONP_NOTBLANK_MSG;
+import static com.mercaline.config.utils.AppConstants.DESCRIPTIONP_SIZE_MSG;
+import static com.mercaline.config.utils.AppConstants.ID_MIN;
+import static com.mercaline.config.utils.AppConstants.ID_MIN_MSG;
+import static com.mercaline.config.utils.AppConstants.ID_NOTNULL_MSG;
+import static com.mercaline.config.utils.AppConstants.NAMEP_MAX_SIZE;
+import static com.mercaline.config.utils.AppConstants.NAMEP_MIN_SIZE;
+import static com.mercaline.config.utils.AppConstants.NAMEP_NOTBLANK_MSG;
+import static com.mercaline.config.utils.AppConstants.NAMEP_SIZE_MSG;
+import static com.mercaline.config.utils.AppConstants.PRICE_DECIMAL_MIN;
+import static com.mercaline.config.utils.AppConstants.PRICE_DECIMAL_MIN_INCLUSIVE;
+import static com.mercaline.config.utils.AppConstants.PRICE_DIGITS_FRACTION;
+import static com.mercaline.config.utils.AppConstants.PRICE_DIGITS_INTEGER;
+import static com.mercaline.config.utils.AppConstants.PRICE_DIGITS_MSG;
+import static com.mercaline.config.utils.AppConstants.PRICE_MIN_MSG;
+import static com.mercaline.config.utils.AppConstants.PRICE_NOT_NULL_MSG;
+import static com.mercaline.config.utils.AppConstants.PROD_IMG_SIZE_MAX;
+import static com.mercaline.config.utils.AppConstants.PROD_IMG_SIZE_MIN;
+import static com.mercaline.config.utils.AppConstants.PROD_IMG_SIZE_MSG;
+import static com.mercaline.config.utils.AppConstants.STATUSP_DIGITS_FRACTION;
+import static com.mercaline.config.utils.AppConstants.STATUSP_DIGITS_INTEGER;
+import static com.mercaline.config.utils.AppConstants.STATUSP_MIN;
+import static com.mercaline.config.utils.AppConstants.STATUSP_MIN_MSG;
+import static com.mercaline.config.utils.AppConstants.STATUSP_MSG;
+import static com.mercaline.config.utils.AppConstants.STATUS_DIGITS_MSG;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.mercaline.dto.ProductRequestDTO;
+import com.mercaline.dto.ProductRequestUpdateDTO;
+import com.mercaline.dto.ProductResponseDTO;
+import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.error.exceptions.ImageStorageException;
 import com.mercaline.error.exceptions.ProductoNotFoundException;
@@ -11,24 +68,14 @@ import com.mercaline.service.CategoryService;
 import com.mercaline.service.ProductService;
 import com.mercaline.service.StatusService;
 import com.mercaline.users.Model.UserEntity;
-import jakarta.validation.constraints.*;
-import jdk.jfr.Category;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.List;
-
-import static com.mercaline.config.utils.AppConstants.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")

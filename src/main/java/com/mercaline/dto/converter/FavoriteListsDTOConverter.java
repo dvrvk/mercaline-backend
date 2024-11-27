@@ -3,6 +3,10 @@ package com.mercaline.dto.converter;
 import org.springframework.stereotype.Component;
 
 import com.mercaline.dto.FavoriteListsResponseDTO;
+import com.mercaline.dto.FavoriteProductsInAListResponseDTO;
+import com.mercaline.dto.ProductResponseDTO;
+import com.mercaline.model.ListFavoriteEntity;
+import com.mercaline.model.ProductEntity;
 
 /**
  * The Class UserDTOConverter.
@@ -16,11 +20,27 @@ public class FavoriteListsDTOConverter {
      * @param user the user
      * @return the response user summary DTO
      */
-    public FavoriteListsResponseDTO convertToResponseFavoriteListsSummaryDTO(Long id, String nameList, Integer productSize) {
+    public FavoriteListsResponseDTO convertToResponseFavoriteListsSummaryDTO(
+    		Long id, String nameList, Integer productSize) {
         return FavoriteListsResponseDTO.builder()
                 .id(id)
                 .nameList(nameList)
                 .productSize(productSize)
+                .build();
+    }
+    
+    public FavoriteProductsInAListResponseDTO convertToResponseFavoriteProductsSummaryDTO(
+    		ListFavoriteEntity favoriteList, ProductEntity product) {
+        return FavoriteProductsInAListResponseDTO.builder()
+                .id(favoriteList.getId())
+                .nameList(favoriteList.getName())
+                .products(ProductResponseDTO.builder()
+                		.id(product.getId())
+                		.name(product.getName())
+                		.price(product.getPrice())
+                		.category(product.getCategory().getName())
+                		.status(product.getStatus().getName())
+                		.imageUrl(product.getUrlImage()).build())
                 .build();
     }
 }
