@@ -1,26 +1,29 @@
 package com.mercaline.users.services;
 
+import static com.mercaline.config.utils.AppConstants.PATH_IMG;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import com.mercaline.error.exceptions.*;
-import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.mercaline.error.exceptions.DatabaseConnectionException;
+import com.mercaline.error.exceptions.DirectoryDeletionException;
+import com.mercaline.error.exceptions.FileDeletionException;
+import com.mercaline.error.exceptions.PasswordMismatchException;
+import com.mercaline.error.exceptions.UserNotFoundException;
 import com.mercaline.service.base.BaseService;
 import com.mercaline.users.Model.UserEntity;
 import com.mercaline.users.dto.RequestUserUpdateDataDTO;
 import com.mercaline.users.repository.UserEntityRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
-
-import static com.mercaline.config.utils.AppConstants.PATH_IMG;
 
 /**
  * The Class UserEntityService.
