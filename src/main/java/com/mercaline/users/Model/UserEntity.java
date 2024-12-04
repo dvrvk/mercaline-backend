@@ -1,5 +1,6 @@
 package com.mercaline.users.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -68,6 +69,7 @@ import static com.mercaline.config.utils.AppConstants.USERNAME_REGEXP_MSG;
  * @return the java.lang. string
  */
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UserEntity implements UserDetails {
 
     /** The id. */

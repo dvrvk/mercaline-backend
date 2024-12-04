@@ -1,5 +1,7 @@
 package com.mercaline.service;
 
+import com.mercaline.model.FavoriteEntity;
+import com.mercaline.repository.FavoriteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ import com.mercaline.service.base.BaseService;
 import com.mercaline.users.Model.UserEntity;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 /**
  * The Class ListFavoriteService.
@@ -41,6 +45,8 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 
 	/** The favorite lists DTO converter. */
 	private final FavoriteListsDTOConverter favoriteListsDTOConverter;
+
+	private final FavoriteRepository favoriteRepository;
 
 	/**
 	 * Find by user.
@@ -94,5 +100,17 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 				.orElseThrow(FavoriteListNotFoundException::new);
 		//Eliminar el producto
 		this.favoriteService.deleteByProductAndFavoriteList(productEntity, listFavoriteEntity);
+	}
+
+
+	public boolean isFavorite(Long id, Long userId) {
+
+		boolean result = this.favoriteRepository.existsByUserIdAndProductId(userId, id) > 0;
+		return result;
+	}
+
+	public List<FavoriteEntity> productInFavoriteList(Long idProduct, Long userId) {
+		List<FavoriteEntity> result = this.favoriteRepository.findByProductIdAndFavoriteListUserId(idProduct,userId);
+		return result;
 	}
 }
