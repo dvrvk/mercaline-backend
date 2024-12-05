@@ -1,8 +1,10 @@
 package com.mercaline.users.controllers;
 
-import com.mercaline.dto.*;
-import com.mercaline.model.FavoriteEntity;
-import org.apache.catalina.User;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,9 +22,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mercaline.dto.ApiResponse;
+import com.mercaline.dto.FavoriteListsResponseDTO;
+import com.mercaline.dto.FavoriteProductsInAListResponseDTO;
+import com.mercaline.dto.FavoriteUpdateProdRequestDTO;
+import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.dto.converter.UserDTOConverter;
 import com.mercaline.error.ApiError;
+import com.mercaline.model.FavoriteEntity;
+import com.mercaline.service.FavoriteService;
 import com.mercaline.service.ListFavoriteService;
 import com.mercaline.service.ProductService;
 import com.mercaline.users.Model.UserEntity;
@@ -33,11 +42,6 @@ import com.mercaline.users.dto.ResponseUserSummaryDTO;
 import com.mercaline.users.services.UserEntityService;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * The Class UserController.
@@ -65,6 +69,8 @@ public class UserController {
 
 	/** The list favorite service. */
 	private final ListFavoriteService listFavoriteService;
+
+	private final FavoriteService favoriteService;
 
 	/** The producto DTO converter. */
 	private final ProductoDTOConverter productoDTOConverter;
@@ -97,6 +103,32 @@ public class UserController {
 		return ResponseEntity
 				.ok(userDTOConverter.convertToResponseUserCompleteDTO(this.userEntityService.updateUser(user)));
 	}
+	
+	/**
+	 * Delete user.
+	 *
+	 * @param password the user password
+	 * @param user     the user
+	 * @return the response entity
+	 */
+	@PostMapping("/delete")
+	public ResponseEntity<?> deleteUser(@RequestParam("password") String password,
+			@AuthenticationPrincipal UserEntity user) {
+		this.userEntityService.passwordMatch(password, user.getPassword());
+		this.userEntityService.deleteUser(user);
+		return ResponseEntity.ok().build();
+	}
+	
+	/**
+	 * Me.
+	 *
+	 * @param user the user
+	 * @return the response entity
+	 */
+	@GetMapping("/profile")
+	public ResponseEntity<ResponseUserCompleteDTO> me(@AuthenticationPrincipal UserEntity user) {
+		return ResponseEntity.ok(userDTOConverter.convertToResponseUserCompleteDTO(user));
+	}
 
 	/**
 	 * Update password.
@@ -117,16 +149,20 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
 		}
 	}
-
+	
 	/**
-	 * Me.
+	 * Other products.
 	 *
-	 * @param user the user
+	 * @param user     the user
+	 * @param pageable the pageable
 	 * @return the response entity
 	 */
-	@GetMapping("/profile")
-	public ResponseEntity<ResponseUserCompleteDTO> me(@AuthenticationPrincipal UserEntity user) {
-		return ResponseEntity.ok(userDTOConverter.convertToResponseUserCompleteDTO(user));
+	@GetMapping("/products")
+	public ResponseEntity<Page<ProductResponseSummaryDTO>> otherProducts(@AuthenticationPrincipal UserEntity user,
+			Pageable pageable) {
+		Page<ProductResponseSummaryDTO> products = (this.productService.findOthers(user, pageable))
+				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
+		return ResponseEntity.ok().body(products);
 	}
 
 	/**
@@ -141,7 +177,7 @@ public class UserController {
 	 */
 	@GetMapping("/product-fav-list/{id}")
 	public ResponseEntity<?> productFavList(@AuthenticationPrincipal UserEntity user, @PathVariable Long id) {
-		List<FavoriteEntity> favorites = this.listFavoriteService.productInFavoriteList(id, user.getId());
+		List<FavoriteEntity> favorites = this.favoriteService.productInFavoriteList(id, user.getId());
 		List<Map<String, Object>> result = favorites.stream()
 				.map(favorite -> {
 					Map<String, Object> favoriteData = new HashMap<>();
@@ -168,8 +204,7 @@ public class UserController {
 	 */
 	@PutMapping("/update-favs")
 	public ResponseEntity<?> updateProductFavList(@AuthenticationPrincipal UserEntity user, @RequestBody List<FavoriteUpdateProdRequestDTO> body) {
-		// Lógica para borrar y agregar el producto de las distintas listas de favoritos
-		return ResponseEntity.ok(true);
+		return ResponseEntity.ok(this.favoriteService.updateProductFavList(user, body));
 	}
 
 	/**
@@ -183,50 +218,7 @@ public class UserController {
 	 */
 	@PutMapping("/create-list-fav")
 	public ResponseEntity<?> createFavoriteList(@AuthenticationPrincipal UserEntity user, @RequestBody String name) {
-
-		// Comprueba que esa lista no existe con el mismo nombre para el usuario
-
-		// Guarda la nueva lista en la base de datos (suponiendo que tienes un servicio o repositorio)
-
-		Map<String, Object> favoriteList = new HashMap<>();
-		favoriteList.put("id", 3L);
-		favoriteList.put("nameList", name);
-		favoriteList.put("productSize", 0);
-		// Retorna el id: id-list-fav, nameList: nombre, productSize: cantidad
-		return ResponseEntity.ok(favoriteList);
-	}
-
-	/**
-	 * Delete user.
-	 *
-	 * @param password the user password
-	 * @param user     the user
-	 * @return the response entity
-	 */
-	@PostMapping("/delete")
-	public ResponseEntity<?> deleteUser(@RequestParam("password") String password,
-			@AuthenticationPrincipal UserEntity user) {
-
-		this.userEntityService.passwordMatch(password, user.getPassword());
-
-		this.userEntityService.deleteUser(user);
-		return ResponseEntity.ok().build();
-	}
-
-
-	/**
-	 * Other products.
-	 *
-	 * @param user     the user
-	 * @param pageable the pageable
-	 * @return the response entity
-	 */
-	@GetMapping("/products")
-	public ResponseEntity<Page<ProductResponseSummaryDTO>> otherProducts(@AuthenticationPrincipal UserEntity user,
-			Pageable pageable) {
-		Page<ProductResponseSummaryDTO> products = (this.productService.findOthers(user, pageable))
-				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
-		return ResponseEntity.ok().body(products);
+		return ResponseEntity.ok(this.listFavoriteService.createFavoriteList(user, name));
 	}
 	
 	/**
