@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.dto.converter.UserDTOConverter;
 import com.mercaline.error.ApiError;
@@ -247,6 +246,7 @@ public class UserController {
 			throw new FavoriteListException();
 		}
 	}
+
 	
 	/**
 	 * Favorites lists products.
