@@ -3,8 +3,15 @@ package com.mercaline.users.controllers;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import com.mercaline.dto.*;
+import com.mercaline.error.exceptions.FavoriteListException;
+import com.mercaline.error.exceptions.FavoriteListNotFoundException;
+import com.mercaline.error.exceptions.FavoriteListUnauthorizedException;
+import com.mercaline.model.ListFavoriteEntity;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -21,12 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.mercaline.dto.ApiResponse;
-import com.mercaline.dto.FavoriteListsResponseDTO;
-import com.mercaline.dto.FavoriteProductsInAListResponseDTO;
-import com.mercaline.dto.FavoriteUpdateProdRequestDTO;
-import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.dto.converter.UserDTOConverter;
 import com.mercaline.error.ApiError;
@@ -220,6 +221,32 @@ public class UserController {
 	public ResponseEntity<?> createFavoriteList(@AuthenticationPrincipal UserEntity user, @RequestBody String name) {
 		return ResponseEntity.ok(this.listFavoriteService.createFavoriteList(user, name));
 	}
+
+	@PutMapping("/edit-list-fav") public ResponseEntity<?> editListFav(@AuthenticationPrincipal UserEntity user, @RequestBody EditListFavRequest editListRequest) {
+		// Comprueba que exista
+		ListFavoriteEntity listFav = this.listFavoriteService.findById(editListRequest.getId())
+				.orElseThrow(FavoriteListNotFoundException::new);
+		// Comprueba que pertenezca al usuario
+		if(!Objects.equals(listFav.getUser().getId(), user.getId())) {
+			throw new FavoriteListUnauthorizedException(editListRequest.getId());
+		}
+
+		try {
+			// Edito el nombre
+			listFav.setName(editListRequest.getName());
+			ListFavoriteEntity output = this.listFavoriteService.edit(listFav);
+			// Genero la respuesta
+			Map<String, Object> favoriteList = new HashMap<>();
+			favoriteList.put("id", output.getId());
+			favoriteList.put("nameList", output.getName());
+			favoriteList.put("productSize", favoriteService.findByFavoriteList(output));
+			return ResponseEntity.ok(favoriteList);
+		} catch (DuplicateKeyException e) {
+			// Manejo del error
+			throw new FavoriteListException();
+		}
+	}
+
 	
 	/**
 	 * Favorites lists products.

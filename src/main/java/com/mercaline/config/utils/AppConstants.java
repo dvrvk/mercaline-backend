@@ -75,4 +75,9 @@ public class AppConstants {
 
     // Options images update
     public static final List<String> UPDATE_IMAGES_OPTIONS = List.of("no-modificar", "sustituir", "agregar");
+
+    // Constantes validación favoritos
+    public static final String ID_FAV_NOT_NULL_MSG = "El id del producto no puede ser nulo";
+    public static final int MIN_ID_FAV = 0;
+    public static final String MIN_ID_FAV_MSG = "El id tiene que ser como mínimo 1";
 }
