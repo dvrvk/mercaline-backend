@@ -26,7 +26,8 @@ import java.util.stream.Collectors;
 public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 
     // Excepciones de producto
-    @ExceptionHandler({ProductoNotFoundException.class, CategoryNotFoundException.class, StatusNotFoundException.class, ImageNotFound.class})
+    @ExceptionHandler({ProductoNotFoundException.class, CategoryNotFoundException.class,
+            StatusNotFoundException.class, ImageNotFound.class, FavoriteListException.class, FavoriteListNotFoundException.class})
     public ResponseEntity<ApiError> handleNotFound(Exception ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
