@@ -34,7 +34,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
     }
 
 
-    @ExceptionHandler({ProductUnauthorizedAccessException.class})
+    @ExceptionHandler({ProductUnauthorizedAccessException.class, FavoriteListUnauthorizedException.class})
     public ResponseEntity<ApiError> handleNotAccess(Exception ex) {
         ApiError apiError = new ApiError(HttpStatus.UNAUTHORIZED, ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(apiError);
