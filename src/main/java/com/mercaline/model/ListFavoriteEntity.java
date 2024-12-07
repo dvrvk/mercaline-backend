@@ -1,5 +1,6 @@
 package com.mercaline.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mercaline.users.Model.UserEntity;
 
 import jakarta.persistence.*;
@@ -16,6 +17,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ListFavoriteEntity {
 	
 	@Id

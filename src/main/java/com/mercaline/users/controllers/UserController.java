@@ -1,5 +1,10 @@
 package com.mercaline.users.controllers;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,10 +25,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mercaline.dto.ApiResponse;
 import com.mercaline.dto.FavoriteListsResponseDTO;
 import com.mercaline.dto.FavoriteProductsInAListResponseDTO;
+import com.mercaline.dto.FavoriteUpdateProdRequestDTO;
 import com.mercaline.dto.ProductResponseSummaryDTO;
 import com.mercaline.dto.converter.ProductoDTOConverter;
 import com.mercaline.dto.converter.UserDTOConverter;
 import com.mercaline.error.ApiError;
+import com.mercaline.model.FavoriteEntity;
+import com.mercaline.service.FavoriteService;
 import com.mercaline.service.ListFavoriteService;
 import com.mercaline.service.ProductService;
 import com.mercaline.users.Model.UserEntity;
@@ -62,6 +70,8 @@ public class UserController {
 	/** The list favorite service. */
 	private final ListFavoriteService listFavoriteService;
 
+	private final FavoriteService favoriteService;
+
 	/** The producto DTO converter. */
 	private final ProductoDTOConverter productoDTOConverter;
 
@@ -93,6 +103,32 @@ public class UserController {
 		return ResponseEntity
 				.ok(userDTOConverter.convertToResponseUserCompleteDTO(this.userEntityService.updateUser(user)));
 	}
+	
+	/**
+	 * Delete user.
+	 *
+	 * @param password the user password
+	 * @param user     the user
+	 * @return the response entity
+	 */
+	@PostMapping("/delete")
+	public ResponseEntity<?> deleteUser(@RequestParam("password") String password,
+			@AuthenticationPrincipal UserEntity user) {
+		this.userEntityService.passwordMatch(password, user.getPassword());
+		this.userEntityService.deleteUser(user);
+		return ResponseEntity.ok().build();
+	}
+	
+	/**
+	 * Me.
+	 *
+	 * @param user the user
+	 * @return the response entity
+	 */
+	@GetMapping("/profile")
+	public ResponseEntity<ResponseUserCompleteDTO> me(@AuthenticationPrincipal UserEntity user) {
+		return ResponseEntity.ok(userDTOConverter.convertToResponseUserCompleteDTO(user));
+	}
 
 	/**
 	 * Update password.
@@ -113,36 +149,7 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
 		}
 	}
-
-	/**
-	 * Me.
-	 *
-	 * @param user the user
-	 * @return the response entity
-	 */
-	@GetMapping("/profile")
-	public ResponseEntity<ResponseUserCompleteDTO> me(@AuthenticationPrincipal UserEntity user) {
-		return ResponseEntity.ok(userDTOConverter.convertToResponseUserCompleteDTO(user));
-	}
-
-	/**
-	 * Delete user.
-	 *
-	 * @param password the user password
-	 * @param user     the user
-	 * @return the response entity
-	 */
-	@PostMapping("/delete")
-	public ResponseEntity<?> deleteUser(@RequestParam("password") String password,
-			@AuthenticationPrincipal UserEntity user) {
-
-		this.userEntityService.passwordMatch(password, user.getPassword());
-
-		this.userEntityService.deleteUser(user);
-		return ResponseEntity.ok().build();
-	}
-
-
+	
 	/**
 	 * Other products.
 	 *
@@ -156,6 +163,62 @@ public class UserController {
 		Page<ProductResponseSummaryDTO> products = (this.productService.findOthers(user, pageable))
 				.map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
 		return ResponseEntity.ok().body(products);
+	}
+
+	/**
+	 * Retrieves a list of favorite lists associated with a product for the authenticated user.
+	 *
+	 * This method fetches all the favorite lists containing a particular product for the currently authenticated user.
+	 * It returns a list of maps where each map contains the favorite list ID, list name, and product ID.
+	 *
+	 * @param user the authenticated user whose favorite lists are being retrieved.
+	 * @param id the product ID for which the favorite lists are being fetched.
+	 * @return a ResponseEntity containing the list of favorite lists with the product, or an empty list if no favorites are found.
+	 */
+	@GetMapping("/product-fav-list/{id}")
+	public ResponseEntity<?> productFavList(@AuthenticationPrincipal UserEntity user, @PathVariable Long id) {
+		List<FavoriteEntity> favorites = this.favoriteService.productInFavoriteList(id, user.getId());
+		List<Map<String, Object>> result = favorites.stream()
+				.map(favorite -> {
+					Map<String, Object> favoriteData = new HashMap<>();
+					favoriteData.put("listFavoriteId", favorite.getFavoriteList().getId());
+					favoriteData.put("listName", favorite.getFavoriteList().getName());
+					favoriteData.put("productId", favorite.getProduct().getId());
+					return favoriteData;
+				})
+				.collect(Collectors.toList());
+		return ResponseEntity.ok().body(result);
+	}
+
+	/**
+	 * Updates the favorite lists for a specific product.
+	 *
+	 * This endpoint receives a list of `FavoriteUpdateProdRequestDTO` objects in the request body
+	 * containing information about the favorite lists to which products should be added or removed.
+	 * The appropriate logic is then executed to add or remove products from the favorite lists,
+	 * and a boolean value is returned to indicate whether the operation was successful.
+	 *
+	 * @param user The authenticated user performing the operation. It is obtained through `@AuthenticationPrincipal`.
+	 * @param body The list of `FavoriteUpdateProdRequestDTO` objects containing information about the lists and products.
+	 * @return ResponseEntity with a boolean value indicating whether the operation was successful.
+	 */
+	@PutMapping("/update-favs")
+	public ResponseEntity<?> updateProductFavList(@AuthenticationPrincipal UserEntity user, @RequestBody List<FavoriteUpdateProdRequestDTO> body) {
+		return ResponseEntity.ok(this.favoriteService.updateProductFavList(user, body));
+	}
+
+	/**
+	 * Creates a new favorite list for the authenticated user.
+	 *
+	 * This method receives the name of the new favorite list and creates it for the currently authenticated user.
+	 *
+	 * @param user the authenticated user who will own the new favorite list.
+	 * @param name the name of the new favorite list to be created.
+	 * @return a ResponseEntity containing the ID of the newly created favorite list.
+	 */
+	@PutMapping("/create-list-fav")
+	public ResponseEntity<?> createFavoriteList(@AuthenticationPrincipal UserEntity user, @RequestBody String name) {
+		return ResponseEntity.ok(this.listFavoriteService.createFavoriteList(user, name));
 	}
 	
 	/**

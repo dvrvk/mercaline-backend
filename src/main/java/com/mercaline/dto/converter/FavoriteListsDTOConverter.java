@@ -29,6 +29,13 @@ public class FavoriteListsDTOConverter {
                 .build();
     }
     
+    /**
+     * Convert to response favorite products summary DTO.
+     *
+     * @param favoriteList the favorite list
+     * @param product the product
+     * @return the favorite products in A list response DTO
+     */
     public FavoriteProductsInAListResponseDTO convertToResponseFavoriteProductsSummaryDTO(
     		ListFavoriteEntity favoriteList, ProductEntity product) {
         return FavoriteProductsInAListResponseDTO.builder()

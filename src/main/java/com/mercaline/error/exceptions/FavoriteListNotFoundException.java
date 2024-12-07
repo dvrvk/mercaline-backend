@@ -9,4 +9,8 @@ public class FavoriteListNotFoundException extends RuntimeException {
     public FavoriteListNotFoundException() {
         super("No se puede encontrar la lista seleccionada.");
     }
+    
+    public FavoriteListNotFoundException(String message) {
+        super(message);
+    }
 }

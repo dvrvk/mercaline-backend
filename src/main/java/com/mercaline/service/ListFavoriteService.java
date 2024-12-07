@@ -1,5 +1,10 @@
 package com.mercaline.service;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mercaline.dto.FavoriteListsResponseDTO;
 import com.mercaline.dto.FavoriteProductsInAListResponseDTO;
 import com.mercaline.dto.converter.FavoriteListsDTOConverter;
+import com.mercaline.error.exceptions.FavoriteListException;
 import com.mercaline.error.exceptions.FavoriteListNotFoundException;
 import com.mercaline.error.exceptions.ProductoNotFoundException;
 import com.mercaline.model.ListFavoriteEntity;
@@ -35,7 +41,7 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 
 	/** The favorite service. */
 	private final FavoriteService favoriteService;
-	
+
 	/** The product service. */
 	private final ProductService productService;
 
@@ -45,7 +51,7 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 	/**
 	 * Find by user.
 	 *
-	 * @param user the user
+	 * @param user     the user
 	 * @param pageable the pageable
 	 * @return the page
 	 */
@@ -59,8 +65,8 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 	/**
 	 * Find products by favorite list.
 	 *
-	 * @param user the user
-	 * @param idList the id list
+	 * @param user     the user
+	 * @param idList   the id list
 	 * @param pageable the pageable
 	 * @return the page
 	 */
@@ -77,11 +83,35 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 	}
 	
 	/**
-	 * Delete by product and favorite list.
+	 * Creates the favorite list.
 	 *
 	 * @param user the user
+	 * @param name the name
+	 * @return the map
+	 */
+	@Transactional(rollbackFor = { IOException.class, RuntimeException.class })
+	public Map<String, Object> createFavoriteList(UserEntity user, String name) {
+		Map<String, Object> favoriteList = new HashMap<>();
+		// Comprueba que esa lista no existe con el mismo nombre para el usuario
+		try {
+		    // Intento de inserción
+			ListFavoriteEntity output = this.repositorio.save(ListFavoriteEntity.builder().name(name).user(user).build());
+			favoriteList.put("id", output.getId());
+			favoriteList.put("nameList", output.getName());
+			favoriteList.put("productSize", favoriteService.findByFavoriteList(output));
+		} catch (DuplicateKeyException e) {
+		    // Manejo del error
+			throw new FavoriteListException();
+		}
+		return favoriteList;
+	}
+
+	/**
+	 * Delete by product and favorite list.
+	 *
+	 * @param user      the user
 	 * @param idProduct the id product
-	 * @param idList the id list
+	 * @param idList    the id list
 	 */
 	@Transactional
 	public void deleteByProductAndFavoriteList(UserEntity user, Long idProduct, Long idList) {
@@ -92,7 +122,7 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 		// front
 		ListFavoriteEntity listFavoriteEntity = this.repositorio.findByIdAndUser(idList, user)
 				.orElseThrow(FavoriteListNotFoundException::new);
-		//Eliminar el producto
+		// Eliminar el producto
 		this.favoriteService.deleteByProductAndFavoriteList(productEntity, listFavoriteEntity);
 	}
 }
