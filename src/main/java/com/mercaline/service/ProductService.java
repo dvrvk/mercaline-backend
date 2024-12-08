@@ -33,6 +33,7 @@ import com.mercaline.model.CategoryEntity;
 import com.mercaline.model.ProductEntity;
 import com.mercaline.model.StatusEntity;
 import com.mercaline.repository.ProductRepository;
+import com.mercaline.repository.StatusRepository;
 import com.mercaline.service.base.BaseService;
 import com.mercaline.users.Model.UserEntity;
 
@@ -53,6 +54,8 @@ import net.coobird.thumbnailator.Thumbnails;
  */
 @RequiredArgsConstructor
 public class ProductService extends BaseService<ProductEntity, Long, ProductRepository> {
+
+    private final StatusRepository statusRepository;
 
 	/** The product repository. */
 	private final ProductRepository productRepository;
@@ -371,4 +374,35 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		}
 		return atLeastOneDeleted;
 	}
+
+    // Marcar producto como vendido
+    public ProductEntity markAsSold(Long productId, UserEntity user) {
+        // Verificar si el producto pertenece al usuario
+        ProductEntity product = comprobarPermisosProduct(
+            productRepository.findById(productId).orElseThrow(() -> new ProductoNotFoundException(productId)), user);
+        
+        // Obtener el estado 'vendido'
+        StatusEntity soldStatus = statusService.findById((long) 8)
+                .orElseThrow(() -> new StatusNotFoundException("Estado 'vendido' no encontrado"));
+    
+        // Actualizar el estado del producto
+        product.setStatus(soldStatus);
+        return productRepository.save(product);
+    }
+    
+    public ProductEntity markAsAvailable(Long productId, UserEntity user) {
+        // Verificar si el producto pertenece al usuario
+        ProductEntity product = comprobarPermisosProduct(
+            productRepository.findById(productId).orElseThrow(() -> new ProductoNotFoundException(productId)), user);
+        
+        // Obtener el estado original (por ejemplo, 'disponible')
+        StatusEntity availableStatus = statusService.findById((long) 5)
+                .orElseThrow(() -> new StatusNotFoundException("Estado 'en buen estado' no encontrado"));
+    
+        // Actualizar el estado del producto
+        product.setStatus(availableStatus);
+        return productRepository.save(product);
+    }
+    
+    
 }

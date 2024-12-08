@@ -113,12 +113,12 @@ public class ProductController {
      * @return the response entity
      */
     @GetMapping("/myproducts")
-    public ResponseEntity<Page<ProductResponseSummaryDTO>> myProducts(@AuthenticationPrincipal UserEntity user, Pageable pageable) {
+    public ResponseEntity<Page<ProductResponseSummaryDTO>> myProducts(@AuthenticationPrincipal UserEntity user,
+            Pageable pageable) {
         Page<ProductResponseSummaryDTO> myProducts = (this.productService.findByUser(user, pageable))
-            .map(product -> productoDTOConverter.convertToGetProduct(product, user));
+                .map(product -> productoDTOConverter.convertToGetProduct(product, user));
         return ResponseEntity.ok().body(myProducts);
     }
-
 
     // Todas las categorias
     @GetMapping("/categories")
@@ -128,7 +128,7 @@ public class ProductController {
 
     @GetMapping("/category/{id}")
     public ResponseEntity<Page<ProductResponseSummaryDTO>> findAllCategoriesPageable(@PathVariable Long id,
-                                                                                     @AuthenticationPrincipal UserEntity user, Pageable pageable) {
+            @AuthenticationPrincipal UserEntity user, Pageable pageable) {
         Page<ProductResponseSummaryDTO> products = (this.productService.findByCategoryNotUser(id, user, pageable))
                 .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
         return ResponseEntity.ok().body(products);
@@ -166,9 +166,7 @@ public class ProductController {
 
     @GetMapping("/is-mine/{id}")
     public ResponseEntity<?> checkIsMine(
-            @NotNull(message = ID_NOTNULL_MSG)
-            @Min(value = ID_MIN, message = ID_MIN_MSG)
-            @PathVariable Long id,
+            @NotNull(message = ID_NOTNULL_MSG) @Min(value = ID_MIN, message = ID_MIN_MSG) @PathVariable Long id,
             @AuthenticationPrincipal UserEntity user) {
         this.productService.checkIsMine(id, user);
         return ResponseEntity.ok().build();
@@ -176,26 +174,12 @@ public class ProductController {
 
     @PostMapping("/create")
     public ResponseEntity<ProductResponseSummaryDTO> newProduct(
-            @NotBlank(message = NAMEP_NOTBLANK_MSG)
-            @Size(min = NAMEP_MIN_SIZE, max = NAMEP_MAX_SIZE, message = NAMEP_SIZE_MSG)
-            @RequestParam("name") String name,
-            @NotBlank(message = DESCRIPTIONP_NOTBLANK_MSG)
-            @Size(min = DESCRIPTIONP_MIN_SIZE, max = DESCRIPTIONP_MAX_SIZE, message = DESCRIPTIONP_SIZE_MSG)
-            @RequestParam("description") String description,
-            @NotNull(message = PRICE_NOT_NULL_MSG)
-            @Digits(integer = PRICE_DIGITS_INTEGER, fraction = PRICE_DIGITS_FRACTION, message = PRICE_DIGITS_MSG)
-            @DecimalMin(value = PRICE_DECIMAL_MIN, inclusive = PRICE_DECIMAL_MIN_INCLUSIVE, message = PRICE_MIN_MSG)
-            @RequestParam("price") BigDecimal price,
-            @NotNull(message = STATUSP_MSG)
-            @Min(value = STATUSP_MIN, message = STATUSP_MIN_MSG)
-            @Digits(integer = STATUSP_DIGITS_INTEGER, fraction = STATUSP_DIGITS_FRACTION, message = STATUS_DIGITS_MSG)
-            @RequestParam("status") Long status,
-            @NotNull(message = CATEGORY_NOT_NULL)
-            @Digits(integer = CATEGORY_DIGITS_INTEGER, fraction = CATEGORY_DIGITS_FRACTION)
-            @DecimalMin(value = CATEGORY_DECIMAL_MIN, inclusive = CATEGORY_DECIMAL_MIN_INCLUSIVE)
-            @RequestParam("category") Long category,
-            @Size(min = PROD_IMG_SIZE_MIN, max = PROD_IMG_SIZE_MAX, message = PROD_IMG_SIZE_MSG)
-            @RequestParam("images") MultipartFile[] images,
+            @NotBlank(message = NAMEP_NOTBLANK_MSG) @Size(min = NAMEP_MIN_SIZE, max = NAMEP_MAX_SIZE, message = NAMEP_SIZE_MSG) @RequestParam("name") String name,
+            @NotBlank(message = DESCRIPTIONP_NOTBLANK_MSG) @Size(min = DESCRIPTIONP_MIN_SIZE, max = DESCRIPTIONP_MAX_SIZE, message = DESCRIPTIONP_SIZE_MSG) @RequestParam("description") String description,
+            @NotNull(message = PRICE_NOT_NULL_MSG) @Digits(integer = PRICE_DIGITS_INTEGER, fraction = PRICE_DIGITS_FRACTION, message = PRICE_DIGITS_MSG) @DecimalMin(value = PRICE_DECIMAL_MIN, inclusive = PRICE_DECIMAL_MIN_INCLUSIVE, message = PRICE_MIN_MSG) @RequestParam("price") BigDecimal price,
+            @NotNull(message = STATUSP_MSG) @Min(value = STATUSP_MIN, message = STATUSP_MIN_MSG) @Digits(integer = STATUSP_DIGITS_INTEGER, fraction = STATUSP_DIGITS_FRACTION, message = STATUS_DIGITS_MSG) @RequestParam("status") Long status,
+            @NotNull(message = CATEGORY_NOT_NULL) @Digits(integer = CATEGORY_DIGITS_INTEGER, fraction = CATEGORY_DIGITS_FRACTION) @DecimalMin(value = CATEGORY_DECIMAL_MIN, inclusive = CATEGORY_DECIMAL_MIN_INCLUSIVE) @RequestParam("category") Long category,
+            @Size(min = PROD_IMG_SIZE_MIN, max = PROD_IMG_SIZE_MAX, message = PROD_IMG_SIZE_MSG) @RequestParam("images") MultipartFile[] images,
             @AuthenticationPrincipal UserEntity user) {
         ProductRequestDTO newProduct = ProductRequestDTO.builder().name(name).description(description).price(price)
                 .status(status).category(category).urlImage(images).build();
@@ -211,44 +195,28 @@ public class ProductController {
 
     @PutMapping("/update")
     public ResponseEntity<ProductResponseSummaryDTO> updateProduct(
-            @NotNull(message = ID_NOTNULL_MSG)
-            @Min(value = ID_MIN, message = ID_MIN_MSG)
-            @RequestParam("id") Long id,
-            @NotBlank(message = NAMEP_NOTBLANK_MSG)
-            @Size(min = NAMEP_MIN_SIZE, max = NAMEP_MAX_SIZE, message = NAMEP_SIZE_MSG)
-            @RequestParam("name") String name,
-            @NotBlank(message = DESCRIPTIONP_NOTBLANK_MSG)
-            @Size(min = DESCRIPTIONP_MIN_SIZE, max = DESCRIPTIONP_MAX_SIZE, message = DESCRIPTIONP_SIZE_MSG)
-            @RequestParam("description") String description,
-            @NotNull(message = PRICE_NOT_NULL_MSG)
-            @Digits(integer = PRICE_DIGITS_INTEGER, fraction = PRICE_DIGITS_FRACTION, message = PRICE_DIGITS_MSG)
-            @DecimalMin(value = PRICE_DECIMAL_MIN, inclusive = PRICE_DECIMAL_MIN_INCLUSIVE, message = PRICE_MIN_MSG)
-            @RequestParam("price") BigDecimal price,
-            @NotNull(message = STATUSP_MSG)
-            @Min(value = STATUSP_MIN, message = STATUSP_MIN_MSG)
-            @Digits(integer = STATUSP_DIGITS_INTEGER, fraction = STATUSP_DIGITS_FRACTION, message = STATUS_DIGITS_MSG)
-            @RequestParam("status") Long status,
-            @NotNull(message = CATEGORY_NOT_NULL)
-            @Digits(integer = CATEGORY_DIGITS_INTEGER, fraction = CATEGORY_DIGITS_FRACTION)
-            @DecimalMin(value = CATEGORY_DECIMAL_MIN, inclusive = CATEGORY_DECIMAL_MIN_INCLUSIVE)
-            @RequestParam("category") Long category,
+            @NotNull(message = ID_NOTNULL_MSG) @Min(value = ID_MIN, message = ID_MIN_MSG) @RequestParam("id") Long id,
+            @NotBlank(message = NAMEP_NOTBLANK_MSG) @Size(min = NAMEP_MIN_SIZE, max = NAMEP_MAX_SIZE, message = NAMEP_SIZE_MSG) @RequestParam("name") String name,
+            @NotBlank(message = DESCRIPTIONP_NOTBLANK_MSG) @Size(min = DESCRIPTIONP_MIN_SIZE, max = DESCRIPTIONP_MAX_SIZE, message = DESCRIPTIONP_SIZE_MSG) @RequestParam("description") String description,
+            @NotNull(message = PRICE_NOT_NULL_MSG) @Digits(integer = PRICE_DIGITS_INTEGER, fraction = PRICE_DIGITS_FRACTION, message = PRICE_DIGITS_MSG) @DecimalMin(value = PRICE_DECIMAL_MIN, inclusive = PRICE_DECIMAL_MIN_INCLUSIVE, message = PRICE_MIN_MSG) @RequestParam("price") BigDecimal price,
+            @NotNull(message = STATUSP_MSG) @Min(value = STATUSP_MIN, message = STATUSP_MIN_MSG) @Digits(integer = STATUSP_DIGITS_INTEGER, fraction = STATUSP_DIGITS_FRACTION, message = STATUS_DIGITS_MSG) @RequestParam("status") Long status,
+            @NotNull(message = CATEGORY_NOT_NULL) @Digits(integer = CATEGORY_DIGITS_INTEGER, fraction = CATEGORY_DIGITS_FRACTION) @DecimalMin(value = CATEGORY_DECIMAL_MIN, inclusive = CATEGORY_DECIMAL_MIN_INCLUSIVE) @RequestParam("category") Long category,
             @RequestParam("imageOption") String imageOption,
             @RequestParam(value = "images", required = false) MultipartFile[] images,
-            @AuthenticationPrincipal UserEntity user
-    ) {
+            @AuthenticationPrincipal UserEntity user) {
 
         ProductResponseSummaryDTO result = productoDTOConverter
                 .convertToGetProduct(this.productService.edit(ProductRequestUpdateDTO.builder()
-                .id(id)
-                .name(name.toUpperCase())
-                .description(description)
-                .price(price)
-                .status(status)
-                .category(category)
-                .imageOption(imageOption)
-                .images(images)
-                .user(user)
-                .build()), user);
+                        .id(id)
+                        .name(name.toUpperCase())
+                        .description(description)
+                        .price(price)
+                        .status(status)
+                        .category(category)
+                        .imageOption(imageOption)
+                        .images(images)
+                        .user(user)
+                        .build()), user);
 
         return ResponseEntity.ok().body(result);
     }
@@ -262,5 +230,20 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/mark-as-sold/{id}")
+    public ResponseEntity<ProductResponseDTO> markAsSold(@PathVariable Long id,
+            @AuthenticationPrincipal UserEntity user) {
+        ProductEntity updatedProduct = productService.markAsSold(id, user);
+        ProductResponseDTO responseDTO = productoDTOConverter.convertToProductDTO(updatedProduct);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("/mark-as-available/{id}")
+    public ResponseEntity<ProductResponseDTO> markAsAvailable(@PathVariable Long id,
+            @AuthenticationPrincipal UserEntity user) {
+        ProductEntity updatedProduct = productService.markAsAvailable(id, user);
+        ProductResponseDTO responseDTO = productoDTOConverter.convertToProductDTO(updatedProduct);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 }

@@ -139,7 +139,8 @@ INSERT INTO status (name) VALUES
 ('como nuevo'),
 ('en buen estado'),
 ('en condiciones aceptables'),
-('lo ha dado todo');
+('lo ha dado todo'),
+('vendido');
 
 --
 -- Borrar datos de la tabla 'users'

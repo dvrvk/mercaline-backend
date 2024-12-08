@@ -8,4 +8,8 @@ public class StatusNotFoundException extends RuntimeException {
     public StatusNotFoundException() {
         super("No se puede encontrar el estado seleccionado.");
     }
+
+    public StatusNotFoundException(String string) {
+        //TODO Auto-generated constructor stub
+    }
 }

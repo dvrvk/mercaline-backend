@@ -6,7 +6,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/> 
 	</parent>
 	<groupId>com.mercaline</groupId>
 	<artifactId>mercaline</artifactId>
@@ -99,7 +99,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.2</version> <!-- Usa la versión más reciente de JUnit 4 -->
+			<version>4.13.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
