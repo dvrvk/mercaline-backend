@@ -32,6 +32,7 @@ public class ProductoDTOConverter {
                 .category(product.getCategory().getName())
                 .id_category(product.getCategory().getId())
                 .imageUrl(product.getUrlImage())
+                .cp(product.getCp())
                 .seller(ResponseUserCompleteDTO.builder()
                         .id(product.getUser().getId())
                         .username(product.getUser().getUsername())
@@ -66,6 +67,7 @@ public class ProductoDTOConverter {
                 .imageUrl(product.getUrlImage())
                 .createDate(product.getCreateDate())
                 .seller(userDTO)
+                .cp(product.getCp())
                 .build();
     }
 }
