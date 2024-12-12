@@ -21,4 +21,5 @@ public class ProductRequestUpdateDTO {
     private String imageOption;
     private MultipartFile[] images;
     private UserEntity user;
+    private String cp;
 }

@@ -73,6 +73,8 @@ public class AppConstants {
     public static final int PROD_IMG_SIZE_MAX = 5;
     public static final String PROD_IMG_SIZE_MSG = "Debes subir entre 1 y 5 imágenes";
 
+    public static final String CP_NOT_NULL ="El código postal es obligatorio";
+
     // Options images update
     public static final List<String> UPDATE_IMAGES_OPTIONS = List.of("no-modificar", "sustituir", "agregar");
 

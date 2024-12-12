@@ -1,38 +1,5 @@
 package com.mercaline.controller;
 
-import static com.mercaline.config.utils.AppConstants.CATEGORY_DECIMAL_MIN;
-import static com.mercaline.config.utils.AppConstants.CATEGORY_DECIMAL_MIN_INCLUSIVE;
-import static com.mercaline.config.utils.AppConstants.CATEGORY_DIGITS_FRACTION;
-import static com.mercaline.config.utils.AppConstants.CATEGORY_DIGITS_INTEGER;
-import static com.mercaline.config.utils.AppConstants.CATEGORY_NOT_NULL;
-import static com.mercaline.config.utils.AppConstants.DESCRIPTIONP_MAX_SIZE;
-import static com.mercaline.config.utils.AppConstants.DESCRIPTIONP_MIN_SIZE;
-import static com.mercaline.config.utils.AppConstants.DESCRIPTIONP_NOTBLANK_MSG;
-import static com.mercaline.config.utils.AppConstants.DESCRIPTIONP_SIZE_MSG;
-import static com.mercaline.config.utils.AppConstants.ID_MIN;
-import static com.mercaline.config.utils.AppConstants.ID_MIN_MSG;
-import static com.mercaline.config.utils.AppConstants.ID_NOTNULL_MSG;
-import static com.mercaline.config.utils.AppConstants.NAMEP_MAX_SIZE;
-import static com.mercaline.config.utils.AppConstants.NAMEP_MIN_SIZE;
-import static com.mercaline.config.utils.AppConstants.NAMEP_NOTBLANK_MSG;
-import static com.mercaline.config.utils.AppConstants.NAMEP_SIZE_MSG;
-import static com.mercaline.config.utils.AppConstants.PRICE_DECIMAL_MIN;
-import static com.mercaline.config.utils.AppConstants.PRICE_DECIMAL_MIN_INCLUSIVE;
-import static com.mercaline.config.utils.AppConstants.PRICE_DIGITS_FRACTION;
-import static com.mercaline.config.utils.AppConstants.PRICE_DIGITS_INTEGER;
-import static com.mercaline.config.utils.AppConstants.PRICE_DIGITS_MSG;
-import static com.mercaline.config.utils.AppConstants.PRICE_MIN_MSG;
-import static com.mercaline.config.utils.AppConstants.PRICE_NOT_NULL_MSG;
-import static com.mercaline.config.utils.AppConstants.PROD_IMG_SIZE_MAX;
-import static com.mercaline.config.utils.AppConstants.PROD_IMG_SIZE_MIN;
-import static com.mercaline.config.utils.AppConstants.PROD_IMG_SIZE_MSG;
-import static com.mercaline.config.utils.AppConstants.STATUSP_DIGITS_FRACTION;
-import static com.mercaline.config.utils.AppConstants.STATUSP_DIGITS_INTEGER;
-import static com.mercaline.config.utils.AppConstants.STATUSP_MIN;
-import static com.mercaline.config.utils.AppConstants.STATUSP_MIN_MSG;
-import static com.mercaline.config.utils.AppConstants.STATUSP_MSG;
-import static com.mercaline.config.utils.AppConstants.STATUS_DIGITS_MSG;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -76,6 +43,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+
+import static com.mercaline.config.utils.AppConstants.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -196,9 +165,11 @@ public class ProductController {
             @RequestParam("category") Long category,
             @Size(min = PROD_IMG_SIZE_MIN, max = PROD_IMG_SIZE_MAX, message = PROD_IMG_SIZE_MSG)
             @RequestParam("images") MultipartFile[] images,
+            @NotNull(message = CP_NOT_NULL)
+            @RequestParam("cp") String cp,
             @AuthenticationPrincipal UserEntity user) {
         ProductRequestDTO newProduct = ProductRequestDTO.builder().name(name).description(description).price(price)
-                .status(status).category(category).urlImage(images).build();
+                .status(status).category(category).urlImage(images).cp(cp).build();
         try {
             ProductResponseSummaryDTO result = productoDTOConverter
                     .convertToGetProduct(this.productService.create(newProduct, user), user);
@@ -234,6 +205,7 @@ public class ProductController {
             @RequestParam("category") Long category,
             @RequestParam("imageOption") String imageOption,
             @RequestParam(value = "images", required = false) MultipartFile[] images,
+            @RequestParam(value = "cp", required = false) String cp,
             @AuthenticationPrincipal UserEntity user
     ) {
 
@@ -248,6 +220,7 @@ public class ProductController {
                 .imageOption(imageOption)
                 .images(images)
                 .user(user)
+                .cp(cp)
                 .build()), user);
 
         return ResponseEntity.ok().body(result);

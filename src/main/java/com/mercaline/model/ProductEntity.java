@@ -65,6 +65,9 @@ public class ProductEntity {
     @NotNull(message = "Es obligatorio subir al menos una imagen")
     private String urlImage;
 
+    @NotNull(message = CP_NOT_NULL)
+    private String cp;
+
     @PrePersist
     protected void onCreate() {
         this.createDate = LocalDateTime.now();
