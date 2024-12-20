@@ -30,4 +30,6 @@ public class ProductResponseSummaryDTO {
     private LocalDateTime createDate;
 
     private ResponseUserProductDTO seller;
+
+    private String cp;
 }

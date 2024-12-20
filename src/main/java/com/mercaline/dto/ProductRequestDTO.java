@@ -42,4 +42,7 @@ public class ProductRequestDTO {
     @DecimalMin(value = CATEGORY_DECIMAL_MIN, inclusive = CATEGORY_DECIMAL_MIN_INCLUSIVE)
     private Long category;
 
+    @NotNull(message = CP_NOT_NULL)
+    private String cp;
+
 }

@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +89,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		// Construir productEntity
 		ProductEntity product = ProductEntity.builder().name(newProduct.getName())
 				.description(newProduct.getDescription()).price(newProduct.getPrice()).urlImage(imagesPath)
-				.status(status).category(category).user(user).build();
+				.status(status).category(category).user(user).cp(newProduct.getCp()).build();
 
 		return this.repositorio.save(product);
 	}
@@ -128,6 +129,9 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		myproduct.setPrice(productUpdate.getPrice());
 		myproduct.setStatus(status);
 		myproduct.setCategory(category);
+
+		Optional.ofNullable(productUpdate.getCp())
+				.ifPresent(myproduct::setCp);
 
 		try {
 			myproduct.setUrlImage(updateImages(productUpdate, myproduct));

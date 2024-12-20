@@ -83,4 +83,7 @@ public class ProductResponseDTO {
    /** The seller. */
     private ResponseUserCompleteDTO seller;
 
+    /** Postal code **/
+    private String cp;
+
 }
