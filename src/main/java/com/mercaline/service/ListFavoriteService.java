@@ -1,7 +1,9 @@
 package com.mercaline.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DuplicateKeyException;
@@ -15,6 +17,7 @@ import com.mercaline.dto.FavoriteProductsInAListResponseDTO;
 import com.mercaline.dto.converter.FavoriteListsDTOConverter;
 import com.mercaline.error.exceptions.FavoriteListException;
 import com.mercaline.error.exceptions.FavoriteListNotFoundException;
+import com.mercaline.error.exceptions.ProductUnauthorizedAccessException;
 import com.mercaline.error.exceptions.ProductoNotFoundException;
 import com.mercaline.model.ListFavoriteEntity;
 import com.mercaline.model.ProductEntity;
@@ -59,7 +62,7 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 		return this.repositorio.findByUser(user, pageable)
 				.map(favoriteList -> favoriteListsDTOConverter.convertToResponseFavoriteListsSummaryDTO(
 						favoriteList.getId(), favoriteList.getName(),
-						favoriteService.findByFavoriteList(favoriteList)));
+						favoriteService.findByFavoriteList(favoriteList).size()));
 	}
 
 	/**
@@ -70,16 +73,17 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 	 * @param pageable the pageable
 	 * @return the page
 	 */
-	public Page<FavoriteProductsInAListResponseDTO> findProductsByFavoriteList(UserEntity user, Long idList,
-			Pageable pageable) {
+	public List<FavoriteProductsInAListResponseDTO> findProductsByFavoriteList(UserEntity user, Long idList) {
 		// Buscar las listas del usuario y ver si coinciden el idList pasado por el
 		// front
 		ListFavoriteEntity listFavoriteEntity = this.repositorio.findByIdAndUser(idList, user)
 				.orElseThrow(FavoriteListNotFoundException::new);
-
-		return this.favoriteService.findByFavoriteList(listFavoriteEntity, pageable)
-				.map(favoriteList -> favoriteListsDTOConverter.convertToResponseFavoriteProductsSummaryDTO(
-						favoriteList.getFavoriteList(), favoriteList.getProduct()));
+		
+		List<FavoriteProductsInAListResponseDTO> output = new ArrayList<>();
+		this.favoriteService.findByFavoriteList(listFavoriteEntity)
+				.forEach(favoriteList -> output.add(favoriteListsDTOConverter.convertToResponseFavoriteProductsSummaryDTO(
+						favoriteList.getFavoriteList(), favoriteList.getProduct())));
+		return output;
 	}
 	
 	/**
@@ -104,6 +108,16 @@ public class ListFavoriteService extends BaseService<ListFavoriteEntity, Long, L
 			throw new FavoriteListException();
 		}
 		return favoriteList;
+	}
+	
+	@Transactional(rollbackFor = { IOException.class, RuntimeException.class })
+	public void deleteFavoriteList(UserEntity user, Long id) {
+		try {
+			this.repositorio.deleteByIdAndUser(id, user);
+		} catch (Exception e) {
+			throw new ProductUnauthorizedAccessException(id);
+		}
+		
 	}
 
 	/**

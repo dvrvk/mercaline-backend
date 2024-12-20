@@ -2,8 +2,6 @@ package com.mercaline.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +33,7 @@ public class FavoriteService extends BaseService<FavoriteEntity, Long, FavoriteR
      * @param favoriteList the favorite list
      * @return the integer
      */
-    public Integer findByFavoriteList(ListFavoriteEntity favoriteList) {
+    public Integer findByFavoriteListSize(ListFavoriteEntity favoriteList) {
         return this.repositorio.findByFavoriteList(favoriteList).size();
     }
     
@@ -46,8 +44,8 @@ public class FavoriteService extends BaseService<FavoriteEntity, Long, FavoriteR
      * @param pageable the pageable
      * @return the page
      */
-    public Page<FavoriteEntity> findByFavoriteList(ListFavoriteEntity favoriteList, Pageable pageable) {
-        return this.repositorio.findByFavoriteList(favoriteList, pageable);
+    public List<FavoriteEntity> findByFavoriteList(ListFavoriteEntity favoriteList) {
+        return this.repositorio.findByFavoriteList(favoriteList);
     }
     
     /**
