@@ -171,7 +171,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	public Page<ProductEntity> findByCategoryNotUser(Long categoryId, UserEntity user, Pageable pageable) {
 		CategoryEntity category = categoryService.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
 
-		return this.repositorio.findByUserNotAndCategory(user, category, pageable);
+		return this.repositorio.findByUserNotAndCategoryAndSoldFalse(user, category, pageable);
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	 * @return the page
 	 */
 	public Page<ProductEntity> findOthers(UserEntity user, Pageable pageable) {
-		return this.repositorio.findByUserNot(user, pageable);
+		return this.repositorio.findByUserNotAndSoldFalse(user, pageable);
 	}
 
 	/**
@@ -375,4 +375,26 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		}
 		return atLeastOneDeleted;
 	}
+
+	public ProductEntity markAsSold(Long productId, UserEntity user) {
+		// Verificar los permisos
+		ProductEntity product = comprobarPermisosProduct(productRepository.findById(productId)
+				.orElseThrow(() -> new ProductoNotFoundException(productId)), user);
+
+		// Cambiar a vendido
+		product.setSold(true);
+		return productRepository.save(product);
+	}
+
+	public ProductEntity markAsAvailable(Long productId, UserEntity user) {
+		// Verificar los permisos
+		ProductEntity product = comprobarPermisosProduct(productRepository.findById(productId)
+				.orElseThrow(() -> new ProductoNotFoundException(productId)), user);
+
+		// Cambiar a vendido
+		product.setSold(false);
+		return productRepository.save(product);
+	}
+
+
 }

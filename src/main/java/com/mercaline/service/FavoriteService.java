@@ -77,7 +77,8 @@ public class FavoriteService extends BaseService<FavoriteEntity, Long, FavoriteR
 	 * @return the list
 	 */
 	public List<FavoriteEntity> productInFavoriteList(Long idProduct, Long userId) {
-		return this.repositorio.findByProductIdAndFavoriteListUserId(idProduct, userId);
+		List<FavoriteEntity> list = this.repositorio.findByProductIdAndFavoriteListUserId(idProduct, userId);
+		return list;
 	}
 
 	/**

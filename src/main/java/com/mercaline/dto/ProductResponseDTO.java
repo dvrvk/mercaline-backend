@@ -86,4 +86,6 @@ public class ProductResponseDTO {
     /** Postal code **/
     private String cp;
 
+    private boolean sold;
+
 }

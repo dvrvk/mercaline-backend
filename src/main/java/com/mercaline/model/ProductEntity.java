@@ -51,6 +51,9 @@ public class ProductEntity {
     @NotNull(message = "La fecha es obligatoria")
     private LocalDateTime createDate;
 
+    @Column(name="sold")
+    private boolean sold = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id", nullable = false)
     @NotNull(message = "El vendedor es obligatorio")
@@ -65,7 +68,7 @@ public class ProductEntity {
     @NotNull(message = "Es obligatorio subir al menos una imagen")
     private String urlImage;
 
-    @NotNull(message = CP_NOT_NULL)
+    @Column(name = "cp")
     private String cp;
 
     @PrePersist

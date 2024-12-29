@@ -41,6 +41,7 @@ public class ProductoDTOConverter {
                         .email(product.getUser().getEmail())
                         .tel(product.getUser().getTel())
                         .build())
+                .sold(product.isSold())
                 .build();
     }
 
@@ -68,6 +69,7 @@ public class ProductoDTOConverter {
                 .createDate(product.getCreateDate())
                 .seller(userDTO)
                 .cp(product.getCp())
+                .sold(product.isSold())
                 .build();
     }
 }
