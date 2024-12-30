@@ -47,7 +47,8 @@ public class FavoriteListsDTOConverter {
                 		.price(product.getPrice())
                 		.category(product.getCategory().getName())
                 		.status(product.getStatus().getName())
-                		.imageUrl(product.getUrlImage()).build())
+                		.imageUrl(product.getUrlImage())
+                        .sold(product.isSold()).build())
                 .build();
     }
 }

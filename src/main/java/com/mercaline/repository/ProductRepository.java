@@ -18,9 +18,9 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 	
     Page<ProductEntity> findByUser(UserEntity user, Pageable pageable);
 
-    Page<ProductEntity> findByUserNot(UserEntity user, Pageable pageable);
+    Page<ProductEntity> findByUserNotAndSoldFalse(UserEntity user, Pageable pageable);
 
-    Page<ProductEntity> findByUserNotAndCategory(UserEntity user, CategoryEntity category, Pageable pageable);
+    Page<ProductEntity> findByUserNotAndCategoryAndSoldFalse(UserEntity user, CategoryEntity category, Pageable pageable);
 
     @Query("SELECT p FROM ProductEntity p WHERE " +
             "(:category IS NULL OR p.category.id = :category) AND " +
@@ -43,7 +43,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
             "(:category IS NULL OR p.category.id = :category) AND " +
             "p.user.id != :userId AND " +
             "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
-            "(:maxPrice IS NULL OR p.price <= :maxPrice)")
+            "(:maxPrice IS NULL OR p.price <= :maxPrice) AND " +
+            "p.sold = false")
     Page<ProductEntity> findProductsByFilterNotStatus2(@Param("category") Long category,
                                                        @Param("userId") Long userId,
                                                        @Param("minPrice") BigDecimal minPrice,

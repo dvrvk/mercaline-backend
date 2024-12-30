@@ -32,4 +32,6 @@ public class ProductResponseSummaryDTO {
     private ResponseUserProductDTO seller;
 
     private String cp;
+
+    private boolean sold;
 }

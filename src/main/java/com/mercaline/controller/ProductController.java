@@ -235,5 +235,18 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/mark-as-sold/{id}")
+    public ResponseEntity<?> markAsSold(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
+        ProductEntity updatedProduct = productService.markAsSold(id, user);
+        ProductResponseDTO responseDTO = productoDTOConverter.convertToProductDTO(updatedProduct);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @PutMapping("/mark-as-available/{id}")
+    public ResponseEntity<?> markAsAvailable(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
+        ProductEntity updatedProduct = productService.markAsAvailable(id, user);
+        ProductResponseDTO responseDTO = productoDTOConverter.convertToProductDTO(updatedProduct);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 }
