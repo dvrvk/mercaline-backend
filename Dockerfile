@@ -11,4 +11,4 @@ COPY target/mercaline-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
 
 # Comando para ejecutar la aplicación Spring Boot
-CMD ["java", "-jar", "mercaline-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "mercaline-0.0.1-SNAPSHOT.jar", "--spring.profiles.active=prod"]
