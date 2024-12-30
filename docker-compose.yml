@@ -1,0 +1,45 @@
+# IMPORTANTE - el archivo se tiene que copiar dos niveles por encima ../../
+version: '3.8'
+
+services:
+  frontend-mercaline:
+    build:
+      context: ./prueba_frond/angular-front
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./mercaline/mercaline
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/mercaline
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=mercaline
+      - MYSQL_USER=mercaline_user
+      - MYSQL_PASSWORD=mercaline_password
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+networks:
+  app-network:
+    driver: bridge
