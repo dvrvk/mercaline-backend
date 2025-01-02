@@ -9,9 +9,9 @@ Este proyecto está diseñado para ser ejecutado con contenedores Docker, incluy
 El proyecto debe organizarse de la siguiente manera:
 
 /proyecto-mercaline
-│
-├── docker-compose.yml
-├── prueba_frond/
+|
+|── docker-compose.yml
+|── prueba_frond/
 │   └── angular-front/
 │       ├── Dockerfile
 │       ├── (archivos del proyecto Angular)
