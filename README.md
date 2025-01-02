@@ -1,3 +1,92 @@
+# 🚀 Proyecto Mercaline: Guía de Construcción y Despliegue con Docker
+
+Este proyecto está diseñado para ser ejecutado con contenedores Docker, incluyendo servicios para el **frontend**, **backend**, y la **base de datos**. A continuación, se proporciona una guía paso a paso para construir y desplegar la aplicación.
+
+---
+
+## 📂 Estructura del Proyecto
+
+El proyecto debe organizarse de la siguiente manera:
+
+/proyecto-mercaline
+│
+├── docker-compose.yml
+├── prueba_frond/
+│   └── angular-front/
+│       ├── Dockerfile
+│       ├── (archivos del proyecto Angular)
+│
+├── mercaline/
+│   └── mercaline/
+│       ├── Dockerfile
+│       ├── target/
+│       │   └── mercaline-0.0.1-SNAPSHOT.jar
+│       ├── (archivos del proyecto Spring Boot)
+│
+└── sql/
+    └── init.sql
+
+
+- **`docker-compose.yml`**: Archivo principal para orquestar los contenedores.
+- **`prueba_frond/angular-front/Dockerfile`**: Dockerfile para el frontend Angular.
+- **`mercaline/mercaline/Dockerfile`**: Dockerfile para el backend Spring Boot.
+- **`sql/init.sql`**: Script SQL para inicializar la base de datos MySQL.
+
+---
+
+## 📜 Requisitos Previos
+
+1. **Docker y Docker Compose** instalados en tu máquina.
+   - [Instalar Docker](https://docs.docker.com/get-docker/)
+   - [Instalar Docker Compose](https://docs.docker.com/compose/install/)
+
+2. Asegúrate de que los proyectos de **frontend** y **backend** están configurados correctamente:
+   - El frontend debe estar ubicado en `prueba_frond/angular-front`.
+   - El backend debe estar empaquetado como un archivo JAR en `mercaline/mercaline/target`.
+
+---
+
+## 🛠️ Instrucciones para Construir y Desplegar
+
+### 1️⃣ Copiar los Archivos
+- Asegúrate de copiar el archivo `docker-compose.yml` en la raíz del proyecto junto con las carpetas `prueba_frond`, `mercaline`, y `sql`.
+
+### 2️⃣ Construcción de Contenedores
+En la terminal, navega hasta la raíz del proyecto y ejecuta:
+
+```bash
+docker-compose build
+````
+Este comando construirá las imágenes de Docker para los servicios frontend, backend, y MySQL.
+
+### 3️⃣ Inicio de los Servicios
+Una vez construidas las imágenes, inicia los contenedores con:
+
+```bash
+docker-compose up
+```
+Esto iniciará todos los servicios y los conectará en la red definida.
+
+### 4️⃣ Acceso a los Servicios
+- **Frontend:** Accede al frontend desde tu navegador en [http://localhost](http://localhost).
+- **Backend:** La API REST estará disponible en [http://localhost:8080](http://localhost:8080).
+- **Base de Datos:** La base de datos MySQL estará accesible en el puerto `3306`.
+
+### 5️⃣🧹 Detener y Limpiar los Contenedores
+Para detener los contenedores, utiliza:
+
+```bash
+docker-compose down
+```
+Este comando también eliminará las redes creadas, pero mantendrá los volúmenes de datos.
+
+
+### ⚙️ Personalización
+- **Cambiar Puertos:** Puedes modificar los puertos expuestos en `docker-compose.yml` si es necesario.
+- **Actualizar el Script SQL:** Edita `sql/init.sql` para añadir datos iniciales o cambiar la estructura de la base de datos.
+
+---
+
 # Crear la Base de Datos `mercaline_bd`
 
 Este proyecto contiene el script para la creación de la base de datos `mercaline_bd`, diseñada para gestionar productos, usuarios, categorías y listas de favoritos. La base de datos está configurada para funcionar con **MariaDB** (versión 10.4.28 o superior) y **PHP** (versión 8.2.4 o superior).
