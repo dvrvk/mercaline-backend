@@ -8,24 +8,7 @@ Este proyecto está diseñado para ser ejecutado con contenedores Docker, incluy
 
 El proyecto debe organizarse de la siguiente manera:
 
-/proyecto-mercaline
-|
-|── docker-compose.yml
-|── prueba_frond/
-│   └── angular-front/
-│       ├── Dockerfile
-│       ├── (archivos del proyecto Angular)
-│
-├── mercaline/
-│   └── mercaline/
-│       ├── Dockerfile
-│       ├── target/
-│       │   └── mercaline-0.0.1-SNAPSHOT.jar
-│       ├── (archivos del proyecto Spring Boot)
-│
-└── sql/
-    └── init.sql
-
+![image](https://github.com/user-attachments/assets/a9a84bc1-83b9-4696-9256-6e395420116a)
 
 - **`docker-compose.yml`**: Archivo principal para orquestar los contenedores.
 - **`prueba_frond/angular-front/Dockerfile`**: Dockerfile para el frontend Angular.
