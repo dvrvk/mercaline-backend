@@ -25,14 +25,38 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
+/**
+ * The Class JwtAuthFilter.
+ */
 @Component
+
+/**
+ * Instantiates a new jwt auth filter.
+ *
+ * @param jwtTokenProvider the jwt token provider
+ * @param customUserDetailsService the custom user details service
+ */
 @RequiredArgsConstructor
+
+/** The Constant log. */
 @Log
 public class JwtAuthFilter extends OncePerRequestFilter{
 
+    /** The jwt token provider. */
     private final JwtTokenProvider jwtTokenProvider;
+    
+    /** The custom user details service. */
     private final CustomUserDetailsService customUserDetailsService;
 
+    /**
+     * Do filter internal.
+     *
+     * @param request the request
+     * @param response the response
+     * @param filterChain the filter chain
+     * @throws ServletException the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -68,6 +92,12 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 
     }
 
+    /**
+     * Gets the token from request.
+     *
+     * @param request the request
+     * @return the token from request
+     */
     public String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader(JwtTokenProvider.TOKEN_HEADER);
 
@@ -77,6 +107,14 @@ public class JwtAuthFilter extends OncePerRequestFilter{
         return null;
     }
 
+    /**
+     * Handle autorization exception.
+     *
+     * @param response the response
+     * @param ex the ex
+     * @param status the status
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     // Control de errores de autenticación - conexión
     private void handleAutorizationException(HttpServletResponse response, Exception ex, HttpStatus status) throws IOException {
         response.setStatus(status.value());

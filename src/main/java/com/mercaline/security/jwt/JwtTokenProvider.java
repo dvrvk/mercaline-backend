@@ -13,19 +13,38 @@ import lombok.extern.java.Log;
 
 import java.util.Date;
 
+/**
+ * The Class JwtTokenProvider.
+ */
 @Component
+
+/** The Constant log. */
 @Log
 public class JwtTokenProvider {
+    
+    /** The Constant TOKEN_HEADER. */
     public static final String TOKEN_HEADER = "Authorization";
+    
+    /** The Constant TOKEN_PREFIX. */
     public static final String TOKEN_PREFIX = "Bearer ";
+	
+	/** The Constant TOKEN_TYPE. */
 	public static final String TOKEN_TYPE = "JWT";
 
+    /** The jwt secreto. */
     @Value("${jwt.secret}")
     private String jwtSecreto;
 
+    /** The jwt duration seg. */
     @Value("${jwt.token-expiration}")
     private int jwtDurationSeg;
 
+    /**
+     * Generar token.
+     *
+     * @param auth the auth
+     * @return the string
+     */
     public String generarToken(Authentication auth) {
         UserEntity user = (UserEntity) auth.getPrincipal();
 
@@ -41,6 +60,12 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * Gets the user id from JWT.
+     *
+     * @param token the token
+     * @return the user id from JWT
+     */
     public Long getUserIdFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(Keys.hmacShaKeyFor(jwtSecreto.getBytes()))
@@ -51,6 +76,12 @@ public class JwtTokenProvider {
 
     }
 
+    /**
+     * Validate token.
+     *
+     * @param authToken the auth token
+     * @return true, if successful
+     */
     public boolean validateToken(String authToken) {
 
         try {

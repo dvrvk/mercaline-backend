@@ -47,6 +47,7 @@ public class FavoriteListsResponseDTO {
 	/** The name list. */
 	private String nameList;
 	
+	/** The product size. */
 	private Integer productSize;
 
 }

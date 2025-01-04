@@ -103,20 +103,8 @@ public class ProductController {
         return ResponseEntity.ok().body(products);
     }
 
-    // Filtrar productos de otros usuarios por category, List<status> - BORRAR
-    @GetMapping("/filter")
-    public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts(
-            @RequestParam(required = false) Long categoryId, @RequestParam(required = false) List<Long> status,
-            @AuthenticationPrincipal UserEntity user, Pageable pageable) {
-
-        Page<ProductResponseSummaryDTO> products = this.productService
-                .filterProducts(categoryId, status, user, pageable)
-                .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
-        return ResponseEntity.ok().body(products);
-    }
-
     // Filtrar productos
-    @GetMapping("/filter2")
+    @GetMapping("/filter")
     public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts2(
             @RequestParam(required = false) Long categoryId, @RequestParam(required = false) List<Long> status,
             @RequestParam(required = false) BigDecimal minPrice, @RequestParam(required = false) BigDecimal maxPrice,

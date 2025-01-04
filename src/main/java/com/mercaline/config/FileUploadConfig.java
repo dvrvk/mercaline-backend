@@ -10,22 +10,34 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static com.mercaline.config.utils.AppConstants.PATH_IMG;
 
+/**
+ * The Class FileUploadConfig.
+ */
 @Configuration
 public class FileUploadConfig implements WebMvcConfigurer {
 
-    @Bean
-    public MultipartConfigElement multipartConfigElement() {
-        MultipartConfigFactory factory = new MultipartConfigFactory();
+	/**
+	 * Multipart config element.
+	 *
+	 * @return the multipart config element
+	 */
+	@Bean
+	public MultipartConfigElement multipartConfigElement() {
+		MultipartConfigFactory factory = new MultipartConfigFactory();
 
-        factory.setMaxFileSize(DataSize.ofMegabytes(10));  // 10 MB
-        factory.setMaxRequestSize(DataSize.ofMegabytes(10));  // 10 MB
+		factory.setMaxFileSize(DataSize.ofMegabytes(10)); // 10 MB
+		factory.setMaxRequestSize(DataSize.ofMegabytes(10)); // 10 MB
 
-        return factory.createMultipartConfig();
-    }
+		return factory.createMultipartConfig();
+	}
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:" + PATH_IMG + "/");
-    }
+	/**
+	 * Adds the resource handlers.
+	 *
+	 * @param registry the registry
+	 */
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/images/**").addResourceLocations("file:" + PATH_IMG + "/");
+	}
 }

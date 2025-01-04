@@ -49,21 +49,21 @@ import net.coobird.thumbnailator.Thumbnails;
  * Instantiates a new product service.
  *
  * @param productRepository the product repository
- * @param categoryService the category service
- * @param statusService the status service
+ * @param categoryService   the category service
+ * @param statusService     the status service
  */
 @RequiredArgsConstructor
 public class ProductService extends BaseService<ProductEntity, Long, ProductRepository> {
 
 	/** The product repository. */
 	private final ProductRepository productRepository;
-	
+
 	/** The category service. */
 	private final CategoryService categoryService;
-	
+
 	/** The status service. */
 	private final StatusService statusService;
-	
+
 	/** The Constant logger. */
 	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
@@ -71,7 +71,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	 * Creates the.
 	 *
 	 * @param newProduct the new product
-	 * @param user the user
+	 * @param user       the user
 	 * @return the product entity
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
@@ -98,7 +98,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	 * Delete.
 	 *
 	 * @param product the product
-	 * @param user the user
+	 * @param user    the user
 	 */
 	public void delete(ProductEntity product, UserEntity user) {
 		ProductEntity existProduct = comprobarPermisosProduct(product, user);
@@ -130,8 +130,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		myproduct.setStatus(status);
 		myproduct.setCategory(category);
 
-		Optional.ofNullable(productUpdate.getCp())
-				.ifPresent(myproduct::setCp);
+		Optional.ofNullable(productUpdate.getCp()).ifPresent(myproduct::setCp);
 
 		try {
 			myproduct.setUrlImage(updateImages(productUpdate, myproduct));
@@ -145,7 +144,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	/**
 	 * Check is mine.
 	 *
-	 * @param id the id
+	 * @param id   the id
 	 * @param user the user
 	 * @return true, if successful
 	 */
@@ -164,8 +163,8 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	 * Find by category not user.
 	 *
 	 * @param categoryId the category id
-	 * @param user the user
-	 * @param pageable the pageable
+	 * @param user       the user
+	 * @param pageable   the pageable
 	 * @return the page
 	 */
 	public Page<ProductEntity> findByCategoryNotUser(Long categoryId, UserEntity user, Pageable pageable) {
@@ -177,7 +176,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	/**
 	 * Find by user.
 	 *
-	 * @param user the user
+	 * @param user     the user
 	 * @param pageable the pageable
 	 * @return the page
 	 */
@@ -188,7 +187,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	/**
 	 * Find others.
 	 *
-	 * @param user the user
+	 * @param user     the user
 	 * @param pageable the pageable
 	 * @return the page
 	 */
@@ -200,9 +199,9 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	 * Filter products.
 	 *
 	 * @param category_id the category id
-	 * @param statusList the status list
-	 * @param user the user
-	 * @param pageable the pageable
+	 * @param statusList  the status list
+	 * @param user        the user
+	 * @param pageable    the pageable
 	 * @return the page
 	 */
 	public Page<ProductEntity> filterProducts(Long category_id, List<Long> statusList, UserEntity user,
@@ -228,11 +227,11 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	 * Filter products 2.
 	 *
 	 * @param category_id the category id
-	 * @param statusList the status list
-	 * @param user the user
-	 * @param minPrice the min price
-	 * @param maxPrice the max price
-	 * @param pageable the pageable
+	 * @param statusList  the status list
+	 * @param user        the user
+	 * @param minPrice    the min price
+	 * @param maxPrice    the max price
+	 * @param pageable    the pageable
 	 * @return the page
 	 */
 	public Page<ProductEntity> filterProducts2(Long category_id, List<Long> statusList, UserEntity user,
@@ -261,7 +260,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	 * Comprobar permisos product.
 	 *
 	 * @param product the product
-	 * @param user the user
+	 * @param user    the user
 	 * @return the product entity
 	 */
 	private ProductEntity comprobarPermisosProduct(ProductEntity product, UserEntity user) {
@@ -326,7 +325,7 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 	 * Update images.
 	 *
 	 * @param updateProduct the update product
-	 * @param myProduct the my product
+	 * @param myProduct     the my product
 	 * @return the string
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
@@ -376,25 +375,40 @@ public class ProductService extends BaseService<ProductEntity, Long, ProductRepo
 		return atLeastOneDeleted;
 	}
 
+	/**
+	 * Mark as sold.
+	 *
+	 * @param productId the product id
+	 * @param user      the user
+	 * @return the product entity
+	 */
 	public ProductEntity markAsSold(Long productId, UserEntity user) {
 		// Verificar los permisos
-		ProductEntity product = comprobarPermisosProduct(productRepository.findById(productId)
-				.orElseThrow(() -> new ProductoNotFoundException(productId)), user);
+		ProductEntity product = comprobarPermisosProduct(
+				productRepository.findById(productId).orElseThrow(() -> new ProductoNotFoundException(productId)),
+				user);
 
 		// Cambiar a vendido
 		product.setSold(true);
 		return productRepository.save(product);
 	}
 
+	/**
+	 * Mark as available.
+	 *
+	 * @param productId the product id
+	 * @param user      the user
+	 * @return the product entity
+	 */
 	public ProductEntity markAsAvailable(Long productId, UserEntity user) {
 		// Verificar los permisos
-		ProductEntity product = comprobarPermisosProduct(productRepository.findById(productId)
-				.orElseThrow(() -> new ProductoNotFoundException(productId)), user);
+		ProductEntity product = comprobarPermisosProduct(
+				productRepository.findById(productId).orElseThrow(() -> new ProductoNotFoundException(productId)),
+				user);
 
 		// Cambiar a vendido
 		product.setSold(false);
 		return productRepository.save(product);
 	}
-
 
 }
