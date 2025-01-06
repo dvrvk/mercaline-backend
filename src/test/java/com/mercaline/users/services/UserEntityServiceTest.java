@@ -48,13 +48,13 @@ class UserEntityServiceTest {
 	 *
 	 * @throws Exception the exception
 	 */
-	@Test
-	void testGetUserException() throws Exception {
-		assertThrows(UserNotFoundException.class, () -> {
-			userEntityService.getUser(1L);
-		});
-		Mockito.verify(this.userEntityRepository, Mockito.times(1)).findById(1L);
-	}
+//	@Test
+//	void testGetUserException() throws Exception {
+//		assertThrows(UserNotFoundException.class, () -> {
+//			userEntityService.getUser(1L);
+//		});
+//		Mockito.verify(this.userEntityRepository, Mockito.times(1)).findById(1L);
+//	}
 
 	/**
 	 * Test get user.

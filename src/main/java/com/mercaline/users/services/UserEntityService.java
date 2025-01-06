@@ -99,7 +99,6 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 		} catch (Exception e) {
 			throw new DatabaseConnectionException();
 		}
-
 		if (optionalUser.isPresent()) {
 			UserEntity existingUser = optionalUser.get();
 			existingUser.setUsername(updatedUser.getUsername());
@@ -122,13 +121,10 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 	 * @return true, if successful
 	 */
 	public boolean changePassword(String password, String newPassword, UserEntity user) {
-
 		passwordMatch(password, user.getPassword());
-
 		UserEntity userUpdate = UserEntity.builder().id(user.getId()).username(user.getUsername()).name(user.getName())
 				.lastname(user.getLastname()).password(passwordEncoder.encode(newPassword)).email(user.getEmail())
 				.tel(user.getTel()).build();
-
 		UserEntity savedUser = this.userEntityRepository.save(userUpdate);
 		return savedUser.getId().equals(userUpdate.getId());
 	}
@@ -141,7 +137,6 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 	@Transactional
 	public void deleteUser(UserEntity user) {
 		this.delete(user);
-
 		// Delete user directory
 		Path userImageDir = Paths.get(PATH_IMG, user.getId().toString());
 		deleteDirectory(userImageDir);

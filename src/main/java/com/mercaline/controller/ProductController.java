@@ -46,27 +46,56 @@ import lombok.RequiredArgsConstructor;
 
 import static com.mercaline.config.utils.AppConstants.*;
 
+/**
+ * The Class ProductController.
+ */
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/products")
+
+/**
+ * Instantiates a new product controller.
+ *
+ * @param productService the product service
+ * @param productoDTOConverter the producto DTO converter
+ * @param categoryService the category service
+ * @param statusService the status service
+ */
 @RequiredArgsConstructor
 @Validated
 public class ProductController {
 
+    /** The product service. */
     private final ProductService productService;
+    
+    /** The producto DTO converter. */
     private final ProductoDTOConverter productoDTOConverter;
+    
+    /** The category service. */
     private final CategoryService categoryService;
+    
+    /** The status service. */
     private final StatusService statusService;
 
-    // Todos los productos
+    /**
+     * Find all products.
+     *
+     * @param pageable the pageable
+     * @return the response entity
+     */
     @GetMapping
-    public ResponseEntity<Page<ProductResponseSummaryDTO>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<ProductResponseSummaryDTO>> findAllProducts(Pageable pageable) {
         Page<ProductResponseSummaryDTO> products = (this.productService.findAll(pageable))
                 .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
         return ResponseEntity.ok().body(products);
     }
 
-    // Un poducto determinado por id
+    /**
+     * Find by id.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok()
@@ -88,39 +117,72 @@ public class ProductController {
         return ResponseEntity.ok().body(myProducts);
     }
 
-
-    // Todas las categorias
+    /**
+     * Find all categories pageable.
+     *
+     * @param pageable the pageable
+     * @return the response entity
+     */
     @GetMapping("/categories")
     public ResponseEntity<Page<CategoryEntity>> findAllCategoriesPageable(Pageable pageable) {
         return ResponseEntity.ok().body(this.categoryService.findAll(pageable));
     }
 
+    /**
+     * Find all categories pageable.
+     *
+     * @param id the id
+     * @param user the user
+     * @param pageable the pageable
+     * @return the response entity
+     */
     @GetMapping("/category/{id}")
     public ResponseEntity<Page<ProductResponseSummaryDTO>> findAllCategoriesPageable(@PathVariable Long id,
-                                                                                     @AuthenticationPrincipal UserEntity user, Pageable pageable) {
+    		@AuthenticationPrincipal UserEntity user, Pageable pageable) {
         Page<ProductResponseSummaryDTO> products = (this.productService.findByCategoryNotUser(id, user, pageable))
                 .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
         return ResponseEntity.ok().body(products);
     }
 
-    // Filtrar productos
+    /**
+     * Filter products.
+     *
+     * @param categoryId the category id
+     * @param status the status
+     * @param minPrice the min price
+     * @param maxPrice the max price
+     * @param user the user
+     * @param pageable the pageable
+     * @return the response entity
+     */
     @GetMapping("/filter")
-    public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts2(
+    public ResponseEntity<Page<ProductResponseSummaryDTO>> filterProducts(
             @RequestParam(required = false) Long categoryId, @RequestParam(required = false) List<Long> status,
             @RequestParam(required = false) BigDecimal minPrice, @RequestParam(required = false) BigDecimal maxPrice,
             @AuthenticationPrincipal UserEntity user, Pageable pageable) {
-
         Page<ProductResponseSummaryDTO> products = this.productService
                 .filterProducts2(categoryId, status, user, minPrice, maxPrice, pageable)
                 .map(product -> productoDTOConverter.convertToGetProduct(product, product.getUser()));
         return ResponseEntity.ok().body(products);
     }
 
+    /**
+     * Find all status.
+     *
+     * @return the response entity
+     */
     @GetMapping("/status")
     public ResponseEntity<List<StatusEntity>> findAllStatus() {
         return ResponseEntity.ok().body(this.statusService.findAll());
     }
 
+    /**
+     * Check is mine.
+     *
+     * @param id the id
+     * @param user the user
+     * @return the response entity
+     */
     @GetMapping("/is-mine/{id}")
     public ResponseEntity<?> checkIsMine(
             @NotNull(message = ID_NOTNULL_MSG)
@@ -131,6 +193,19 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * New product.
+     *
+     * @param name the name
+     * @param description the description
+     * @param price the price
+     * @param status the status
+     * @param category the category
+     * @param images the images
+     * @param cp the cp
+     * @param user the user
+     * @return the response entity
+     */
     @PostMapping("/create")
     public ResponseEntity<ProductResponseSummaryDTO> newProduct(
             @NotBlank(message = NAMEP_NOTBLANK_MSG)
@@ -165,9 +240,23 @@ public class ProductController {
         } catch (IOException e) {
             throw new ImageStorageException();
         }
-
     }
 
+    /**
+     * Update product.
+     *
+     * @param id the id
+     * @param name the name
+     * @param description the description
+     * @param price the price
+     * @param status the status
+     * @param category the category
+     * @param imageOption the image option
+     * @param images the images
+     * @param cp the cp
+     * @param user the user
+     * @return the response entity
+     */
     @PutMapping("/update")
     public ResponseEntity<ProductResponseSummaryDTO> updateProduct(
             @NotNull(message = ID_NOTNULL_MSG)
@@ -194,9 +283,7 @@ public class ProductController {
             @RequestParam("imageOption") String imageOption,
             @RequestParam(value = "images", required = false) MultipartFile[] images,
             @RequestParam(value = "cp", required = false) String cp,
-            @AuthenticationPrincipal UserEntity user
-    ) {
-
+            @AuthenticationPrincipal UserEntity user) {
         ProductResponseSummaryDTO result = productoDTOConverter
                 .convertToGetProduct(this.productService.edit(ProductRequestUpdateDTO.builder()
                 .id(id)
@@ -214,15 +301,28 @@ public class ProductController {
         return ResponseEntity.ok().body(result);
     }
 
+    /**
+     * Delete product.
+     *
+     * @param id the id
+     * @param user the user
+     * @return the response entity
+     */
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
         ProductEntity productDelete = this.productService.findById(id)
                 .orElseThrow(() -> new ProductoNotFoundException(id));
-
         productService.delete(productDelete, user);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Mark as sold.
+     *
+     * @param id the id
+     * @param user the user
+     * @return the response entity
+     */
     @PutMapping("/mark-as-sold/{id}")
     public ResponseEntity<?> markAsSold(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
         ProductEntity updatedProduct = productService.markAsSold(id, user);
@@ -230,6 +330,13 @@ public class ProductController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    /**
+     * Mark as available.
+     *
+     * @param id the id
+     * @param user the user
+     * @return the response entity
+     */
     @PutMapping("/mark-as-available/{id}")
     public ResponseEntity<?> markAsAvailable(@PathVariable Long id, @AuthenticationPrincipal UserEntity user) {
         ProductEntity updatedProduct = productService.markAsAvailable(id, user);

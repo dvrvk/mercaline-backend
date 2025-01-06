@@ -89,7 +89,6 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 	public ResponseEntity<ApiError> handleConstraintViolationException(ConstraintViolationException ex) {
 		String errorMessage = ex.getConstraintViolations().stream().map(ConstraintViolation::getMessage)
 				.collect(Collectors.joining(", "));
-
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, errorMessage);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
@@ -106,9 +105,7 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-
 		Map<String, String> errors = getErrorMessagesAsMap(ex.getBindingResult().getAllErrors());
-
 		ApiErrorJSON apiError = new ApiErrorJSON(HttpStatus.BAD_REQUEST, errors);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
@@ -125,7 +122,6 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
@@ -214,5 +210,4 @@ public class GlobalControllerAdvice extends ResponseEntityExceptionHandler {
 		ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
 	}
-
 }
