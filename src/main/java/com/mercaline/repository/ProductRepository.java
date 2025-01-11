@@ -13,15 +13,49 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * The Interface ProductRepository.
+ */
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
 	
+    /**
+     * Find by user.
+     *
+     * @param user the user
+     * @param pageable the pageable
+     * @return the page
+     */
     Page<ProductEntity> findByUser(UserEntity user, Pageable pageable);
 
+    /**
+     * Find by user not and sold false.
+     *
+     * @param user the user
+     * @param pageable the pageable
+     * @return the page
+     */
     Page<ProductEntity> findByUserNotAndSoldFalse(UserEntity user, Pageable pageable);
 
+    /**
+     * Find by user not and category and sold false.
+     *
+     * @param user the user
+     * @param category the category
+     * @param pageable the pageable
+     * @return the page
+     */
     Page<ProductEntity> findByUserNotAndCategoryAndSoldFalse(UserEntity user, CategoryEntity category, Pageable pageable);
 
+    /**
+     * Find products by filter status.
+     *
+     * @param category the category
+     * @param status the status
+     * @param userId the user id
+     * @param pageable the pageable
+     * @return the page
+     */
     @Query("SELECT p FROM ProductEntity p WHERE " +
             "(:category IS NULL OR p.category.id = :category) AND " +
             "(p.status.id IN :status) AND "+
@@ -31,6 +65,14 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
                                                    @Param("userId") Long userId,
                                                    Pageable pageable);
 
+    /**
+     * Find products by filter not status.
+     *
+     * @param category the category
+     * @param userId the user id
+     * @param pageable the pageable
+     * @return the page
+     */
     @Query("SELECT p FROM ProductEntity p WHERE " +
             "(:category IS NULL OR p.category.id = :category) AND " +
             "p.user.id != :userId")
@@ -38,6 +80,16 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
                                                       @Param("userId") Long userId,
                                                       Pageable pageable);
 
+    /**
+     * Find products by filter not status 2.
+     *
+     * @param category the category
+     * @param userId the user id
+     * @param minPrice the min price
+     * @param maxPrice the max price
+     * @param pageable the pageable
+     * @return the page
+     */
     // PRUEBA
     @Query("SELECT p FROM ProductEntity p WHERE " +
             "(:category IS NULL OR p.category.id = :category) AND " +
@@ -51,6 +103,17 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
                                                        @Param("maxPrice") BigDecimal maxPrice,
                                                        Pageable pageable);
 
+    /**
+     * Find products by filter status 2.
+     *
+     * @param category the category
+     * @param status the status
+     * @param userId the user id
+     * @param minPrice the min price
+     * @param maxPrice the max price
+     * @param pageable the pageable
+     * @return the page
+     */
     @Query("SELECT p FROM ProductEntity p WHERE " +
             "(:category IS NULL OR p.category.id = :category) AND " +
             "(p.status.id IN :status) AND "+

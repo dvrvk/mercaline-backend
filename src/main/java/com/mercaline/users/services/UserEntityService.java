@@ -99,7 +99,6 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 		} catch (Exception e) {
 			throw new DatabaseConnectionException();
 		}
-
 		if (optionalUser.isPresent()) {
 			UserEntity existingUser = optionalUser.get();
 			existingUser.setUsername(updatedUser.getUsername());
@@ -113,38 +112,46 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 		}
 	}
 
+	/**
+	 * Change password.
+	 *
+	 * @param password    the password
+	 * @param newPassword the new password
+	 * @param user        the user
+	 * @return true, if successful
+	 */
 	public boolean changePassword(String password, String newPassword, UserEntity user) {
-
-	passwordMatch(password, user.getPassword());
-
-	UserEntity userUpdate = UserEntity.builder()
-			.id(user.getId())
-			.username(user.getUsername())
-			.name(user.getName())
-			.lastname(user.getLastname())
-			.password(passwordEncoder.encode(newPassword))
-			.email(user.getEmail())
-			.tel(user.getTel())
-			.build();
-
+		passwordMatch(password, user.getPassword());
+		UserEntity userUpdate = UserEntity.builder().id(user.getId()).username(user.getUsername()).name(user.getName())
+				.lastname(user.getLastname()).password(passwordEncoder.encode(newPassword)).email(user.getEmail())
+				.tel(user.getTel()).build();
 		UserEntity savedUser = this.userEntityRepository.save(userUpdate);
 		return savedUser.getId().equals(userUpdate.getId());
 	}
 
+	/**
+	 * Delete user.
+	 *
+	 * @param user the user
+	 */
 	@Transactional
 	public void deleteUser(UserEntity user) {
 		this.delete(user);
-
 		// Delete user directory
 		Path userImageDir = Paths.get(PATH_IMG, user.getId().toString());
 		deleteDirectory(userImageDir);
 	}
 
+	/**
+	 * Delete directory.
+	 *
+	 * @param dirPath the dir path
+	 */
 	private void deleteDirectory(Path dirPath) {
 		try {
 			if (Files.exists(dirPath)) {
-				Files.walk(dirPath).sorted((path1, path2) -> path2.compareTo(path1)) // Ordena en orden inverso para
-																						// borrar archivos primero
+				// Ordena en orden inverso para borrar archivos primero
+				Files.walk(dirPath).sorted((path1, path2) -> path2.compareTo(path1))
 						.forEach(path -> {
 							try {
 								Files.delete(path);
@@ -158,8 +165,14 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 		}
 	}
 
+	/**
+	 * Password match.
+	 *
+	 * @param password       the password
+	 * @param encodePassword the encode password
+	 */
 	public void passwordMatch(String password, String encodePassword) {
-		if(!passwordEncoder.matches(password, encodePassword)) {
+		if (!passwordEncoder.matches(password, encodePassword)) {
 			throw new PasswordMismatchException();
 		}
 	}

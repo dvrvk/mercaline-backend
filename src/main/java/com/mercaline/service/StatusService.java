@@ -6,7 +6,14 @@ import com.mercaline.service.base.BaseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * The Class StatusService.
+ */
 @Service
+
+/**
+ * Instantiates a new status service.
+ */
 @RequiredArgsConstructor
 public class StatusService extends BaseService<StatusEntity, Long, StatusRepository> {
 }

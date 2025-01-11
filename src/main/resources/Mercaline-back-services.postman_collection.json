@@ -1,0 +1,4526 @@
+{
+	"info": {
+		"_postman_id": "35ac4a4a-319d-4af4-9074-0db198cff112",
+		"name": "Mercaline-back-services",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40398850"
+	},
+	"item": [
+		{
+			"name": "Auth-Controller",
+			"item": [
+				{
+					"name": "http://localhost:8080/auth/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = JSON.parse(responseBody);\r",
+									"postman.setEnvironmentVariable(\"token\", response.token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"anacaro2\",\r\n    \"password\": \"HPotter12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/auth/login' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw '{\"username\":\"anacaro\",\"password\":\"HPotter76\"}'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Image-Controller",
+			"item": [
+				{
+					"name": "/images",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains expected properties\", function () {\r",
+									"    const responseBody = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseBody).to.have.property('status');\r",
+									"    pm.expect(responseBody).to.have.property('fecha');\r",
+									"    pm.expect(responseBody).to.have.property('mensaje');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/images/21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"images",
+								"21"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/images/main",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/images/main/21",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"images",
+								"main",
+								"21"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/images/main/21' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product-Controller",
+			"item": [
+				{
+					"name": "/products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains all required fields\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var requiredFields = [\"id\", \"name\", \"description\", \"status\", \"imageUrl\", \"price\", \"category\", \"createDate\", \"seller\", \"cp\", \"sold\"];\r",
+									"    jsonData.content.forEach(function(item) {\r",
+									"        requiredFields.forEach(function(field) {\r",
+									"            pm.expect(item).to.have.property(field);\r",
+									"        });\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has non-empty content\", function () {\r",
+									"    pm.expect(pm.response.json().content).to.be.an('array').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/categories?page=0&size=4' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/{id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is correct\", function () {\r",
+									"    pm.response.to.have.body(\r",
+									"        {\r",
+									"            \"id\": 1,\r",
+									"            \"name\": \"Laptop\",\r",
+									"            \"description\": \"Laptop de última generación con 16GB de RAM y 512GB SSD\",\r",
+									"            \"price\": 1200.00,\r",
+									"            \"statusId\": 3,\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/1/200/300\",\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"id_category\": 5,\r",
+									"            \"seller\": {\r",
+									"                \"id\": 1,\r",
+									"                \"username\": \"jdoe\",\r",
+									"                \"name\": \"John\",\r",
+									"                \"lastname\": \"Doe\",\r",
+									"                \"email\": \"johndoe@example.com\",\r",
+									"                \"tel\": \"123456789\"\r",
+									"            },\r",
+									"            \"cp\": \"40.445022449999996,-3.33798525\",\r",
+									"            \"sold\": false\r",
+									"        }\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has non-empty content\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('object').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"1"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/categories?page=0&size=4' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": [
+						{
+							"name": "/products Copy",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json, text/plain, */*"
+									},
+									{
+										"key": "Accept-Language",
+										"value": "es-ES,es;q=0.9,en;q=0.8"
+									},
+									{
+										"key": "Connection",
+										"value": "keep-alive"
+									},
+									{
+										"key": "Origin",
+										"value": "http://localhost:4200"
+									},
+									{
+										"key": "Referer",
+										"value": "http://localhost:4200/"
+									},
+									{
+										"key": "Sec-Fetch-Dest",
+										"value": "empty"
+									},
+									{
+										"key": "Sec-Fetch-Mode",
+										"value": "cors"
+									},
+									{
+										"key": "Sec-Fetch-Site",
+										"value": "same-site"
+									},
+									{
+										"key": "User-Agent",
+										"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+									},
+									{
+										"key": "sec-ch-ua",
+										"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+									},
+									{
+										"key": "sec-ch-ua-mobile",
+										"value": "?0"
+									},
+									{
+										"key": "sec-ch-ua-platform",
+										"value": "\"Windows\""
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8080/products/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"products",
+										"1"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Method"
+								},
+								{
+									"key": "Vary",
+									"value": "Access-Control-Request-Headers"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "http://localhost:4200"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "0"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 02 Jan 2025 11:27:53 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"name\": \"Laptop\",\n    \"description\": \"Laptop de última generación con 16GB de RAM y 512GB SSD\",\n    \"price\": 1200,\n    \"statusId\": 3,\n    \"status\": \"nuevo\",\n    \"imageUrl\": \"https://picsum.photos/id/1/200/300\",\n    \"category\": \"tecnología y electrónica\",\n    \"id_category\": 5,\n    \"seller\": {\n        \"id\": 1,\n        \"username\": \"jdoe\",\n        \"name\": \"John\",\n        \"lastname\": \"Doe\",\n        \"email\": \"johndoe@example.com\",\n        \"tel\": \"123456789\"\n    },\n    \"cp\": \"40.445022449999996,-3.33798525\",\n    \"sold\": false\n}"
+						}
+					]
+				},
+				{
+					"name": "/products/myproducts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is correct\", function () {\r",
+									"    pm.response.to.have.body(\r",
+									"\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has non-empty content\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('object').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/myproducts",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"myproducts"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/categories?page=0&size=4' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/categories",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is correct\", function () {\r",
+									"    pm.response.to.have.body(\r",
+									"\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has non-empty content\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('object').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"categories"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/categories?page=0&size=4' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/category",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is correct\", function () {\r",
+									"    pm.response.to.have.body(\r",
+									"\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has non-empty content\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('object').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/category/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"category",
+								"1"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/categories?page=0&size=4' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/categories?page=0&size=4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is correct\", function () {\r",
+									"    pm.response.to.have.body(\r",
+									"\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has non-empty content\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('object').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/categories?page=0&size=4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"categories"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "4"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/categories?page=0&size=4' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/filter",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is correct\", function () {\r",
+									"    pm.response.to.have.body(\r",
+									"{\r",
+									"    \"content\": [\r",
+									"        {\r",
+									"            \"id\": 1,\r",
+									"            \"name\": \"Laptop\",\r",
+									"            \"description\": \"Laptop de última generación con 16GB de RAM y 512GB SSD\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/1/200/300\",\r",
+									"            \"price\": 1200.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 1,\r",
+									"                \"username\": \"jdoe\"\r",
+									"            },\r",
+									"            \"cp\": \"40.445022449999996,-3.33798525\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 5,\r",
+									"            \"name\": \"Camiseta\",\r",
+									"            \"description\": \"Camiseta de algodón 100% con diseño gráfico\",\r",
+									"            \"status\": \"en condiciones aceptables\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/5/200/300\",\r",
+									"            \"price\": 20.00,\r",
+									"            \"category\": \"moda y accesorios\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 1,\r",
+									"                \"username\": \"jdoe\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 9,\r",
+									"            \"name\": \"Cámara DSLR\",\r",
+									"            \"description\": \"Cámara réflex digital con lente de 18-55mm\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/9/200/300\",\r",
+									"            \"price\": 550.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 1,\r",
+									"                \"username\": \"jdoe\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 13,\r",
+									"            \"name\": \"Auriculares\",\r",
+									"            \"description\": \"Auriculares inalámbricos con cancelación de ruido\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/13/200/300\",\r",
+									"            \"price\": 200.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 1,\r",
+									"                \"username\": \"jdoe\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 17,\r",
+									"            \"name\": \"Cámara de seguridad\",\r",
+									"            \"description\": \"Cámara de seguridad para el hogar con visión nocturna\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/17/200/300\",\r",
+									"            \"price\": 150.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 1,\r",
+									"                \"username\": \"jdoe\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 2,\r",
+									"            \"name\": \"Smartphone\",\r",
+									"            \"description\": \"Smartphone con pantalla de 6.5 pulgadas y cámara de 48MP\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/2/200/300\",\r",
+									"            \"price\": 800.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 2,\r",
+									"                \"username\": \"asmith\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 6,\r",
+									"            \"name\": \"Sofá\",\r",
+									"            \"description\": \"Sofá de 3 plazas con tapizado en tela\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/6/200/300\",\r",
+									"            \"price\": 700.00,\r",
+									"            \"category\": \"hogar y jardín\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 2,\r",
+									"                \"username\": \"asmith\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 10,\r",
+									"            \"name\": \"Tablet\",\r",
+									"            \"description\": \"Tablet con pantalla de 10 pulgadas y 64GB de almacenamiento\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/10/200/300\",\r",
+									"            \"price\": 300.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 2,\r",
+									"                \"username\": \"asmith\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 14,\r",
+									"            \"name\": \"Reloj inteligente\",\r",
+									"            \"description\": \"Reloj inteligente con monitor de ritmo cardíaco y GPS\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/14/200/300\",\r",
+									"            \"price\": 250.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 2,\r",
+									"                \"username\": \"asmith\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 18,\r",
+									"            \"name\": \"Lámpara de pie\",\r",
+									"            \"description\": \"Lámpara de pie moderna con control táctil\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/18/200/300\",\r",
+									"            \"price\": 80.00,\r",
+									"            \"category\": \"hogar y jardín\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 2,\r",
+									"                \"username\": \"asmith\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 3,\r",
+									"            \"name\": \"Bicicleta\",\r",
+									"            \"description\": \"Bicicleta de montaña con suspensión delantera y trasera\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/3/200/300\",\r",
+									"            \"price\": 400.00,\r",
+									"            \"category\": \"bicicletas\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 3,\r",
+									"                \"username\": \"bwhite\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 7,\r",
+									"            \"name\": \"Libro\",\r",
+									"            \"description\": \"Novela de ciencia ficción\",\r",
+									"            \"status\": \"lo ha dado todo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/7/200/300\",\r",
+									"            \"price\": 15.00,\r",
+									"            \"category\": \"cine, libros y música\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 3,\r",
+									"                \"username\": \"bwhite\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 11,\r",
+									"            \"name\": \"Zapatillas deportivas\",\r",
+									"            \"description\": \"Zapatillas deportivas para correr de alta calidad\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/11/200/300\",\r",
+									"            \"price\": 120.00,\r",
+									"            \"category\": \"moda y accesorios\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 3,\r",
+									"                \"username\": \"bwhite\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 15,\r",
+									"            \"name\": \"Mesa de comedor\",\r",
+									"            \"description\": \"Mesa de comedor para 6 personas, fabricada en madera de roble\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/15/200/300\",\r",
+									"            \"price\": 450.00,\r",
+									"            \"category\": \"hogar y jardín\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 3,\r",
+									"                \"username\": \"bwhite\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 19,\r",
+									"            \"name\": \"Monitor\",\r",
+									"            \"description\": \"Monitor de 27 pulgadas con resolución 4K\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/19/200/300\",\r",
+									"            \"price\": 400.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 3,\r",
+									"                \"username\": \"bwhite\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 28,\r",
+									"            \"name\": \"Mesa de comedor\",\r",
+									"            \"description\": \"Mesa de comedor para 6 personas, fabricada en madera de roble\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/15/200/300\",\r",
+									"            \"price\": 450.00,\r",
+									"            \"category\": \"hogar y jardín\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 3,\r",
+									"                \"username\": \"bwhite\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 4,\r",
+									"            \"name\": \"TV 4K\",\r",
+									"            \"description\": \"Televisor 4K de 55 pulgadas con HDR y Smart TV\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/4/200/300\",\r",
+									"            \"price\": 900.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 4,\r",
+									"                \"username\": \"cjohnson\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 8,\r",
+									"            \"name\": \"Reproductor de música\",\r",
+									"            \"description\": \"Reproductor de música portátil con capacidad de 32GB\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/8/200/300\",\r",
+									"            \"price\": 100.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 4,\r",
+									"                \"username\": \"cjohnson\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 12,\r",
+									"            \"name\": \"Lavadora\",\r",
+									"            \"description\": \"Lavadora con capacidad de 8kg y funciones avanzadas\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/12/200/300\",\r",
+									"            \"price\": 650.00,\r",
+									"            \"category\": \"hogar y jardín\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 4,\r",
+									"                \"username\": \"cjohnson\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 16,\r",
+									"            \"name\": \"Patinete eléctrico\",\r",
+									"            \"description\": \"Patinete eléctrico plegable con autonomía de 25km\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/16/200/300\",\r",
+									"            \"price\": 350.00,\r",
+									"            \"category\": \"bicicletas\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 4,\r",
+									"                \"username\": \"cjohnson\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        }\r",
+									"    ],\r",
+									"    \"page\": {\r",
+									"        \"size\": 20,\r",
+									"        \"number\": 0,\r",
+									"        \"totalElements\": 25,\r",
+									"        \"totalPages\": 2\r",
+									"    }\r",
+									"}\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has non-empty content\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('object').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/filter",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"filter"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/categories?page=0&size=4' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/filter?page=0&size=12&categoryId=1&status=4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is correct\", function () {\r",
+									"    pm.response.to.have.body(\r",
+									"{\r",
+									"    \"content\": [\r",
+									"        {\r",
+									"            \"id\": 24,\r",
+									"            \"name\": \"COCHE\",\r",
+									"            \"description\": \"Usado solo por 2 días, frenos en buen estado.\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"images\\\\5\\\\image_anacaro_1733255693753.jpg;images\\\\5\\\\image_anacaro_1735301673740.jpg;images\\\\5\\\\image_anacaro_1735301746599.jpg\",\r",
+									"            \"price\": 15000.00,\r",
+									"            \"category\": \"coches\",\r",
+									"            \"createDate\": \"2024-12-03T20:54:54\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 5,\r",
+									"                \"username\": \"anacaro\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        }\r",
+									"    ],\r",
+									"    \"page\": {\r",
+									"        \"size\": 12,\r",
+									"        \"number\": 0,\r",
+									"        \"totalElements\": 1,\r",
+									"        \"totalPages\": 1\r",
+									"    }\r",
+									"}\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has non-empty content\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('object').that.is.not.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/filter?page=0&size=12&categoryId=1&status=4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "12"
+								},
+								{
+									"key": "categoryId",
+									"value": "1"
+								},
+								{
+									"key": "status",
+									"value": "4"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/categories?page=0&size=4' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is in an acceptable range\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains expected product statuses\", function () {\r",
+									"    pm.expect(pm.response.json()).to.eql([\r",
+									"        { id: 4, name: \"como nuevo\" },\r",
+									"        { id: 5, name: \"en buen estado\" },\r",
+									"        { id: 6, name: \"en condiciones aceptables\" },\r",
+									"        { id: 2, name: \"en su caja\" },\r",
+									"        { id: 7, name: \"lo ha dado todo\" },\r",
+									"        { id: 3, name: \"nuevo\" },\r",
+									"        { id: 1, name: \"sin abrir\" }\r",
+									"    ]);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has the expected schema\", function () {\r",
+									"    pm.response.to.have.jsonSchema({\r",
+									"        type: \"array\",\r",
+									"        items: {\r",
+									"            type: \"object\",\r",
+									"            required: [\"id\", \"name\"],\r",
+									"            properties: {\r",
+									"                id: { type: \"number\" },\r",
+									"                name: { type: \"string\" }\r",
+									"            }\r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/status",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"status"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/status' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products//is-mine/{id} - ERROR 403",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/is-mine/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"is-mine",
+								"1"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/status' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products//is-mine/{id} - OK",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 50ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.lessThan(50);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/is-mine/22",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"is-mine",
+								"22"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/status' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 201\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is in an acceptable range\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(700);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Juego de boley",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Catan en perfecto estado, usado solo 5 veces en el año, lo he comprado para la navidad de hace un año.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "25",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "15",
+									"type": "text"
+								},
+								{
+									"key": "cp",
+									"value": "40.445022449999996,-3.33798525",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"description": "Tengo que agregar una imagen",
+									"type": "file",
+									"src": "/C:/Users/carom/Downloads/IMG_20210605_170304.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/products/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"create"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/create' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: multipart/form-data; boundary=----WebKitFormBoundarymwRjClIR4X6WEVrJ' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw $'------WebKitFormBoundarymwRjClIR4X6WEVrJ\\r\\nContent-Disposition: form-data; name=\"name\"\\r\\n\\r\\nJuego de mesa\\r\\n------WebKitFormBoundarymwRjClIR4X6WEVrJ\\r\\nContent-Disposition: form-data; name=\"description\"\\r\\n\\r\\nCatan en perfecto estado, usado solo 5 veces en el año, lo he comprado para la navidad de hace un año.\\r\\n------WebKitFormBoundarymwRjClIR4X6WEVrJ\\r\\nContent-Disposition: form-data; name=\"price\"\\r\\n\\r\\n25\\r\\n------WebKitFormBoundarymwRjClIR4X6WEVrJ\\r\\nContent-Disposition: form-data; name=\"status\"\\r\\n\\r\\n5\\r\\n------WebKitFormBoundarymwRjClIR4X6WEVrJ\\r\\nContent-Disposition: form-data; name=\"category\"\\r\\n\\r\\n15\\r\\n------WebKitFormBoundarymwRjClIR4X6WEVrJ\\r\\nContent-Disposition: form-data; name=\"cp\"\\r\\n\\r\\n40.445022449999996,-3.33798525\\r\\n------WebKitFormBoundarymwRjClIR4X6WEVrJ\\r\\nContent-Disposition: form-data; name=\"images\"; filename=\"IMG_20210605_170304.jpg\"\\r\\nContent-Type: image/jpeg\\r\\n\\r\\n\\r\\n------WebKitFormBoundarymwRjClIR4X6WEVrJ--\\r\\n'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1Mjk5NDk4LCJleHAiOjE3MzUzODU4OTgsInVzZXJuYW1lIjoiYW5hY2FybyJ9.JIbUrK9YyohDx0TaEGHkLuEEK3QXThrezERKKKQ-Whrgomg71qtEoCRZqIJBE63WNC0N_RjofLit4l_YCc3mOA"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Juego de mesa",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Catan en perfecto estado, usado solo 5 veces en el año, lo he comprado para la navidad de hace un año.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "25",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "5",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "15",
+									"type": "text"
+								},
+								{
+									"key": "cp",
+									"value": "40.445022449999996,-3.33798525",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"description": "Tengo que agregar una imagen",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/products/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"create"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/create' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1Mjk5NDk4LCJleHAiOjE3MzUzODU4OTgsInVzZXJuYW1lIjoiYW5hY2FybyJ9.JIbUrK9YyohDx0TaEGHkLuEEK3QXThrezERKKKQ-Whrgomg71qtEoCRZqIJBE63WNC0N_RjofLit4l_YCc3mOA' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryAGPeOWp3Jd3OxpUv' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw $'------WebKitFormBoundaryAGPeOWp3Jd3OxpUv\\r\\nContent-Disposition: form-data; name=\"name\"\\r\\n\\r\\nJuego de mesa\\r\\n------WebKitFormBoundaryAGPeOWp3Jd3OxpUv\\r\\nContent-Disposition: form-data; name=\"description\"\\r\\n\\r\\nCatan en perfecto estado, usado solo 5 veces en el año, lo he comprado para la navidad de hace un año.\\r\\n------WebKitFormBoundaryAGPeOWp3Jd3OxpUv\\r\\nContent-Disposition: form-data; name=\"price\"\\r\\n\\r\\n25\\r\\n------WebKitFormBoundaryAGPeOWp3Jd3OxpUv\\r\\nContent-Disposition: form-data; name=\"status\"\\r\\n\\r\\n5\\r\\n------WebKitFormBoundaryAGPeOWp3Jd3OxpUv\\r\\nContent-Disposition: form-data; name=\"category\"\\r\\n\\r\\n15\\r\\n------WebKitFormBoundaryAGPeOWp3Jd3OxpUv\\r\\nContent-Disposition: form-data; name=\"cp\"\\r\\n\\r\\n40.445022449999996,-3.33798525\\r\\n------WebKitFormBoundaryAGPeOWp3Jd3OxpUv\\r\\nContent-Disposition: form-data; name=\"images\"; filename=\"lugares-donde-estuve.png\"\\r\\nContent-Type: image/png\\r\\n\\r\\n\\r\\n------WebKitFormBoundaryAGPeOWp3Jd3OxpUv--\\r\\n'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/update - imageOption: no-modificar",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test for response status code\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Test for response time\r",
+									"pm.test(\"Response time is less than 100ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(100);\r",
+									"});\r",
+									"\r",
+									"// Test for response body properties\r",
+									"pm.test(\"Response body has 'id' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('id');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'name' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('name');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'description' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('description');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'status' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('status');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'imageUrl' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('imageUrl');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'price' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('price');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'category' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('category');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'createDate' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('createDate');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'seller' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('seller');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'cp' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('cp');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'sold' property\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('sold');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "22",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "MESA DE NOCHE",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Linda mesa de noche sin uso",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "14999.96",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "8",
+									"type": "text"
+								},
+								{
+									"key": "imageOption",
+									"value": "no-modificar",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/products/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"update"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/update' \\\r\n  -X 'PUT' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1OTExMzYyLCJleHAiOjE3MzU5OTc3NjIsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.abG-wFq14D9VCvnu1VcmzLyP5sVOhY07Eiu-Gpw0Q4lcxc6HLXcZSloNU-zFFQQmG0WGm9OMn6cwiDCbrGbbnw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryo9XbMuBfEBrstbde' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw $'------WebKitFormBoundaryo9XbMuBfEBrstbde\\r\\nContent-Disposition: form-data; name=\"id\"\\r\\n\\r\\n22\\r\\n------WebKitFormBoundaryo9XbMuBfEBrstbde\\r\\nContent-Disposition: form-data; name=\"name\"\\r\\n\\r\\nMESA DE NOCHE\\r\\n------WebKitFormBoundaryo9XbMuBfEBrstbde\\r\\nContent-Disposition: form-data; name=\"description\"\\r\\n\\r\\nLinda mesa de noche sin uso\\r\\n------WebKitFormBoundaryo9XbMuBfEBrstbde\\r\\nContent-Disposition: form-data; name=\"price\"\\r\\n\\r\\n14999.96\\r\\n------WebKitFormBoundaryo9XbMuBfEBrstbde\\r\\nContent-Disposition: form-data; name=\"status\"\\r\\n\\r\\n4\\r\\n------WebKitFormBoundaryo9XbMuBfEBrstbde\\r\\nContent-Disposition: form-data; name=\"category\"\\r\\n\\r\\n8\\r\\n------WebKitFormBoundaryo9XbMuBfEBrstbde\\r\\nContent-Disposition: form-data; name=\"imageOption\"\\r\\n\\r\\nno-modificar\\r\\n------WebKitFormBoundaryo9XbMuBfEBrstbde--\\r\\n'"
+					},
+					"response": []
+				},
+				{
+					"name": "anacaro user - /products/update - imageOption: no-modificar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "24",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "COCHE",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Usado solo por 2 días.",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "15000",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "4",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "imageOption",
+									"value": "no-modificar",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/products/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"update"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/update' \\\r\n  -X 'PUT' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1Mjk5NDk4LCJleHAiOjE3MzUzODU4OTgsInVzZXJuYW1lIjoiYW5hY2FybyJ9.JIbUrK9YyohDx0TaEGHkLuEEK3QXThrezERKKKQ-Whrgomg71qtEoCRZqIJBE63WNC0N_RjofLit4l_YCc3mOA' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryJnCvQCeEep9zw31V' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw $'------WebKitFormBoundaryJnCvQCeEep9zw31V\\r\\nContent-Disposition: form-data; name=\"id\"\\r\\n\\r\\n24\\r\\n------WebKitFormBoundaryJnCvQCeEep9zw31V\\r\\nContent-Disposition: form-data; name=\"name\"\\r\\n\\r\\nCOCHE\\r\\n------WebKitFormBoundaryJnCvQCeEep9zw31V\\r\\nContent-Disposition: form-data; name=\"description\"\\r\\n\\r\\nUsado solo por 2 días.\\r\\n------WebKitFormBoundaryJnCvQCeEep9zw31V\\r\\nContent-Disposition: form-data; name=\"price\"\\r\\n\\r\\n15000\\r\\n------WebKitFormBoundaryJnCvQCeEep9zw31V\\r\\nContent-Disposition: form-data; name=\"status\"\\r\\n\\r\\n4\\r\\n------WebKitFormBoundaryJnCvQCeEep9zw31V\\r\\nContent-Disposition: form-data; name=\"category\"\\r\\n\\r\\n1\\r\\n------WebKitFormBoundaryJnCvQCeEep9zw31V\\r\\nContent-Disposition: form-data; name=\"imageOption\"\\r\\n\\r\\nno-modificar\\r\\n------WebKitFormBoundaryJnCvQCeEep9zw31V--\\r\\n'"
+					},
+					"response": []
+				},
+				{
+					"name": "/products/delete/{id} - ERROR 403",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/products/delete/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products",
+								"delete",
+								"1"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/products/status' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1MjQyMDgyLCJleHAiOjE3MzUzMjg0ODIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.MTdeGe9n5yYxP6m4piKKLztlxXQls9IpTEGRSUQsIRukno9AiGLCTvImbgD4mb9lqErQwWLJEsLJxgnPJX8EMw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User-Controller",
+			"item": [
+				{
+					"name": "/user/registrar",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"anacaro3\",\r\n    \"name\": \"Ana\",\r\n    \"lastname\": \"Ojeda\",\r\n    \"email\": \"caromar.solorzano3@gmail.com\",\r\n    \"password\": \"HPotter76\",\r\n    \"tel\": \"695397667\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/registrar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"registrar"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/registrar' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw '{\"username\":\"anacaro3\",\"name\":\"Ana\",\"lastname\":\"Ojeda\",\"email\":\"caromar.solorzano3@gmail.com\",\"password\":\"HPotter76\",\"tel\":\"695397667\"}'"
+					},
+					"response": []
+				},
+				{
+					"name": "/auth/login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"anacaro3\",\r\n    \"name\": \"Ana\",\r\n    \"lastname\": \"Ojeda\",\r\n    \"email\": \"caromar.solorzano3@gmail.com\",\r\n    \"password\": \"HPotter76\",\r\n    \"tel\": \"695397667\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/auth/login' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw '{\"username\":\"anacaro3\",\"name\":\"Ana\",\"lastname\":\"Ojeda\",\"email\":\"caromar.solorzano3@gmail.com\",\"password\":\"HPotter76\",\"tel\":\"695397667\"}'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is correct\", function () {\r",
+									"    pm.response.to.have.body(\r",
+									"{\r",
+									"    \"id\": 6,\r",
+									"    \"username\": \"anacaro2\",\r",
+									"    \"name\": \"Ana\",\r",
+									"    \"lastname\": \"Ojeda\",\r",
+									"    \"email\": \"caromar.solorzano@gmail.com\",\r",
+									"    \"tel\": \"695397667\"\r",
+									"}\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/user/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"profile"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/profile' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"anacaro\",\r\n    \"name\": \"Ana\",\r\n    \"lastname\": \"solorzano ojeda\",\r\n    \"email\": \"anacaromar12@gmail.com\",\r\n    \"tel\": \"633556645\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"update"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/update' \\\r\n  -X 'PUT' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1NTU2NzAyLCJleHAiOjE3MzU2NDMxMDIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.KJiIa_3usGmkj1QBHA5dJjUXEYeh-QNylI6rOV6iQQwHxzr4ahCoPEJxhvTswpfO6IwBH_bPpAoUNv_N0gLQmA' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw '{\"username\":\"anacaro\",\"name\":\"Ana\",\"lastname\":\"solorzano ojeda\",\"email\":\"anacaromar12@gmail.com\",\"tel\":\"633556645\"}'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/change-password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"HPotter76\",\r\n    \"newPassword\": \"HPotter12\",\r\n    \"newPassword2\": \"HPotter12\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/change-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"change-password"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/change-password' \\\r\n  -X 'PUT' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI1IiwiaWF0IjoxNzM1NTU2NzAyLCJleHAiOjE3MzU2NDMxMDIsInVzZXJuYW1lIjoiYW5hY2FybyJ9.KJiIa_3usGmkj1QBHA5dJjUXEYeh-QNylI6rOV6iQQwHxzr4ahCoPEJxhvTswpfO6IwBH_bPpAoUNv_N0gLQmA' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw '{\"password\":\"HPotter76\",\"newPassword\":\"HPotter12\",\"newPassword2\":\"HPotter12\"}'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "password",
+									"value": "HPotter76",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"delete"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/delete' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI4IiwiaWF0IjoxNzM1NTU2OTQ3LCJleHAiOjE3MzU2NDMzNDcsInVzZXJuYW1lIjoicHJ1ZWJhZWxpbWluYXIifQ.ihOYms6rEei-UZKruhEZH_cVlEFUKlRjuUsuImQffOq2_t7WdoT5DZsHzLS8XtCX9ojGMtlyHJ5RlbKYGc8Qmw' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryV3oNN6oxXAbqUYuB' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw $'------WebKitFormBoundaryV3oNN6oxXAbqUYuB\\r\\nContent-Disposition: form-data; name=\"password\"\\r\\n\\r\\nHPotter76\\r\\n------WebKitFormBoundaryV3oNN6oxXAbqUYuB--\\r\\n'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/products?page=0&size=12&sort=createDate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Body is correct\", function () {\r",
+									"    pm.response.to.have.body(\r",
+									"{\r",
+									"    \"content\": [\r",
+									"        {\r",
+									"            \"id\": 1,\r",
+									"            \"name\": \"Laptop\",\r",
+									"            \"description\": \"Laptop de última generación con 16GB de RAM y 512GB SSD\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/1/200/300\",\r",
+									"            \"price\": 1200.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 1,\r",
+									"                \"username\": \"jdoe\"\r",
+									"            },\r",
+									"            \"cp\": \"40.445022449999996,-3.33798525\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 2,\r",
+									"            \"name\": \"Smartphone\",\r",
+									"            \"description\": \"Smartphone con pantalla de 6.5 pulgadas y cámara de 48MP\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/2/200/300\",\r",
+									"            \"price\": 800.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 2,\r",
+									"                \"username\": \"asmith\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 3,\r",
+									"            \"name\": \"Bicicleta\",\r",
+									"            \"description\": \"Bicicleta de montaña con suspensión delantera y trasera\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/3/200/300\",\r",
+									"            \"price\": 400.00,\r",
+									"            \"category\": \"bicicletas\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 3,\r",
+									"                \"username\": \"bwhite\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 4,\r",
+									"            \"name\": \"TV 4K\",\r",
+									"            \"description\": \"Televisor 4K de 55 pulgadas con HDR y Smart TV\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/4/200/300\",\r",
+									"            \"price\": 900.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 4,\r",
+									"                \"username\": \"cjohnson\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 5,\r",
+									"            \"name\": \"Camiseta\",\r",
+									"            \"description\": \"Camiseta de algodón 100% con diseño gráfico\",\r",
+									"            \"status\": \"en condiciones aceptables\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/5/200/300\",\r",
+									"            \"price\": 20.00,\r",
+									"            \"category\": \"moda y accesorios\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 1,\r",
+									"                \"username\": \"jdoe\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 6,\r",
+									"            \"name\": \"Sofá\",\r",
+									"            \"description\": \"Sofá de 3 plazas con tapizado en tela\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/6/200/300\",\r",
+									"            \"price\": 700.00,\r",
+									"            \"category\": \"hogar y jardín\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 2,\r",
+									"                \"username\": \"asmith\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 7,\r",
+									"            \"name\": \"Libro\",\r",
+									"            \"description\": \"Novela de ciencia ficción\",\r",
+									"            \"status\": \"lo ha dado todo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/7/200/300\",\r",
+									"            \"price\": 15.00,\r",
+									"            \"category\": \"cine, libros y música\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 3,\r",
+									"                \"username\": \"bwhite\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 8,\r",
+									"            \"name\": \"Reproductor de música\",\r",
+									"            \"description\": \"Reproductor de música portátil con capacidad de 32GB\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/8/200/300\",\r",
+									"            \"price\": 100.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 4,\r",
+									"                \"username\": \"cjohnson\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 9,\r",
+									"            \"name\": \"Cámara DSLR\",\r",
+									"            \"description\": \"Cámara réflex digital con lente de 18-55mm\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/9/200/300\",\r",
+									"            \"price\": 550.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 1,\r",
+									"                \"username\": \"jdoe\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 10,\r",
+									"            \"name\": \"Tablet\",\r",
+									"            \"description\": \"Tablet con pantalla de 10 pulgadas y 64GB de almacenamiento\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/10/200/300\",\r",
+									"            \"price\": 300.00,\r",
+									"            \"category\": \"tecnología y electrónica\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 2,\r",
+									"                \"username\": \"asmith\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 11,\r",
+									"            \"name\": \"Zapatillas deportivas\",\r",
+									"            \"description\": \"Zapatillas deportivas para correr de alta calidad\",\r",
+									"            \"status\": \"como nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/11/200/300\",\r",
+									"            \"price\": 120.00,\r",
+									"            \"category\": \"moda y accesorios\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 3,\r",
+									"                \"username\": \"bwhite\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        },\r",
+									"        {\r",
+									"            \"id\": 12,\r",
+									"            \"name\": \"Lavadora\",\r",
+									"            \"description\": \"Lavadora con capacidad de 8kg y funciones avanzadas\",\r",
+									"            \"status\": \"nuevo\",\r",
+									"            \"imageUrl\": \"https://picsum.photos/id/12/200/300\",\r",
+									"            \"price\": 650.00,\r",
+									"            \"category\": \"hogar y jardín\",\r",
+									"            \"createDate\": \"2024-10-28T12:04:22\",\r",
+									"            \"seller\": {\r",
+									"                \"id\": 4,\r",
+									"                \"username\": \"cjohnson\"\r",
+									"            },\r",
+									"            \"cp\": \"\",\r",
+									"            \"sold\": false\r",
+									"        }\r",
+									"    ],\r",
+									"    \"page\": {\r",
+									"        \"size\": 12,\r",
+									"        \"number\": 0,\r",
+									"        \"totalElements\": 25,\r",
+									"        \"totalPages\": 3\r",
+									"    }\r",
+									"}\r",
+									"    );\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/user/products?page=0&size=12&sort=createDate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "12"
+								},
+								{
+									"key": "sort",
+									"value": "createDate"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/products?page=0&size=12&sort=createDate' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/favorite-product-lists?page=0&size=12",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'content' array\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('content').that.is.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body has 'page' object\", function () {\r",
+									"    pm.expect(pm.response.json()).to.have.property('page').that.is.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Each item in 'content' array has 'id', 'nameList', and 'productSize'\", function () {\r",
+									"    pm.response.json().content.forEach(function(item) {\r",
+									"        pm.expect(item).to.have.property('id');\r",
+									"        pm.expect(item).to.have.property('nameList');\r",
+									"        pm.expect(item).to.have.property('productSize');\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/user/favorite-product-lists?page=0&size=12",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"favorite-product-lists"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "12"
+								}
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/favorite-product-lists?page=0&size=12' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/favorite-products-in-list/17",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response body contains favorite products for the user\", function () {\r",
+									"    pm.expect(pm.response.json()).to.be.an('array').that.is.not.empty;\r",
+									"    pm.expect(pm.response.json()).to.have.lengthOf.at.least(1);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/user/favorite-products-in-list/17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"favorite-products-in-list",
+								"17"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/favorite-products-in-list/17' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/product-fav-list/24",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify the listFavoriteId value is correct\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData[0].listFavoriteId).to.eql(17);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Authorization token format is valid\", function () {\r",
+									"    const authHeader = pm.request.headers.get('Authorization');\r",
+									"    \r",
+									"    pm.expect(authHeader).to.exist;\r",
+									"    pm.expect(authHeader).to.match(/^Bearer [A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$/);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/user/product-fav-list/24",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"product-fav-list",
+								"24"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/product-fav-list/24' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/edit-list-fav",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"juegos de anime 23\",\r\n    \"id\": 17\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/edit-list-fav",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"edit-list-fav"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/edit-list-fav' \\\r\n  -X 'PUT' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw '{\"name\":\"juegos de anime 2\",\"id\":17}'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/create-list-fav",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "text/plain"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "prueba agregar lista 2",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/create-list-fav",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"create-list-fav"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/create-list-fav' \\\r\n  -X 'PUT' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: text/plain' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw 'prueba agregar lista'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/delete-list-fav/20",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/user/delete-list-fav/20",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"delete-list-fav",
+								"20"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/delete-list-fav/20' \\\r\n  -X 'DELETE' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "/user/delete-product/1/favorite-list/17",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8080/user/delete-product/1/favorite-list/17",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"delete-product",
+								"1",
+								"favorite-list",
+								"17"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/delete-product/1/favorite-list/17' \\\r\n  -X 'DELETE' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"'"
+					},
+					"response": []
+				},
+				{
+					"name": "ADD PRODUCT - /user/update-favs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"idList\": 17,\r\n        \"idProduct\": 1,\r\n        \"isDeleteProductList\": false,\r\n        \"isAddProductList\": true\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/update-favs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"update-favs"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/update-favs' \\\r\n  -X 'PUT' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw '[{\"idList\":17,\"idProduct\":1,\"isDeleteProductList\":false,\"isAddProductList\":true}]'"
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE PRODUCT - /user/update-favs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json, text/plain, */*"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "es-ES,es;q=0.9,en;q=0.8"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Origin",
+								"value": "http://localhost:4200"
+							},
+							{
+								"key": "Referer",
+								"value": "http://localhost:4200/"
+							},
+							{
+								"key": "Sec-Fetch-Dest",
+								"value": "empty"
+							},
+							{
+								"key": "Sec-Fetch-Mode",
+								"value": "cors"
+							},
+							{
+								"key": "Sec-Fetch-Site",
+								"value": "same-site"
+							},
+							{
+								"key": "User-Agent",
+								"value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+							},
+							{
+								"key": "sec-ch-ua",
+								"value": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\""
+							},
+							{
+								"key": "sec-ch-ua-mobile",
+								"value": "?0"
+							},
+							{
+								"key": "sec-ch-ua-platform",
+								"value": "\"Windows\""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"idList\": 17,\r\n        \"idProduct\": 2,\r\n        \"isDeleteProductList\": true,\r\n        \"isAddProductList\": false\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/update-favs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"update-favs"
+							]
+						},
+						"description": "Generated from cURL: curl 'http://localhost:8080/user/update-favs' \\\r\n  -X 'PUT' \\\r\n  -H 'Accept: application/json, text/plain, */*' \\\r\n  -H 'Accept-Language: es-ES,es;q=0.9,en;q=0.8' \\\r\n  -H 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNzM1NTU3MDYwLCJleHAiOjE3MzU2NDM0NjAsInVzZXJuYW1lIjoiYW5hY2FybzIifQ.ZwlgPfYTMr9Jwmrz2vwy9z4rBqGOpWVzXfyHhD-JIWu7mzy0SqD7mO_2p-k5UhZhxBm9fKKnmqVWS7S7rOeWVQ' \\\r\n  -H 'Connection: keep-alive' \\\r\n  -H 'Content-Type: application/json' \\\r\n  -H 'Origin: http://localhost:4200' \\\r\n  -H 'Referer: http://localhost:4200/' \\\r\n  -H 'Sec-Fetch-Dest: empty' \\\r\n  -H 'Sec-Fetch-Mode: cors' \\\r\n  -H 'Sec-Fetch-Site: same-site' \\\r\n  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36' \\\r\n  -H 'sec-ch-ua: \"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"' \\\r\n  -H 'sec-ch-ua-mobile: ?0' \\\r\n  -H 'sec-ch-ua-platform: \"Windows\"' \\\r\n  --data-raw '[{\"idList\":17,\"idProduct\":2,\"isDeleteProductList\":true,\"isAddProductList\":false}]'"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

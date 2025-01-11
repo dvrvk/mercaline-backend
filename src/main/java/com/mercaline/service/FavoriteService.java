@@ -41,7 +41,6 @@ public class FavoriteService extends BaseService<FavoriteEntity, Long, FavoriteR
      * Find by favorite list.
      *
      * @param favoriteList the favorite list
-     * @param pageable the pageable
      * @return the page
      */
     public List<FavoriteEntity> findByFavoriteList(ListFavoriteEntity favoriteList) {

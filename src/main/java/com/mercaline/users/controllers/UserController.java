@@ -230,6 +230,13 @@ public class UserController {
 		return ResponseEntity.ok(this.listFavoriteService.createFavoriteList(user, name));
 	}
 	
+	/**
+	 * Delete favorite list.
+	 *
+	 * @param user the user
+	 * @param id the id
+	 * @return the response entity
+	 */
 	@DeleteMapping("/delete-list-fav/{id}")
 	public ResponseEntity<Void> deleteFavoriteList(@AuthenticationPrincipal UserEntity user, @PathVariable Long id) {
 		this.listFavoriteService.deleteFavoriteList(user, id);

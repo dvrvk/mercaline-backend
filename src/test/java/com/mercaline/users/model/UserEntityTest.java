@@ -1,4 +1,4 @@
-package com.mercaline.users;
+package com.mercaline.users.model;
 
 import com.mercaline.users.Model.UserEntity;
 import org.junit.jupiter.api.Test;
@@ -6,9 +6,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * The Class UserEntityTest.
+ */
 @SpringBootTest
 public class UserEntityTest {
 
+    /**
+     * Test not null user.
+     */
     @Test
     public void testNotNullUser() {
         UserEntity user = UserEntity.builder()
@@ -24,6 +30,9 @@ public class UserEntityTest {
         assertEquals("test@domain.com", user.getEmail());
     }
 
+    /**
+     * Test all user.
+     */
     @Test
     public void testAllUser() {
         UserEntity user = UserEntity.builder()

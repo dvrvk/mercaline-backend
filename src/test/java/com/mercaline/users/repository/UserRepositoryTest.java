@@ -1,22 +1,29 @@
-package com.mercaline.users;
-
-import com.mercaline.users.Model.UserEntity;
-import com.mercaline.users.repository.UserEntityRepository;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.util.Optional;
+package com.mercaline.users.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import com.mercaline.users.Model.UserEntity;
+
+/**
+ * The Class UserRepositoryTest.
+ */
 @DataJpaTest
 public class UserRepositoryTest {
 
+    /** The user entity repository. */
     @Autowired
     private UserEntityRepository userEntityRepository;
 
+    /**
+     * Test find by username.
+     */
     @Test
     public void testFindByUsername() {
         UserEntity user = UserEntity.builder()
