@@ -14,22 +14,42 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * The Class JwtAuthenticationEntryPoint.
+ */
 @Component
+
+/**
+ * Instantiates a new jwt authentication entry point.
+ *
+ * @param mapper the mapper
+ */
 @RequiredArgsConstructor
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final ObjectMapper mapper;
+	/** The mapper. */
+	private final ObjectMapper mapper;
 
-    @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType("application/json");
+	/**
+	 * Commence.
+	 *
+	 * @param request       the request
+	 * @param response      the response
+	 * @param authException the auth exception
+	 * @throws IOException      Signals that an I/O exception has occurred.
+	 * @throws ServletException the servlet exception
+	 */
+	@Override
+	public void commence(HttpServletRequest request, HttpServletResponse response,
+			AuthenticationException authException) throws IOException, ServletException {
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setContentType("application/json");
 
-        ApiError error = new ApiError(HttpStatus.UNAUTHORIZED, authException.getMessage());
-        String strError = mapper.writeValueAsString(error);
+		ApiError error = new ApiError(HttpStatus.UNAUTHORIZED, authException.getMessage());
+		String strError = mapper.writeValueAsString(error);
 
-        PrintWriter write = response.getWriter();
-        write.println(strError);
+		PrintWriter write = response.getWriter();
+		write.println(strError);
 
-    }
+	}
 }

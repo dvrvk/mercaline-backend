@@ -4,15 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import ch.qos.logback.core.util.StringUtil;
-import com.mercaline.error.ApiError;
-import com.mercaline.error.GlobalControllerAdvice;
-import com.mercaline.error.exceptions.DatabaseConnectionException;
-import com.mercaline.error.exceptions.InvalidTokenException;
-import com.mercaline.users.Model.UserEntity;
-import com.mercaline.users.services.CustomUserDetailsService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -21,6 +13,11 @@ import org.springframework.transaction.CannotCreateTransactionException;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.mercaline.error.exceptions.DatabaseConnectionException;
+import com.mercaline.error.exceptions.InvalidTokenException;
+import com.mercaline.users.Model.UserEntity;
+import com.mercaline.users.services.CustomUserDetailsService;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,14 +25,38 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
+/**
+ * The Class JwtAuthFilter.
+ */
 @Component
+
+/**
+ * Instantiates a new jwt auth filter.
+ *
+ * @param jwtTokenProvider the jwt token provider
+ * @param customUserDetailsService the custom user details service
+ */
 @RequiredArgsConstructor
+
+/** The Constant log. */
 @Log
 public class JwtAuthFilter extends OncePerRequestFilter{
 
+    /** The jwt token provider. */
     private final JwtTokenProvider jwtTokenProvider;
+    
+    /** The custom user details service. */
     private final CustomUserDetailsService customUserDetailsService;
 
+    /**
+     * Do filter internal.
+     *
+     * @param request the request
+     * @param response the response
+     * @param filterChain the filter chain
+     * @throws ServletException the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -71,6 +92,12 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 
     }
 
+    /**
+     * Gets the token from request.
+     *
+     * @param request the request
+     * @return the token from request
+     */
     public String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader(JwtTokenProvider.TOKEN_HEADER);
 
@@ -80,12 +107,22 @@ public class JwtAuthFilter extends OncePerRequestFilter{
         return null;
     }
 
+    /**
+     * Handle autorization exception.
+     *
+     * @param response the response
+     * @param ex the ex
+     * @param status the status
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     // Control de errores de autenticación - conexión
     private void handleAutorizationException(HttpServletResponse response, Exception ex, HttpStatus status) throws IOException {
         response.setStatus(status.value());
         response.setContentType("application/json");
         String fechaString = (LocalDateTime.now()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss"));
-        response.getWriter().write("{\"status\": \"" + status.value() + "\" , \"fecha\": \"" + fechaString + "\", \"message\": \"" + ex.getMessage() + "\"}");
+        //response.getWriter().write("{\"status\": \"" + status.value() + "\" , \"fecha\": \"" + fechaString + "\", \"message\": \"" + ex.getMessage() + "\"}");
+        response.getWriter().write("{\"status\": \"" + status.value() + "\" , \"fecha\": \"" + fechaString + "\", \"mensaje\": \"" + ex.getMessage() + "\"}");
+
     }
 
 

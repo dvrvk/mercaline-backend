@@ -76,7 +76,9 @@ CREATE TABLE products (
     category BIGINT(20) NOT NULL,
     create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status BIGINT(20) NOT NULL,
+    sold BIT(1) DEFAULT b'0',
     url_image VARCHAR(1000),
+    cp VARCHAR(50) NOT NULL,
     user_id BIGINT(20) NOT NULL,
     FOREIGN KEY (category) REFERENCES categories(id),
     FOREIGN KEY (status) REFERENCES status(id),
@@ -163,27 +165,27 @@ INSERT INTO users (username, password, name, lastname, email, tel) VALUES
 --
 -- Datos de prueba para la tabla 'products'
 --
-INSERT INTO products (name, description, price, category, status, url_image, user_id) VALUES
-('Laptop', 'Laptop de última generación con 16GB de RAM y 512GB SSD', 1200.00, 5, 3, 'https://picsum.photos/id/1/200/300', 1),
-('Smartphone', 'Smartphone con pantalla de 6.5 pulgadas y cámara de 48MP', 800.00, 5, 3, 'https://picsum.photos/id/2/200/300', 2),
-('Bicicleta', 'Bicicleta de montaña con suspensión delantera y trasera', 400.00, 7, 4, 'https://picsum.photos/id/3/200/300', 3),
-('TV 4K', 'Televisor 4K de 55 pulgadas con HDR y Smart TV', 900.00, 5, 3, 'https://picsum.photos/id/4/200/300', 4),
-('Camiseta', 'Camiseta de algodón 100% con diseño gráfico', 20.00, 4, 6, 'https://picsum.photos/id/5/200/300', 1),
-('Sofá', 'Sofá de 3 plazas con tapizado en tela', 700.00, 8, 4, 'https://picsum.photos/id/6/200/300', 2),
-('Libro', 'Novela de ciencia ficción', 15.00, 10, 7, 'https://picsum.photos/id/7/200/300', 3),
-('Reproductor de música', 'Reproductor de música portátil con capacidad de 32GB', 100.00, 5, 3, 'https://picsum.photos/id/8/200/300', 4),
-('Cámara DSLR', 'Cámara réflex digital con lente de 18-55mm', 550.00, 5, 3, 'https://picsum.photos/id/9/200/300', 1),
-('Tablet', 'Tablet con pantalla de 10 pulgadas y 64GB de almacenamiento', 300.00, 5, 3, 'https://picsum.photos/id/10/200/300', 2),
-('Zapatillas deportivas', 'Zapatillas deportivas para correr de alta calidad', 120.00, 4, 4, 'https://picsum.photos/id/11/200/300', 3),
-('Lavadora', 'Lavadora con capacidad de 8kg y funciones avanzadas', 650.00, 8, 3, 'https://picsum.photos/id/12/200/300', 4),
-('Auriculares', 'Auriculares inalámbricos con cancelación de ruido', 200.00, 5, 3, 'https://picsum.photos/id/13/200/300', 1),
-('Reloj inteligente', 'Reloj inteligente con monitor de ritmo cardíaco y GPS', 250.00, 5, 3, 'https://picsum.photos/id/14/200/300', 2),
-('Mesa de comedor', 'Mesa de comedor para 6 personas, fabricada en madera de roble', 450.00, 8, 4, 'https://picsum.photos/id/15/200/300', 3),
-('Patinete eléctrico', 'Patinete eléctrico plegable con autonomía de 25km', 350.00, 7, 4, 'https://picsum.photos/id/16/200/300', 4),
-('Cámara de seguridad', 'Cámara de seguridad para el hogar con visión nocturna', 150.00, 5, 3, 'https://picsum.photos/id/17/200/300', 1),
-('Lámpara de pie', 'Lámpara de pie moderna con control táctil', 80.00, 8, 4, 'https://picsum.photos/id/18/200/300', 2),
-('Monitor', 'Monitor de 27 pulgadas con resolución 4K', 400.00, 5, 3, 'https://picsum.photos/id/19/200/300', 3),
-('Cafetera', 'Cafetera de espresso con molinillo integrado', 300.00, 8, 3, 'https://picsum.photos/id/20/200/300', 4);
+INSERT INTO products (name, description, price, category, status, url_image, cp, user_id, sold) VALUES
+('Laptop', 'Laptop de última generación con 16GB de RAM y 512GB SSD', 1200.00, 5, 3, 'https://picsum.photos/id/1/200/300', '40.416775,-3.703790', 1, 0),
+('Smartphone', 'Smartphone con pantalla de 6.5 pulgadas y cámara de 48MP', 800.00, 5, 3, 'https://picsum.photos/id/2/200/300', '40.416775,-3.703790', 2, 0),
+('Bicicleta', 'Bicicleta de montaña con suspensión delantera y trasera', 400.00, 7, 4, 'https://picsum.photos/id/3/200/300', '40.416775,-3.703790', 3, 0),
+('TV 4K', 'Televisor 4K de 55 pulgadas con HDR y Smart TV', 900.00, 5, 3, 'https://picsum.photos/id/4/200/300', '40.416775,-3.703790', 4, 0),
+('Camiseta', 'Camiseta de algodón 100% con diseño gráfico', 20.00, 4, 6, 'https://picsum.photos/id/5/200/300', '40.416775,-3.703790', 1, 0),
+('Sofá', 'Sofá de 3 plazas con tapizado en tela', 700.00, 8, 4, 'https://picsum.photos/id/6/200/300', '40.416775,-3.703790', 2, 1),
+('Libro', 'Novela de ciencia ficción', 15.00, 10, 7, 'https://picsum.photos/id/7/200/300', '40.416775,-3.703790', 3, 0),
+('Reproductor de música', 'Reproductor de música portátil con capacidad de 32GB', 100.00, 5, 3, 'https://picsum.photos/id/8/200/300', '40.416775,-3.703790', 4, 0),
+('Cámara DSLR', 'Cámara réflex digital con lente de 18-55mm', 550.00, 5, 3, 'https://picsum.photos/id/9/200/300', '40.416775,-3.703790', 1, 0),
+('Tablet', 'Tablet con pantalla de 10 pulgadas y 64GB de almacenamiento', 300.00, 5, 3, 'https://picsum.photos/id/10/200/300', '40.416775,-3.703790', 2, 1),
+('Zapatillas deportivas', 'Zapatillas deportivas para correr de alta calidad', 120.00, 4, 4, 'https://picsum.photos/id/11/200/300', '40.416775,-3.703790', 3, 1),
+('Lavadora', 'Lavadora con capacidad de 8kg y funciones avanzadas', 650.00, 8, 3, 'https://picsum.photos/id/12/200/300', '40.416775,-3.703790', 4, 0),
+('Auriculares', 'Auriculares inalámbricos con cancelación de ruido', 200.00, 5, 3, 'https://picsum.photos/id/13/200/300', '40.416775,-3.703790', 1, 0),
+('Reloj inteligente', 'Reloj inteligente con monitor de ritmo cardíaco y GPS', 250.00, 5, 3, 'https://picsum.photos/id/14/200/300', '40.416775,-3.703790', 2, 0),
+('Mesa de comedor', 'Mesa de comedor para 6 personas, fabricada en madera de roble', 450.00, 8, 4, 'https://picsum.photos/id/15/200/300', '40.416775,-3.703790', 3, 0),
+('Patinete eléctrico', 'Patinete eléctrico plegable con autonomía de 25km', 350.00, 7, 4, 'https://picsum.photos/id/16/200/300', '40.416775,-3.703790', 4, 1),
+('Cámara de seguridad', 'Cámara de seguridad para el hogar con visión nocturna', 150.00, 5, 3, 'https://picsum.photos/id/17/200/300', '40.416775,-3.703790', 1, 0),
+('Lámpara de pie', 'Lámpara de pie moderna con control táctil', 80.00, 8, 4, 'https://picsum.photos/id/18/200/300', '40.416775,-3.703790', 2, 0),
+('Monitor', 'Monitor de 27 pulgadas con resolución 4K', 400.00, 5, 3, 'https://picsum.photos/id/19/200/300', '40.416775,-3.703790', 3, 1),
+('Cafetera', 'Cafetera de espresso con molinillo integrado', 300.00, 8, 3, 'https://picsum.photos/id/20/200/300', '40.416775,-3.703790', 4, 0);
 
 
 COMMIT;
